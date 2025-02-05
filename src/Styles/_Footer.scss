@@ -1,0 +1,170 @@
+.footer-section {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    padding: 1rem;
+    margin-top: 2rem;
+    font-family: 'Arial', sans-serif;
+
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: space-between;
+
+        // Common styles for all footer sections
+        [class^="footer-"] {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem;
+
+            h1 {
+                font-size: 1.2rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid #d16b75;
+            }
+
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+
+                li {
+                    margin-bottom: 1rem;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+
+                    &:hover {
+                        color: #ff4d4d;
+                        transform: translateX(5px);
+                    }
+                }
+            }
+        }
+
+        // Get in Touch specific styles
+        .footer-get-in-touch {
+            ul li {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+
+                .MuiSvgIcon-root {
+                    font-size: 1.5rem;
+                    color: #ff4d4d;
+                    flex-shrink: 0;
+                }
+
+                span {
+                    font-size: 0.9rem;
+                    line-height: 1.5;
+                }
+            }
+        }
+
+        // Follow Us specific styles
+        .footer-follow-us {
+            ul li {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+
+                .MuiSvgIcon-root {
+                    font-size: 1.5rem;
+                    transition: all 0.3s ease;
+                }
+
+                &:hover {
+                    .MuiSvgIcon-root {
+                        color: #ff4d4d;
+                    }
+                }
+
+                span {
+                    font-size: 0.9rem;
+                }
+            }
+        }
+
+        // Responsive adjustments
+        @media (max-width: 768px) {
+            flex-direction: column;
+            gap: 3rem;
+
+            [class^="footer-"] {
+                min-width: 100%;
+                padding: 0;
+            }
+        }
+    }
+
+    // Copyright section (you can add this if needed)
+    .footer-copyright {
+        text-align: center;
+        padding-top: 2rem;
+        margin-top: 2rem;
+        border-top: 1px solid #444;
+        font-size: 0.8rem;
+        color: #888;
+
+        .footers-container {
+            // border: 1px solid red;
+            display: flex;
+            width: 100%;
+            font-size: 1rem;
+
+            // footer-left
+            .footer-copyright-left {
+                // border: 1px solid red;
+                width: 30%;
+                padding: 1rem;
+
+                >p {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                }
+            }
+
+            // footer-right
+            .footer-copyright-right {
+                // border: 1px solid red;
+                display: flex;
+                justify-content: flex-end;
+                width: 65%;
+                align-items: center;
+
+
+                >p {
+                    margin-right: 0.5rem;
+
+                }
+
+                >ul {
+                    display: flex;
+                    // justify-content: center;
+                    // align-items: center;
+                    list-style: none;
+
+                    >li {
+                        display: flex;
+                        justify-content: center;
+                        margin: -20px;
+
+                        >img {
+                            width: 50%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+}

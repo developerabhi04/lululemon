@@ -1,0 +1,286 @@
+// 1st 
+.first-banner {
+    // border: 1px solid red;
+    margin-top: 6rem;
+    margin-bottom: 6rem;
+    // margin: auto;
+
+
+    .container {
+        // border: 1px solid red;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        width: 80%;
+        margin: auto;
+
+        .img-one {
+            border-radius: 7px;
+            width: 50%;
+            position: relative;
+            // margin: auto;
+            overflow: hidden;
+
+            img {
+                width: 100%;
+                height: auto;
+                display: block;
+                position: relative;
+                z-index: 0;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+// 2nd
+
+.second-banner {
+    // border: 1px solid red;
+    margin-top: 4rem;
+    margin-bottom: 6rem;
+
+
+    >h1 {
+        text-align: center;
+        margin-bottom: 5rem;
+        font-size: 3.5625rem;
+        font-weight: 600;
+
+    }
+
+    .second-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        width: 1400px;
+        margin: auto;
+
+        .second-img-one {
+            width: 100%;
+
+            >img {
+                width: 100%;
+                height: auto;
+                display: block;
+                position: relative;
+                z-index: 0;
+            }
+
+            .content-one {
+                // border: 1px solid red;
+                margin-top: 1rem;
+
+                >h1 {
+                    font-size: 1.87rem;
+                    margin-top: 0.5rem;
+                }
+
+                >p {
+                    margin-top: 0.5rem;
+                    font-weight: 400;
+                    font-size: 1.125rem;
+                }
+
+                .content-button {
+
+
+                    >button {
+                        text-transform: uppercase;
+                        margin-top: 1rem;
+                        border: 1px solid rgb(16, 15, 15);
+                        padding: 1.2rem;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        background: #fff;
+                        color: #000;
+                        cursor: pointer;
+                        letter-spacing: 1px;
+                        border-radius: 3px;
+
+                        &:hover {
+                            background: #000;
+                            color: white;
+                        }
+
+
+                        &:nth-child(2) {
+                            margin-left: 2rem;
+                            background: #000;
+                            color: white;
+
+                            &:hover {
+                                background: #fff;
+                                color: #000;
+                            }
+                        }
+                    }
+
+
+                }
+            }
+
+
+        }
+    }
+}
+
+
+
+
+
+// 3rd
+.third-banner {
+    margin-top: 1rem;
+
+    .container {
+        width: 1500px;
+        margin: auto;
+
+        >img {
+            width: 100%;
+        }
+
+
+        .new-to-website {
+            margin-top: 4rem;
+            background: #f0eeeeb4;
+            padding: 2rem;
+
+            .row {
+                // width: 100%;
+                display: flex;
+                margin: auto;
+
+                >div {
+                    width: 28%;
+                    margin: auto;
+
+                    >h2 {
+                        font-size: 1.5rem;
+                    }
+
+                    &:nth-child(2) {
+                        width: 40%;
+                    }
+
+
+
+                    &:nth-child(3) {
+                        width: 18%;
+
+                        >button {
+
+                            padding: 1rem 3rem;
+                            font-size: 1.1rem;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        >img {
+            margin-top: 4rem;
+        }
+
+        .bags-content {
+            margin-top: 1rem;
+
+            >h1 {
+                font-size: 1.87rem;
+                margin-top: 0.5rem;
+            }
+
+            >p {
+                margin-top: 0.5rem;
+                font-weight: 400;
+                font-size: 1.125rem;
+            }
+
+
+            >button {
+                text-transform: uppercase;
+                margin-top: 1rem;
+                border: 1px solid rgb(16, 15, 15);
+                padding: 1.2rem;
+                font-size: 1rem;
+                font-weight: 600;
+                background: #fff;
+                color: #000;
+                cursor: pointer;
+                letter-spacing: 1px;
+                border-radius: 3px;
+
+                &:hover {
+                    background: #000;
+                    color: white;
+                }
+            }
+        }
+
+        .img3 {
+            margin-top: 5rem;
+            position: relative; // Make the container relative for absolute positioning
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            >img {
+                width: 100%;
+                height: auto;
+            }
+
+            .contents {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%); // Center the content
+                text-align: center;
+                color: rgb(0, 0, 0); // Ensure visibility
+                width: 50%; // Adjust width for better responsiveness
+                padding: 3rem;
+
+                h1 {
+                    font-size: 2.5rem;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    margin-bottom: 1rem;
+                }
+
+                p {
+                    font-size: 1.2rem;
+                    margin-bottom: 1rem;
+                }
+
+                button {
+                    padding: 1rem 2rem;
+                    font-size: 1rem;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    background: #000000;
+                    color: white;
+                    border: none;
+                    cursor: pointer;
+                    transition: background 0.3s ease;
+
+                    &:hover {
+                        background: #d1959a;
+                    }
+                }
+            }
+        }
+
+
+    }
+}
