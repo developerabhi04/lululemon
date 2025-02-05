@@ -102,12 +102,6 @@ $brown: #3c3333;
         .logo {
             // border: 1px solid red;
             width: 15%;
-
-            
-
-            >h1{
-                font-size: 1.5rem;
-            }
         }
 
         // Middle Section
@@ -124,12 +118,12 @@ $brown: #3c3333;
                 list-style: none;
                 margin: 0;
                 padding: 0;
-                gap: 2rem;
+                gap: 1rem;
 
                 .nav-item {
                     position: relative;
                     cursor: pointer;
-                    font-size: 1.3rem;
+                    font-size: 1.13rem;
                     color: $primary-color;
                     transition: color $transition-speed;
 
@@ -194,6 +188,7 @@ $brown: #3c3333;
                     padding: 0.5rem;
                     width: 260px;
                 }
+
                 >input::placeholder {
                     font-size: 1.2rem;
                     position: relative;
