@@ -39,6 +39,20 @@ const products = [
     image: img4,
     colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00"],
   },
+  {
+    id: 5,
+    name: "Denim Jacket",
+    price: "$59.99",
+    image: img4,
+    colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00"],
+  },
+  {
+    id: 6,
+    name: "Denim Jacket",
+    price: "$59.99",
+    image: img4,
+    colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00"],
+  },
 ];
 
 // Custom Arrow Components for Main Product Slider
@@ -102,9 +116,9 @@ const NewArrivalProduct = () => {
                 <div className="colors">
                   <Slider
                     dots={false}
-                    infinite={false}
+                    infinite={true}
                     speed={300}
-                    slidesToShow={3}
+                    slidesToShow={5}
                     slidesToScroll={1}
                     // arrows={true}
                     nextArrow={<CustomNextArrow />}  // Custom right arrow

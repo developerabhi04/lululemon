@@ -56,11 +56,11 @@
 
                 .colors {
                     position: absolute;
-                    bottom: 8px;
+                    bottom: 0px;
                     left: 50%;
                     transform: translateX(-50%);
-                    width: 89%; // Ensure slider fits properly
-                    background: rgba(255, 255, 255, 0.7); // Light white background
+                    width: 100%; // Ensure slider fits properly
+                    background: rgba(255, 255, 255, 0.79); // Light white background
                     padding: 8px;
                     border-radius: 10px;
                     opacity: 0;
@@ -85,16 +85,16 @@
                         z-index: 2;
 
                         &.next {
-                            right: -20px;
+                            right: -3px;
                         }
 
                         &.prev {
-                            left: -20px;
+                            left: -0px;
                         }
 
                         svg {
                             color: rgb(70, 68, 68); // Customize arrow color
-                            font-size: 18px;
+                            font-size: 17px;
                         }
 
                         &:hover svg {
@@ -125,15 +125,26 @@
                 height: 20px;
                 border-radius: 50%;
                 cursor: pointer;
+                display: inline-block;
                 transition: transform 0.2s ease;
                 border: 1px solid #ccc;
 
-                &:hover {
-                    transform: scale(1.2);
-                }
+                .color {
+                    width: 20px; // Increase if needed
+                    height: 20px; // Increase if needed
+                    border-radius: 50%; // Ensures round shape
+                    cursor: pointer;
+                    transition: transform 0.2s ease;
+                    display: inline-block;
+                    border: 2px solid transparent; // Prevent unwanted square edges
 
-                &.active {
-                    border: 2px solid #000;
+                    &:hover {
+                        transform: scale(1.2);
+                    }
+
+                    &.active {
+                        border: 2px solid black; // Highlight active color
+                    }
                 }
             }
 
@@ -142,7 +153,10 @@
 
             .details {
                 margin-top: 1rem;
-                text-align: center;
+                // text-align: center;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
 
                 h3 {
                     font-size: 1rem;
@@ -182,11 +196,11 @@
             }
 
             &.next {
-                right: -50px;
+                right: -40px;
             }
 
             &.prev {
-                left: -50px;
+                left: -40px;
             }
         }
 
