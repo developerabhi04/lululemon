@@ -1,6 +1,9 @@
 .category-section {
     text-align: center;
-    margin-top: 13rem;
+    // margin-top: 13rem;
+    padding: 4rem 0;
+    margin-bottom: 3rem;
+    background: #f8f8f8;
 
     h1 {
         font-size: 2.5rem;
@@ -25,6 +28,8 @@
         margin: auto;
         padding: 1rem;
         position: relative;
+        // margin-top: 3rem;
+        // background: #f8f8f8;
 
         >div {
             margin-top: 2rem;

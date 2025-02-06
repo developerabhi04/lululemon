@@ -87,7 +87,7 @@ $brown: #3c3333;
 .Header {
     // border: 1px solid red;
     border-bottom: 1px solid #e0e0e0;
-    padding: 1rem 0;
+    // padding: 1rem 0;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
@@ -100,8 +100,16 @@ $brown: #3c3333;
 
         // Logo
         .logo {
+            width: 20%;
+
             // border: 1px solid red;
-            width: 15%;
+            >a {
+                margin: 0 2rem;
+
+                >img {
+                    width: 70%;
+                }
+            }
         }
 
         // Middle Section
