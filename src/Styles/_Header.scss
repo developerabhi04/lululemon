@@ -131,7 +131,8 @@ $brown: #3c3333;
                 .nav-item {
                     position: relative;
                     cursor: pointer;
-                    font-size: 1.13rem;
+                    font-size: 1rem;
+                    font-weight: 600;
                     color: $primary-color;
                     transition: color $transition-speed;
 
