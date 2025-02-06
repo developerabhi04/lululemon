@@ -5,9 +5,9 @@ import { Link } from "@mui/material";
 
 // Import Images (Ensure these files exist)
 import img1 from "../../../assets/LW1DTWS_030722_1.webp";
-import img2 from "../../../assets/LW1DTWS_030722_1.webp";
-import img3 from "../../../assets/LW1DTWS_030722_1.webp";
-import img4 from "../../../assets/LW1DTWS_030722_1.webp";
+import img2 from "../../../assets/LW2ELES_069005_1.webp";
+import img3 from "../../../assets/LW3IKTS_0001_1.webp";
+import img4 from "../../../assets/LW3ILMS_069005_1.webp";
 
 // Sample Products with Color Variations
 const products = [
@@ -43,30 +43,24 @@ const products = [
     id: 5,
     name: "Denim Jacket",
     price: "$59.99",
-    image: img4,
+    image: img3,
     colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
   },
   {
     id: 6,
     name: "Denim Jacket",
     price: "$59.99",
-    image: img4,
+    image: img2,
     colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
   },
   {
     id: 7,
     name: "Denim Jacket",
     price: "$59.99",
-    image: img4,
+    image: img1,
     colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
   },
-  {
-    id: 8,
-    name: "Denim Jacket",
-    price: "$59.99",
-    image: img4,
-    colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
-  },
+  
 ];
 
 // Custom Arrow Components for Main Product Slider
