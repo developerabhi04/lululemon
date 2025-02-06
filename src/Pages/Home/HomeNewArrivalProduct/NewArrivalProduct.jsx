@@ -16,42 +16,56 @@ const products = [
     name: "Classic T-Shirt",
     price: "$24.99",
     image: img1,
-    colors: ["#000", "#FF5733", "#1E90FF", "#32CD32", "#8B4513"],
+    colors: ["#000", "#FF5733", "#1E90FF", "#32CD32", "#8B4513", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
   },
   {
     id: 2,
     name: "Elegant Dress",
     price: "$49.99",
     image: img2,
-    colors: ["#8A2BE2", "#FFD700", "#DC143C", "#00FFFF", "#4B0082"],
+    colors: ["#8A2BE2", "#FFD700", "#DC143C", "#00FFFF", "#4B0082", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
   },
   {
     id: 3,
     name: "Stylish Sneakers",
     price: "$79.99",
     image: img3,
-    colors: ["#228B22", "#FF1493", "#FFA500", "#7FFF00", "#FF4500"],
+    colors: ["#228B22", "#FF1493", "#FFA500", "#7FFF00", "#FF4500", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
   },
   {
     id: 4,
     name: "Denim Jacket",
     price: "$59.99",
     image: img4,
-    colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00"],
+    colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
   },
   {
     id: 5,
     name: "Denim Jacket",
     price: "$59.99",
     image: img4,
-    colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00"],
+    colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
   },
   {
     id: 6,
     name: "Denim Jacket",
     price: "$59.99",
     image: img4,
-    colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00"],
+    colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
+  },
+  {
+    id: 7,
+    name: "Denim Jacket",
+    price: "$59.99",
+    image: img4,
+    colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
+  },
+  {
+    id: 8,
+    name: "Denim Jacket",
+    price: "$59.99",
+    image: img4,
+    colors: ["#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
   },
 ];
 
@@ -118,7 +132,7 @@ const NewArrivalProduct = () => {
                     dots={false}
                     infinite={true}
                     speed={300}
-                    slidesToShow={5}
+                    slidesToShow={7}
                     slidesToScroll={1}
                     // arrows={true}
                     nextArrow={<CustomNextArrow />}  // Custom right arrow
