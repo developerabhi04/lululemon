@@ -15,7 +15,7 @@
         // border: 1px solid red;
         height: 3px;
         width: 10%;
-        background-color: #d16b75;
+        background-color: #c8102e;
         display: inline-block;
         margin: 18px auto 0;
     }
@@ -87,7 +87,7 @@
         transition: background 0.3s ease-in-out;
 
         &:hover {
-            background: rgba(0, 0, 0, 0.8);
+            background: #c8102e;
             color: white;
         }
     }

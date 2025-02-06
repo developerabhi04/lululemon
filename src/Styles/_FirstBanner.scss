@@ -138,7 +138,7 @@
 
 // 3rd
 .third-banner {
-    margin-top: 1rem;
+    // margin-top: 1rem;
 
     .container {
         width: 1300px;
@@ -150,7 +150,7 @@
 
 
         .new-to-website {
-            margin-top: 4rem;
+            margin-top: 2rem;
             background: #f0eeeeb4;
             padding: 2rem;
 
@@ -191,7 +191,7 @@
 
 
         >img {
-            margin-top: 4rem;
+            margin-top: 3rem;
         }
 
         .bags-content {
@@ -235,6 +235,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            
 
             >img {
                 width: 100%;
@@ -242,13 +243,14 @@
             }
 
             .contents {
+                // border: 1px solid red;
                 position: absolute;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%); // Center the content
                 text-align: center;
                 color: rgb(0, 0, 0); // Ensure visibility
-                width: 50%; // Adjust width for better responsiveness
+                width: 100%; // Adjust width for better responsiveness
                 padding: 3rem;
 
                 h1 {
@@ -275,7 +277,7 @@
                     transition: background 0.3s ease;
 
                     &:hover {
-                        background: #d1959a;
+                        background: #c8102e;
                     }
                 }
             }

@@ -1,7 +1,7 @@
 // Variables
 $primary-color: #333;
 $secondary-color: #555;
-$hover-color: #007bff;
+$hover-color: #c8102e;
 $transition-speed: 0.3s;
 $black: #000000;
 $brown: #3c3333;
@@ -139,6 +139,8 @@ $brown: #3c3333;
                         color: $hover-color;
                     }
 
+
+
                     // Dropdown Menu
                     .dropdown-menu {
                         position: absolute;
@@ -163,16 +165,22 @@ $brown: #3c3333;
                             transition: background-color $transition-speed;
 
                             &:hover {
-                                background-color: #f8f9fa;
+                                background-color: #dfb7c3;
                             }
                         }
                     }
+
+
 
                     &:hover .dropdown-menu {
                         opacity: 1;
                         visibility: visible;
                         transform: translateY(0);
                     }
+                }
+
+                .active {
+                    color: #c8102e;
                 }
             }
         }
@@ -198,9 +206,9 @@ $brown: #3c3333;
                 }
 
                 >input::placeholder {
-                    font-size: 1.2rem;
-                    position: relative;
-                    top: 3px;
+                    font-size: 1rem;
+                    // position: relative;
+                    // top: 3px;
                 }
 
                 .ddd {

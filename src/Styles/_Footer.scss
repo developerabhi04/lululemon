@@ -25,7 +25,7 @@
                 letter-spacing: 1px;
                 margin-bottom: 1.5rem;
                 padding-bottom: 0.5rem;
-                border-bottom: 2px solid #d16b75;
+                border-bottom: 2px solid #c8102e;
             }
 
             ul {
@@ -39,7 +39,7 @@
                     cursor: pointer;
 
                     &:hover {
-                        color: #ff4d4d;
+                        color: #c8102e;
                         transform: translateX(5px);
                     }
                 }
@@ -106,7 +106,7 @@
     // Copyright section (you can add this if needed)
     .footer-copyright {
         text-align: center;
-        padding-top: 2rem;
+        padding: 1rem 0 0 1rem;
         margin-top: 2rem;
         border-top: 1px solid #444;
         font-size: 0.8rem;
@@ -116,13 +116,13 @@
             // border: 1px solid red;
             display: flex;
             width: 100%;
-            font-size: 1rem;
+            // font-size: 1rem;
 
             // footer-left
             .footer-copyright-left {
                 // border: 1px solid red;
                 width: 30%;
-                padding: 1rem;
+                padding: 0 1rem;
 
                 >p {
                     display: flex;
@@ -149,16 +149,18 @@
                 >ul {
                     display: flex;
                     // justify-content: center;
-                    // align-items: center;
+                    align-items: center;
                     list-style: none;
 
                     >li {
                         display: flex;
                         justify-content: center;
-                        margin: -20px;
+                        margin: -26px;
 
                         >img {
-                            width: 50%;
+                            width: 55%;
+                            width: 40%;
+                            height: 64%;
                         }
                     }
                 }

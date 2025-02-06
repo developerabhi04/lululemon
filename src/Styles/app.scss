@@ -18,3 +18,18 @@
     box-sizing: border-box;
     font-family: Calibre, Verlag, Helvetica, sans-serif;
 }
+
+
+::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(40deg, #c8102e, #e28a87);
+    border-radius: 2ex;
+}
+
+::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+ body {
+  cursor: url("../assets/cursor.png"), auto;
+} 

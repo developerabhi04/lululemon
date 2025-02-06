@@ -97,8 +97,9 @@ const Header = () => {
                 {hoveredItem === "accessories" && <Dropdown items={dropdownItems.accessories} />}
               </li>
               <li className="nav-item">Shoes</li>
-              <li className="nav-item">{"Valentine's Day"}</li>
               <li className="nav-item">We Made Too Much</li>
+              <li className="nav-item active">{"Valentine's Day"}</li>
+
             </ul>
           </div>
 
