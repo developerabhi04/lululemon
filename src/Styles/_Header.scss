@@ -6,17 +6,15 @@ $transition-speed: 0.3s;
 $black: #000000;
 $brown: #3c3333;
 
-
+// Wrapper for the top small header (optional)
 .wapper-header {
     padding: 0.2rem;
     background-color: $black;
     color: #fff;
 
-
     .nav {
         display: flex;
         margin: 0 1rem;
-
 
         .nav-div {
             padding: 0.2rem;
@@ -30,17 +28,15 @@ $brown: #3c3333;
                 .nav-li {
                     display: flex;
                     justify-content: center;
-                    // align-items: center;
 
                     svg {
                         opacity: 0.7;
                         font-size: 1rem;
 
-                        :hover {
+                        &:hover {
                             color: $black;
                         }
                     }
-
 
                     .nav-span {
                         padding-left: 0.3rem;
@@ -49,23 +45,16 @@ $brown: #3c3333;
                     }
                 }
             }
-
-
         }
     }
 
-
-    // 
     .social-div {
-        // border: 1px solid red;
         width: 50%;
         padding: 0.2rem;
 
         .social-media {
             display: flex;
-            // width: 100%;
             justify-content: flex-end;
-
             gap: 0.4rem;
 
             .link {
@@ -77,17 +66,14 @@ $brown: #3c3333;
                     font-size: 1rem;
                     opacity: 0.7;
                 }
-
             }
         }
     }
 }
 
-// Header Styles
+// Main Header
 .Header {
-    // border: 1px solid red;
     border-bottom: 1px solid #e0e0e0;
-    // padding: 1rem 0;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
@@ -98,26 +84,23 @@ $brown: #3c3333;
         margin: 0.4rem auto;
         padding: 0 1rem;
 
-        // Logo
+        // Logo section
         .logo {
             width: 20%;
 
-            // border: 1px solid red;
-            >a {
+            a {
+                display: inline-block;
                 margin: 0 2rem;
 
-                >img {
+                img {
                     width: 70%;
                 }
             }
         }
 
-        // Middle Section
+        // Navigation (Middle Section)
         .middle {
-            // border: 1px solid red;
             width: 50%;
-            // flex-grow: 1;
-            // margin: 0 2rem;
             z-index: 1000;
 
             .nav-list {
@@ -139,8 +122,6 @@ $brown: #3c3333;
                     &:hover {
                         color: $hover-color;
                     }
-
-
 
                     // Dropdown Menu
                     .dropdown-menu {
@@ -171,8 +152,6 @@ $brown: #3c3333;
                         }
                     }
 
-
-
                     &:hover .dropdown-menu {
                         opacity: 1;
                         visibility: visible;
@@ -181,18 +160,16 @@ $brown: #3c3333;
                 }
 
                 .active {
-                    color: #c8102e;
+                    color: $hover-color;
                 }
             }
         }
 
-        // Icon Section
+        // Icon Section (e.g. account, cart, etc.)
         .icon-section {
             width: 30%;
-            // border: 1px solid red;
             display: flex;
             justify-content: center;
-            // align-content: center;
             align-items: center;
             gap: 1rem;
 
@@ -208,8 +185,6 @@ $brown: #3c3333;
 
                 >input::placeholder {
                     font-size: 1rem;
-                    // position: relative;
-                    // top: 3px;
                 }
 
                 .ddd {
@@ -218,16 +193,73 @@ $brown: #3c3333;
                     top: 2px;
                 }
 
-
-
                 &:hover {
                     color: $hover-color;
                 }
 
                 svg {
                     font-size: 1.7rem;
-
                 }
+            }
+        }
+    }
+
+    // Responsive adjustments for tablets and mobile
+    @media (max-width: 768px) {
+        .Header-container {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 0.5rem;
+
+            // Stack the logo and navigation (search) on top
+            .logo {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 0.5rem;
+
+                a {
+                    margin: 0 auto;
+
+                    img {
+                        width: 50%;
+                    }
+                }
+            }
+
+            .middle {
+                width: 100%;
+                margin-bottom: 0.5rem;
+
+                .nav-list {
+                    justify-content: center;
+                    gap: 0.5rem;
+                    flex-wrap: wrap;
+                }
+            }
+
+            // Place the icon section in a separate row at the bottom
+            .icon-section {
+                width: 100%;
+                justify-content: space-around;
+                margin-top: 0.5rem;
+            }
+        }
+    }
+
+    // Additional adjustments for extra-small screens if needed
+    @media (max-width: 480px) {
+        .Header-container {
+            .logo {
+                a {
+                    img {
+                        width: 60%;
+                    }
+                }
+            }
+
+            .icon-section {
+                flex-direction: row;
+                justify-content: space-between;
             }
         }
     }

@@ -6,7 +6,7 @@
     h1 {
         font-size: 2.5rem;
         text-transform: uppercase;
-        color: #000000;
+        color: #000;
         margin-bottom: 0.5rem;
     }
 
@@ -26,26 +26,25 @@
         }
 
         .product-card {
-            background: white;
-            padding: 10px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            // background: white;
+            // padding: 5px;
+            // border-radius: 7px;
+            // text-align: center;
+            // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            // margin-bottom: 2rem;
 
-            // 
             .image-container {
-                position: relative;
                 width: 100%;
-                height: 354px;
+                height: 380px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 overflow: hidden;
-                // border-radius: 10px;
+                border-radius: 5px;
 
                 img {
-                    max-width: 100%;
-                    max-height: 100%;
+                    width: 100%;
+                    // max-height: 100%;
                     cursor: pointer;
                     transition: transform 0.3s ease-in-out;
                 }
@@ -53,65 +52,48 @@
                 &:hover img {
                     transform: scale(1.05);
                 }
-
-                .colors {
-                    position: absolute;
-                    bottom: 0px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 100%; // Ensure slider fits properly
-                    background: rgba(255, 255, 255, 0.79); // Light white background
-                    padding: 8px;
-                    // border-radius: 10px;
-                    opacity: 0;
-                    visibility: hidden;
-                    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-
-                    .slick-prev,
-                    .slick-next {
-                        font-size: 12px; // Small arrow buttons
-                        color: black;
-                        z-index: 1;
-                    }
-
-                    .custom-arrow {
-                        position: absolute;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        background: transparent;
-                        border: none;
-                        cursor: pointer;
-                        font-size: 20px;
-                        z-index: 2;
-
-                        &.next {
-                            right: -8px;
-                        }
-
-                        &.prev {
-                            left: -4px;
-                        }
-
-                        svg {
-                            color: rgb(70, 68, 68); // Customize arrow color
-                            font-size: 17px;
-                        }
-
-                        &:hover svg {
-                            color: red; // Change color on hover
-                        }
-                    }
-                }
-
-                &:hover .colors {
-                    opacity: 1;
-                    visibility: visible;
-                }
             }
 
-            .image-container:hover .colors {
-                opacity: 1;
-                visibility: visible;
+            /* Colors slider placed below the image */
+            .colors {
+                // margin-top: 1rem;
+                width: 100%;
+                // background: rgba(255, 255, 255, 0.79);
+                padding: 8px;
+                border-radius: 10px;
+
+                .slick-slide {
+                    padding: 0.3rem;
+                }
+
+                /* Custom arrow styling for color slider */
+                .custom-arrow {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: transparent;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 20px;
+                    z-index: 2;
+
+                    &.next {
+                        right: -15px;
+                    }
+
+                    &.prev {
+                        left: -10px;
+                    }
+
+                    svg {
+                        color: rgb(201, 197, 197);
+                        font-size: 18px;
+                    }
+
+                    &:hover svg {
+                        color: red;
+                    }
+                }
             }
 
             .color-slide {
@@ -125,43 +107,31 @@
                 height: 20px;
                 border-radius: 50%;
                 cursor: pointer;
-                display: inline-block;
                 transition: transform 0.2s ease;
                 border: 1px solid #ccc;
+                display: inline-block;
 
-                .color {
-                    width: 20px; // Increase if needed
-                    height: 20px; // Increase if needed
-                    border-radius: 50%; // Ensures round shape
-                    cursor: pointer;
-                    transition: transform 0.2s ease;
-                    display: inline-block;
-                    border: 2px solid transparent; // Prevent unwanted square edges
+                &:hover {
+                    transform: scale(1.2);
+                }
 
-                    &:hover {
-                        transform: scale(1.2);
-                    }
-
-                    &.active {
-                        border: 2px solid black; // Highlight active color
-                    }
+                &.active {
+                    border: 2px solid #000;
                 }
             }
 
-
-
-
             .details {
-                margin-top: 1rem;
-                // text-align: center;
+                // margin-top: 1rem;
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
+                align-items: center;
+                padding: 0 1rem;
 
                 h3 {
                     font-size: 1rem;
 
-                    >a {
+                    a {
                         color: #222;
                         text-decoration: none;
                     }
@@ -177,7 +147,7 @@
             }
         }
 
-        // Custom slider arrows
+        // Custom slider arrows for main product slider
         .arrow {
             position: absolute;
             top: 50%;
@@ -224,6 +194,7 @@
             cursor: pointer;
             letter-spacing: 1px;
             border-radius: 5px;
+            transition: background 0.3s, color 0.3s;
 
             &:hover {
                 background: #000;
@@ -233,6 +204,7 @@
     }
 }
 
+/* Extra global styles for color (if needed) */
 .color {
     width: 20px;
     height: 20px;
