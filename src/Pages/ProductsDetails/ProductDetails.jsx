@@ -1,52 +1,56 @@
 import { useState } from "react";
-
 import Product1 from "../../assets/products/LW3IKTS_069005_1.webp";
 import Product2 from "../../assets/products/LW3IKTS_069005_2.webp";
 import Product3 from "../../assets/products/LW3IKTS_069005_3.webp";
 import Product4 from "../../assets/products/LW3IKTS_069005_4.webp";
 import Product5 from "../../assets/products/LW3IKTS_069005_5.webp";
+
+// Sample Color Images
+import Color1 from "../../assets/payment/0001.webp";
+import Color2 from "../../assets/payment/33454.webp";
+import Color3 from "../../assets/payment/35955.webp";
+import Color4 from "../../assets/payment/68872.webp";
+import Color5 from "../../assets/payment/69005.webp";
+import Color6 from "../../assets/payment/69401.webp";
+
 import { Rating } from "@mui/material";
+import { Add, Remove } from "@mui/icons-material";
 
 const ProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState("Black");
   const [selectedSize, setSelectedSize] = useState(null);
-  const [rating, setRating] = useState(0);
+  const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [reviews, setReviews] = useState([
     { username: "JohnDoe", rating: 4, comment: "Great product!" },
     { username: "JaneSmith", rating: 5, comment: "Amazing quality and design." },
   ]);
-  // const [newReview, setNewReview] = useState("");
 
   const product = {
     title: "BeCalm Scoop-Neck Pullover",
-    description: "lorem ipsum",
+    description:
+      "This is a stylish and comfortable scoop-neck pullover perfect for casual wear. It is made from high-quality materials to ensure durability and a great fit.",
     price: 129.99,
     images: [Product1, Product2, Product3, Product4, Product5],
     reviews: 4.5,
     stock: 10,
-    colors: ["Black", "White", "Blue"],
+    colors: [
+      { name: "Black", image: Color1 },
+      { name: "White", image: Color2 },
+      { name: "Blue", image: Color3 },
+      { name: "Pink", image: Color4 },
+      { name: "Red", image: Color5 },
+      { name: "Green", image: Color6 },
+    ],
     sizes: ["XS", "S", "M", "L", "XL"],
-  }
-
-
-  // const addReview = () => {
-  //   if (newReview.trim()) {
-  //     setReviews([
-  //       ...reviews,
-  //       { username: "Anonymous", rating: 5, comment: newReview },
-  //     ]);
-  //     setNewReview("");
-  //   }
-  // };
-
-  const options = {
-    // size: "large", 
-    value: 4,
-    readOnly: true,
-    precision: 0.5, // To support half-stars
-
   };
+
+  const similarProducts = [
+    { id: 1, image: Product1, title: "Similar Product 1", price: 99.99 },
+    { id: 2, image: Product2, title: "Similar Product 2", price: 119.99 },
+    { id: 3, image: Product3, title: "Similar Product 3", price: 89.99 },
+    { id: 4, image: Product4, title: "Similar Product 4", price: 109.99 },
+  ];
 
   return (
     <div className="product-details">
@@ -72,37 +76,37 @@ const ProductDetails = () => {
         {/* Product Information */}
         <div className="product-details__info">
           <h1 className="product-details__title">{product.title}</h1>
-          <p className="product-details__description">{product.description}</p>
-          <p className="product-details__price">${product.price.toFixed(2)}</p>
+
           <div className="product-details__reviews">
             <Rating
-              onChange={(e) => setRating(e.target.value)}
-              value={options.value}
-              size="smaller"
+              value={product.reviews}
+              readOnly
+              precision={0.5}
               sx={{
-                "& .MuiRating-iconFilled": {
-                  color: "#c8102e", // Filled star color
-                },
+                "& .MuiRating-iconFilled": { color: "#c8102e" },
               }}
-            /> {"  "}
-            {product.reviews} {"  "}
-            <span className="product-details__stock">
-              ({product.stock > 0 ? "In Stock" : "Out of Stock"})
-            </span>
+            />
+            {" "}
+            {product.reviews}
           </div>
+          
+          <p className="product-details__price">${product.price.toFixed(2)}</p>
+
+
+
 
           {/* Color Options */}
           <div className="product-details__colors">
             <p>Choose Color:</p>
             <div className="product-details__color-options">
               {product.colors.map((color) => (
-                <span
-                  key={color}
-                  className={`color-circle ${selectedColor === color ? "selected" : ""
-                    }`}
-                  style={{ backgroundColor: color.toLowerCase() }}
-                  onClick={() => setSelectedColor(color)}
-                ></span>
+                <img
+                  key={color.name}
+                  src={color.image}
+                  alt={color.name}
+                  className={`color-image ${selectedColor === color.name ? "selected" : ""}`}
+                  onClick={() => setSelectedColor(color.name)}
+                />
               ))}
             </div>
           </div>
@@ -114,8 +118,7 @@ const ProductDetails = () => {
               {product.sizes.map((size) => (
                 <span
                   key={size}
-                  className={`size-box ${selectedSize === size ? "selected" : ""
-                    }`}
+                  className={`size-box ${selectedSize === size ? "selected" : ""}`}
                   onClick={() => setSelectedSize(size)}
                 >
                   {size}
@@ -135,6 +138,16 @@ const ProductDetails = () => {
                 : "Select Size"
               : "Out of Stock"}
           </button>
+
+
+          {/* Collapsible Description */}
+          <div className="product-details__description">
+            <h3 onClick={() => setDescriptionOpen(!descriptionOpen)}>
+              Description
+              <span className="toggle-arrow">{descriptionOpen ? <Remove /> : <Add />}</span>
+            </h3>
+            {descriptionOpen && <p>{product.description}</p>}
+          </div>
         </div>
       </div>
 
@@ -150,14 +163,20 @@ const ProductDetails = () => {
             </div>
           ))}
         </div>
-        {/* <div className="product-details__add-review">
-          <textarea
-            placeholder="Write your review here..."
-            value={newReview}
-            onChange={(e) => setNewReview(e.target.value)}
-          />
-          <button onClick={addReview}>Submit Review</button>
-        </div> */}
+      </div>
+
+      {/* Similar Products Section */}
+      <div className="product-details__similar-products">
+        <h2>Similar Products</h2>
+        <div className="similar-products__grid">
+          {similarProducts.map((product) => (
+            <div key={product.id} className="similar-product-card">
+              <img src={product.image} alt={product.title} />
+              <h4>{product.title}</h4>
+              <p>${product.price.toFixed(2)}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
