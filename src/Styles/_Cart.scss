@@ -1,0 +1,216 @@
+@use "sass:color";
+
+
+// Variables
+$primary-color: #c8102e;
+$secondary-color: #333;
+$bg-color: #f8f8f8;
+$white: #fff;
+$transition-speed: 0.3s;
+$border-radius: 5px;
+
+.cart-page {
+    padding-top: 10rem;
+    background: $bg-color;
+    padding-bottom: 10rem;
+
+    h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        color: $secondary-color;
+    }
+
+    .cart-container {
+        display: flex;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+
+        // Cart Items Section
+        .cart-items {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+
+            .cart-item {
+                display: flex;
+                background: $white;
+                border: 1px solid #ddd;
+                padding: 1rem;
+                border-radius: $border-radius;
+                align-items: center;
+                gap: 1rem;
+
+                .item-image {
+                    width: 100px;
+                    height: 150px;
+                    flex-shrink: 0;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        border-radius: $border-radius;
+                    }
+                }
+
+                .item-details {
+                    flex: 1;
+
+                    h3 {
+                        font-size: 1.2rem;
+                        margin-bottom: 0.5rem;
+                        color: $secondary-color;
+                    }
+
+                    .price {
+                        font-size: 1rem;
+                        color: $primary-color;
+                        margin-bottom: 0.5rem;
+                    }
+
+                    .item-quantity {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+
+                        button {
+                            background: $primary-color;
+                            color: $white;
+                            border: none;
+                            padding: 0.3rem 0.6rem;
+                            border-radius: $border-radius;
+                            cursor: pointer;
+                            transition: background $transition-speed;
+
+                            &:hover {
+                                background: color.adjust($primary-color, $lightness: -5%);
+                            }
+                        }
+
+                        input {
+                            width: 50px;
+                            text-align: center;
+                            border: 1px solid #ddd;
+                            border-radius: $border-radius;
+                            padding: 0.3rem;
+                        }
+                    }
+                }
+
+                .item-remove {
+                    button {
+                        background: transparent;
+                        border: none;
+                        color: $primary-color;
+                        cursor: pointer;
+                        font-size: 0.9rem;
+                        transition: color $transition-speed;
+
+                        &:hover {
+                            color: color.adjust($primary-color, $lightness: -10%);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Order Summary Section
+        .cart-summary {
+            flex: 1;
+            background: $white;
+            padding: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: $border-radius;
+            height: fit-content;
+
+            h2 {
+                font-size: 1.8rem;
+                margin-bottom: 1rem;
+                color: $secondary-color;
+                text-align: center;
+            }
+
+            .summary-details {
+                p {
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 1rem;
+                    margin: 0.5rem 0;
+                    color: $secondary-color;
+
+                    span:first-child {
+                        font-weight: 500;
+                    }
+
+                    span:last-child {
+                        font-weight: bold;
+                    }
+                }
+            }
+
+            .checkout-btn {
+                margin-top: 1.5rem;
+                width: 100%;
+                padding: 0.75rem;
+                background: $primary-color;
+                color: $white;
+                border: none;
+                border-radius: $border-radius;
+                font-size: 1rem;
+                font-weight: bold;
+                cursor: pointer;
+                transition: background $transition-speed;
+
+                &:hover {
+                    background: color.adjust($primary-color, $lightness: -5%);
+                }
+            }
+        }
+    }
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+    .cart-page {
+        .cart-container {
+            flex-direction: column;
+            gap: 1rem;
+
+            .cart-summary {
+                margin-top: 1rem;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .cart-page {
+        h1 {
+            font-size: 2rem;
+        }
+
+        .cart-container {
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .item-image {
+                width: 100%;
+                height: auto;
+
+                img {
+                    width: 100%;
+                    height: auto;
+                }
+            }
+
+            .item-details {
+                width: 100%;
+            }
+        }
+    }
+}

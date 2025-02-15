@@ -1,29 +1,17 @@
 import { useState, useEffect } from "react";
-import { Slider } from "6pp";
 import { Button } from "@mui/material";
-import { ArrowForward } from "@mui/icons-material";
 import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
 import banner1 from "../../../assets/banner/6.png";
-import banner2 from "../../../assets/banner/7.png";
 
 const banners = [
     {
-        src: banner2,
+        src: banner1,
         alt: "Banner 1",
         title: "Favourite Brands",
         description: "Discover the latest trends and redefine your fashion game with our exclusive women’s collection.",
         buttonText: "Get Started",
         buttonLink: "/GET COLLECTION",
         icon: null,
-    },
-    {
-        src: banner1,
-        alt: "Banner 2",
-        title: "Exclusive Deals",
-        description: "Up to 50% OFF on top brands! Don't miss out on the hottest deals in town.",
-        buttonText: "Join Now",
-        buttonLink: "/signup",
-        icon: <ArrowForward />,
     }
 ];
 
@@ -43,15 +31,9 @@ const Banner = () => {
         <section className="banner-section">
             <div className="banner-container">
                 {/* Banner Slider */}
-                <Slider
-                    autoplay
-                    autoplayDuration={autoplayDuration}
-                    showNav={false}
-                    showDots={true}
-                    images={banners.map((banner) => banner.src)}
-                    alt={banners.map((banner) => banner.alt)}
-                    onSlideChange={(index) => setCurrentIndex(index)}
-                />
+                <div className="banner-image">
+                    <img src={banner1} alt="banner"/>
+                </div>
 
                 {/* Dynamic Content with Framer Motion */}
                 <div className="banner-content">

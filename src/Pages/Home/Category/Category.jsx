@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -32,7 +32,9 @@ const PrevArrow = ({ onClick }) => (
     </div>
 );
 
-const Category = () => {
+const Category = ({ showHeading, showBar }) => {
+    const navigateUrl = useNavigate();
+
     const settings = {
         dots: false,
         infinite: true,
@@ -51,15 +53,22 @@ const Category = () => {
         ],
     };
 
+    const navigateLink = () => {
+        window.scrollTo(0, 0)
+        navigateUrl("/products");
+    };
+
     return (
         <section className="category-section">
-            <h1>Shop popular categories.</h1>
-            <div className="bar"></div>
+            {showHeading && <h1>Shop popular categories.</h1>}
+
+            {showBar && <div className="bar"></div>}
+
             <div className="category-container">
                 <div>
                     <Slider {...settings}>
                         {categories.map((category) => (
-                            <div key={category.id} className="category-card">
+                            <div key={category.id} className="category-card" onClick={navigateLink}>
                                 <Link to="/">
                                     <img src={category.image} alt={category.name} className="category-img" />
                                 </Link>

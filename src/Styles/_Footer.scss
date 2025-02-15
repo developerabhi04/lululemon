@@ -1,9 +1,10 @@
 .footer-section {
-    background-color: #2d2d2d;
-    color: #ffffff;
+    background-color: #f0f0f0;
+    color: #53565a;
     padding: 1rem;
     margin-top: 2rem;
     font-family: 'Arial', sans-serif;
+
 
     .footer-container {
         max-width: 1200px;
@@ -20,12 +21,14 @@
             padding: 1rem;
 
             h1 {
-                font-size: 1.2rem;
+                font-size: 1rem;
                 text-transform: uppercase;
                 letter-spacing: 1px;
+                font-weight: 500;
                 margin-bottom: 1.5rem;
                 padding-bottom: 0.5rem;
-                border-bottom: 2px solid #c8102e;
+                color: #191919;
+
             }
 
             ul {
@@ -37,10 +40,12 @@
                     margin-bottom: 1rem;
                     transition: all 0.3s ease;
                     cursor: pointer;
+                    font-weight: 400;
+                    font-size: 0.9rem;
 
                     &:hover {
                         color: #c8102e;
-                        transform: translateX(5px);
+                        transform: translateY(5px);
                     }
                 }
             }
@@ -51,7 +56,7 @@
             ul li {
                 display: flex;
                 align-items: center;
-                gap: 1rem;
+                gap: 0.3rem;
                 margin-bottom: 1.5rem;
 
                 .MuiSvgIcon-root {
@@ -61,6 +66,7 @@
                 }
 
                 span {
+
                     font-size: 0.9rem;
                     line-height: 1.5;
                 }
@@ -105,12 +111,13 @@
 
     // Copyright section (you can add this if needed)
     .footer-copyright {
+        width: 1200px;
+        margin: auto;
         text-align: center;
-        padding: 1rem 0 0 1rem;
+        padding: 1rem;
         margin-top: 2rem;
-        border-top: 1px solid #444;
         font-size: 0.8rem;
-        color: #888;
+        color: #989292;
 
         .footers-container {
             // border: 1px solid red;
@@ -118,26 +125,14 @@
             width: 100%;
             // font-size: 1rem;
 
-            // footer-left
-            .footer-copyright-left {
-                // border: 1px solid red;
-                width: 30%;
-                padding: 0 1rem;
 
-                >p {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-
-                }
-            }
 
             // footer-right
             .footer-copyright-right {
                 // border: 1px solid red;
                 display: flex;
                 justify-content: flex-end;
-                width: 65%;
+                width: 100%;
                 align-items: center;
 
 
@@ -155,12 +150,11 @@
                     >li {
                         display: flex;
                         justify-content: center;
-                        margin: -26px;
+                        // margin: -26px;
 
                         >img {
-                            width: 55%;
-                            width: 40%;
-                            height: 64%;
+                            width: 100%;
+
                         }
                     }
                 }
@@ -168,5 +162,24 @@
         }
     }
 
+    .footer-copyright-left {
+        background-color: #989292;
+    }
 
+
+}
+
+
+
+footer {
+    background: #d8d8d8;
+    text-align: center;
+    padding: 1rem;
+
+    .footer-copyright {
+
+        >p {
+            color: #868383;
+        }
+    }
 }

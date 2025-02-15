@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Slider from "react-slick";
 import { ArrowBackIos, ArrowForwardIos, ArrowLeft, ArrowRight } from "@mui/icons-material";
-import { Link } from "@mui/material";
+
 
 // Import Product Images
 import img1 from "../../../assets/LW1DTWS_030722_1.webp";
@@ -16,6 +16,7 @@ import colorimg3 from "../../../assets/payment/35955.webp";
 import colorimg4 from "../../../assets/payment/68872.webp";
 import colorimg5 from "../../../assets/payment/69005.webp";
 import colorimg6 from "../../../assets/payment/69401.webp";
+import { useNavigate } from "react-router-dom";
 
 
 // Sample Products with Color Variations & Color Images
@@ -35,7 +36,7 @@ const products = [
       colorimg6, colorimg1, colorimg2, colorimg3, colorimg4
     ]
   },
-  
+
   {
     id: 2,
     name: "Elegant Dress",
@@ -111,6 +112,7 @@ const NewArrivalProduct = () => {
   // Use an object to store the selected color index per product.
   // Default to index 0 if not set.
   const [activeColor, setActiveColor] = useState({});
+  const navigateUrl = useNavigate()
 
   // Settings for Main Product Slider
   const settings = {
@@ -138,6 +140,12 @@ const NewArrivalProduct = () => {
     prevArrow: <CustomPrevArrow />,
   };
 
+
+  const navigateLink = () => {
+    window.scrollTo(0, 0); // Scrolls to the top of the page
+    navigateUrl("/product-details");
+  }
+
   return (
     <section className="arrival-section">
       <h1>What’s new this week.</h1>
@@ -151,12 +159,13 @@ const NewArrivalProduct = () => {
             return (
               <div key={product.id} className="product-card">
                 {/* Product Image */}
-                <div className="image-container">
+                <div className="image-container" onClick={navigateLink}>
                   <img src={product.image} alt={product.name} />
                 </div>
 
                 {/* Color Slider – placed below the image */}
                 <div className="colors">
+
                   <Slider {...colorSettings}>
                     {product.colorImages.map((colorImg, index) => (
                       <div key={index} className="color-slide">
@@ -171,14 +180,13 @@ const NewArrivalProduct = () => {
                       </div>
                     ))}
                   </Slider>
+
                 </div>
 
                 {/* Product Details */}
                 <div className="details">
                   <h3>
-                    <Link to="/product-detail" className="link">
-                      {product.name}
-                    </Link>
+                    {product.name}
                   </h3>
                   <span className="span">
                     <p className="price">{product.price}</p>

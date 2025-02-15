@@ -1,68 +1,137 @@
-import { Call, Facebook, Home, Instagram, Mail, X, YouTube } from '@mui/icons-material';
-import img1 from "../../assets/payment/img-1.png"
-import img2 from "../../assets/payment/img-2.png"
-import img3 from "../../assets/payment/img-3.png"
-import img4 from "../../assets/payment/img-4.png"
-import img5 from "../../assets/payment/img-5.png"
-import img6 from "../../assets/payment/img-6.png"
+import { Call, Facebook, Instagram, Mail, X, YouTube } from '@mui/icons-material';
+import img1 from "../../assets/Fem-Cartel-Wording-1400x352.png"
+
 
 const Footer = () => {
   return (
     <>
-      <footer className="footer-section">
-
+      <div className="footer-section">
         <div className="footer-container">
+
+          {/* get-in-touch */}
+          <div className="footer-get-in-touch">
+
+            <ul>
+              <h1>Contact Us</h1>
+              <li>
+                {/*1 */}
+                <span>We’d love to hear from you! For inquiries,
+                  collaborations, or support,
+                  feel free to reach out using the details below.
+                </span>
+              </li>
+
+              {/* 2 */}
+              <h1>General Inquiries:</h1>
+              <li>
+                <Mail />Email:
+                <span>info@example.com</span>
+              </li>
+
+              <li>
+                <Call />Phone:
+                <span>(+139) 353-1107,</span>
+              </li>
+
+              {/* 3 */}
+              <h1>Customer Support:</h1>
+              <li>
+                <Mail />Email:
+                <span>support@femcartel.com</span>
+              </li>
+
+              <li>
+                <Call />Phone
+                <span>(+139) 353-1107</span>
+              </li>
+
+              <li>
+                <span>Support hours: Monday - Friday | 9:00 AM - 6:00 PM (EST)</span>
+              </li>
+
+
+              {/* 4 */}
+              <h1>Press & Media:</h1>
+              <li>
+                <Mail /> Email:
+                <span>media@femcartel.com</span>
+              </li>
+
+              <li>
+                <span>For interviews, press releases, and media-related inquiries.</span>
+              </li>
+
+              {/* 5 */}
+              <h1>Collaborations & Partnerships:</h1>
+              <li>
+                <Mail /> Email:
+                <span>partnership@femcartel.com</span>
+              </li>
+
+              <li>
+                <span>Interested in collaborating? {"Let’s"} create something amazing together.</span>
+              </li>
+            </ul>
+          </div>
 
           {/* categories */}
           <div className="footer-categories">
-            <h1>CATEGORIES</h1>
+            <h1>Help</h1>
             <ul>
-              <li>Shirt</li>
-              <li>Shoes</li>
-              <li>Bag</li>
-              <li>Jeans</li>
-              <li>Hoodies</li>
+              <li>FAQ</li>
+              <li>Accessibility Statement</li>
+              <li>Services</li>
+              <li>Ordering</li>
+              <li>Shipping Policy</li>
+              <li>Sizing</li>
+              <li>Redeem Gift Cards</li>
             </ul>
           </div>
 
           {/* our-policy */}
           <div className="footer-policy">
-            <h1>OUR POLICY</h1>
+            <h1>My Account</h1>
             <ul>
-              <li>Contact</li>
-              <li>About</li>
-              <li>Shop</li>
-              <li>Terms & Condition</li>
-              <li>Privacy & Policy</li>
+              <li>Sign In</li>
+              <li>Register</li>
+              <li>Cart</li>
             </ul>
           </div>
 
-          {/* get-in-touch */}
-          <div className="footer-get-in-touch">
-            <h1>GET IN TOUCH</h1>
-            <ul>
-              <li>
-                <Home />
-                <span>Davis Patrick
-                  P.O. Box 147 2546 Sociosqu Rd.
-                  Bethlehem Utah 02913</span>
-              </li>
 
-              <li>
-                <Mail />
-                <span>info@example.com</span>
-              </li>
-
-              <li>
-                <Call />
-                <span>(+139) 353-1107,</span>
-              </li>
-            </ul>
-          </div>
 
           {/* follow-us */}
           <div className="footer-follow-us">
-            <h1>FOLLOW US</h1>
+            <h1>Our Products</h1>
+            <ul>
+              <li>
+                <span>About Us</span>
+              </li>
+              <li>
+                <span>Our Business</span>
+              </li>
+              <li>
+                <span>Media</span>
+              </li>
+              <li>
+                <span>Investor</span>
+              </li>
+              <li>
+                <span>Strategic Sale</span>
+              </li>
+              <li>
+                <span>Affiliates and Creators</span>
+              </li>
+              <li>
+                <span>Contact Us</span>
+              </li>
+              <li>
+                <span>Customer Service</span>
+              </li>
+
+            </ul>
+
+            <h1>Follow Us</h1>
             <ul>
               <li>
                 <Facebook />
@@ -86,38 +155,23 @@ const Footer = () => {
 
         <div className='footer-copyright'>
           <div className='footers-container'>
-            {/* left */}
-            <div className='footer-copyright-left'>
-              <p>Copyright © 2025. All Rights Reserved.</p>
-            </div>
-
             {/* right */}
             <div className='footer-copyright-right'>
-              <p>Payment:</p>
               <ul>
                 <li>
                   <img src={img1} />
                 </li>
-                <li>
-                  <img src={img2} />
-                </li>
-                <li>
-                  <img src={img3} />
-                </li>
-                <li>
-                  <img src={img4} />
-                </li>
-                <li>
-                  <img src={img5} />
-                </li>
-                <li>
-                  <img src={img6} />
-                </li>
+
               </ul>
             </div>
           </div>
         </div>
+      </div>
 
+      <footer>
+        <div className='footer-copyright'>
+          <p>Copyright © 2025. All Rights Reserved.</p>
+        </div>
       </footer>
     </>
   )

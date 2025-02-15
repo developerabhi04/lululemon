@@ -1,0 +1,170 @@
+$profile-bg: #f8f8f8;
+$profile-card-bg: #fff;
+$primary-color: #333;
+$secondary-color: #555;
+$accent-color: #c8102e;
+$border-radius: 8px;
+$box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+.profile-page {
+    background-color: $profile-bg;
+    padding: 2rem 0;
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+
+        .page-heading {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            color: $primary-color;
+            margin-bottom: 2rem;
+        }
+
+        .profile-section {
+            display: flex;
+            gap: 2rem;
+
+            .profile-left {
+                flex: 2;
+                background-color: $profile-card-bg;
+                padding: 2rem;
+                border-radius: $border-radius;
+                box-shadow: $box-shadow;
+
+                h2 {
+                    font-size: 1.8rem;
+                    font-weight: bold;
+                    color: $primary-color;
+                    margin-bottom: 1.5rem;
+                }
+
+                .profile-photo {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    margin-bottom: 2rem;
+
+                    img {
+                        width: 150px;
+                        height: 150px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                        margin-bottom: 1rem;
+                        border: 3px solid $accent-color;
+                    }
+
+                    .update-photo {
+                        background-color: $accent-color;
+                        color: #fff;
+                        padding: 0.5rem 1rem;
+                        border: none;
+                        border-radius: $border-radius;
+                        cursor: pointer;
+                        transition: background-color 0.3s;
+
+                        &:hover {
+                            background-color: darken($accent-color, 10%);
+                        }
+                    }
+                }
+
+                .form-group {
+                    margin-bottom: 1.5rem;
+
+                    label {
+                        display: block;
+                        font-size: 0.9rem;
+                        color: $secondary-color;
+                        margin-bottom: 0.5rem;
+                    }
+
+                    input,
+                    textarea {
+                        width: 100%;
+                        padding: 0.8rem;
+                        border: 1px solid #ddd;
+                        border-radius: $border-radius;
+                        font-size: 1rem;
+
+                        &:focus {
+                            border-color: $accent-color;
+                            outline: none;
+                        }
+                    }
+                }
+
+                .save-changes {
+                    background-color: $accent-color;
+                    color: #fff;
+                    padding: 0.8rem 1.5rem;
+                    border: none;
+                    border-radius: $border-radius;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+
+                    &:hover {
+                        background-color: darken($accent-color, 10%);
+                    }
+                }
+            }
+
+            .profile-right {
+                flex: 1;
+                background-color: $profile-card-bg;
+                padding: 2rem;
+                border-radius: $border-radius;
+                box-shadow: $box-shadow;
+
+                h2 {
+                    font-size: 1.8rem;
+                    font-weight: bold;
+                    color: $primary-color;
+                    margin-bottom: 1.5rem;
+                }
+
+                ul {
+                    list-style: none;
+                    padding: 0;
+
+                    li {
+                        font-size: 1rem;
+                        color: $secondary-color;
+                        margin-bottom: 1rem;
+                        padding: 0.5rem;
+                        display: flex;
+                        gap: 1rem;
+                        border-radius: $border-radius;
+                        cursor: pointer;
+                        transition: background-color 0.3s, color 0.3s;
+
+                        &:hover {
+                            background-color: $accent-color;
+                            color: #fff;
+                        }
+                    }
+                }
+
+                .admin-section {
+                    margin-top: 2rem;
+
+                    h3 {
+                        font-size: 1.5rem;
+                        font-weight: bold;
+                        color: $primary-color;
+                        margin-bottom: 1rem;
+                    }
+
+                    ul li {
+                        // background-color: lighten($profile-bg, 5%);
+                        background-color: rgb(219, 32, 64);
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+}
