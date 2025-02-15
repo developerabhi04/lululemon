@@ -7,7 +7,7 @@ import { ArrowBackIos, ArrowForwardIos, ArrowLeft, ArrowRight } from "@mui/icons
 import img1 from "../../../assets/products/LW3HM8S_033454_1.webp";
 import img2 from "../../../assets/products/LW3HM8S_033454_2.webp";
 import img3 from "../../../assets/products/LW3HRUS_064820_1.webp";
-import img4 from "../../../assets/productS/LW3HRUS_064820_2.webp";
+import img4 from "../../../assets/products/LW3HRUS_064820_2.webp";
 import img5 from "../../../assets/products/LW3HRUS_027597_1.webp";
 import img6 from "../../../assets/products/LW3HRUS_027597_2.webp";
 import img7 from "../../../assets/products/LW3ICYS_069781_1.webp";
