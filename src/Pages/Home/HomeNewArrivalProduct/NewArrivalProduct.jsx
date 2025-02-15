@@ -4,10 +4,14 @@ import { ArrowBackIos, ArrowForwardIos, ArrowLeft, ArrowRight } from "@mui/icons
 
 
 // Import Product Images
-import img1 from "../../../assets/LW1DTWS_030722_1.webp";
-import img2 from "../../../assets/LW2ELES_069005_1.webp";
-import img3 from "../../../assets/LW3IKTS_0001_1.webp";
-import img4 from "../../../assets/LW3ILMS_069005_1.webp";
+import img1 from "../../../assets/products/LW3HM8S_033454_1.webp";
+import img2 from "../../../assets/products/LW3HM8S_033454_2.webp";
+import img3 from "../../../assets/products/LW3HRUS_064820_1.webp";
+import img4 from "../../../assets/productS/LW3HRUS_064820_2.webp";
+import img5 from "../../../assets/products/LW3HRUS_027597_1.webp";
+import img6 from "../../../assets/products/LW3HRUS_027597_2.webp";
+import img7 from "../../../assets/products/LW3ICYS_069781_1.webp";
+import img8 from "../../../assets/products/LW3ICYS_069781_2.webp";
 
 // Import Color Images (example swatches)
 import colorimg1 from "../../../assets/payment/0001.webp";
@@ -26,10 +30,7 @@ const products = [
     name: "Classic T-Shirt",
     price: "$24.99",
     image: img1,
-    colors: [
-      "#000", "#FF5733", "#1E90FF", "#32CD32", "#8B4513",
-      "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"
-    ],
+    hoverImage: img2,
     // Example: reuse the same color swatches or assign different ones
     colorImages: [
       colorimg1, colorimg2, colorimg3, colorimg4, colorimg5,
@@ -41,11 +42,8 @@ const products = [
     id: 2,
     name: "Elegant Dress",
     price: "$49.99",
-    image: img2,
-    colors: [
-      "#8A2BE2", "#FFD700", "#DC143C", "#00FFFF", "#4B0082",
-      "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"
-    ],
+    image: img3,
+    hoverImage: img4,
     colorImages: [
       colorimg2, colorimg3, colorimg4, colorimg5, colorimg6,
       colorimg2, colorimg3, colorimg4, colorimg5, colorimg6
@@ -56,11 +54,8 @@ const products = [
     id: 3,
     name: "Stylish Sneakers",
     price: "$79.99",
-    image: img3,
-    colors: [
-      "#228B22", "#FF1493", "#FFA500", "#7FFF00", "#FF4500",
-      "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"
-    ],
+    image: img5,
+    hoverImage: img6,
     colorImages: [
       colorimg3, colorimg4, colorimg5, colorimg6, colorimg1,
       colorimg3, colorimg4, colorimg5, colorimg6, colorimg1
@@ -70,11 +65,8 @@ const products = [
     id: 4,
     name: "Denim Jacket",
     price: "$59.99",
-    image: img4,
-    colors: [
-      "#808080", "#4682B4", "#A52A2A", "#FF6347", "#FFFF00",
-      "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"
-    ],
+    image: img7,
+    hoverImage: img8,
     colorImages: [
       colorimg4, colorimg5, colorimg6, colorimg1, colorimg2,
       colorimg4, colorimg5, colorimg6, colorimg1, colorimg2
@@ -112,6 +104,8 @@ const NewArrivalProduct = () => {
   // Use an object to store the selected color index per product.
   // Default to index 0 if not set.
   const [activeColor, setActiveColor] = useState({});
+  const [hoveredImage, setHoveredImage] = useState({})
+
   const navigateUrl = useNavigate()
 
   // Settings for Main Product Slider
@@ -156,11 +150,15 @@ const NewArrivalProduct = () => {
           {products.map((product) => {
             // Get the selected color index; default to 0.
             const selectedColorIndex = activeColor[product.id] ?? 0;
+            
             return (
               <div key={product.id} className="product-card">
                 {/* Product Image */}
-                <div className="image-container" onClick={navigateLink}>
-                  <img src={product.image} alt={product.name} />
+                <div className="image-container" onClick={navigateLink}
+                  onMouseEnter={() => setHoveredImage((prev) => ({ ...prev, [product.id]: product.hoverImage, }))}
+                  onMouseLeave={() => setHoveredImage((prev) => ({ ...prev, [product.id]: null, }))}
+                >
+                  <img src={hoveredImage[product.id] || product.image} alt={product.name} />
                 </div>
 
                 {/* Color Slider – placed below the image */}
