@@ -132,11 +132,11 @@ const Products = () => {
 
 
     const [filters, setFilters] = useState({
-        category: false,
-        sizeAlphabet: false,
-        sizeNumber: false,
-        color: false,
-        price: false,
+        category: true,
+        sizeAlphabet: true,
+        sizeNumber: true,
+        color: true,
+        price: true,
     });
 
     const toggleFilter = (filter) => {

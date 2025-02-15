@@ -1,9 +1,12 @@
 import { useState } from "react";
 import Avatar from "../../assets/profile/photo-1494790108377-be9c29b29330.jpg"
 import { AdminPanelSettings, Dashboard, Home, LockOpen, LockReset, PersonPin } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 
 const Profile = () => {
+  const navigate = useNavigate();
+
   const [isAdmin, setIsAdmin] = useState(true); // Simulate admin user
   const [activeSection, setActiveSection] = useState("profile"); // Default section
   const [user, setUser] = useState({
@@ -23,6 +26,11 @@ const Profile = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     alert("Changes saved successfully!");
+  };
+
+
+  const navigateLink = () => {
+    navigate("/admin/dashboard");
   };
 
   const renderSection = () => {
@@ -183,7 +191,7 @@ const Profile = () => {
               <div className="admin-section">
                 <h3><AdminPanelSettings /> Admin Dashboard</h3>
                 <ul>
-                  <li><Dashboard /> Manage Admin</li>
+                  <li onClick={navigateLink}><Dashboard /> Manage Admin</li>
                 </ul>
               </div>
             )}
