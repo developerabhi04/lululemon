@@ -32,7 +32,7 @@ const PrevArrow = ({ onClick }) => (
     </div>
 );
 
-const Category = ({ showHeading, showBar }) => {
+const Category = ({ showHeading=true, showBar=true }) => {
     const navigateUrl = useNavigate();
 
     const settings = {
