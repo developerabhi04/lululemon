@@ -58,6 +58,7 @@ a {
     width: 8px;
 }
 
+<<<<<<< HEAD
 body {
     //   cursor: url("../assets/cursor.png"), auto;
     background-color: #fafafa;
@@ -340,3 +341,9 @@ body {
         transform: rotateZ(360deg);
     }
 }
+=======
+ body {
+  cursor: url("../assets/cursor.png"), auto;
+  overflow-x: hidden;
+} 
+>>>>>>> 9d3025cf1a692332ed31f82d9a12d918a16d02d4
