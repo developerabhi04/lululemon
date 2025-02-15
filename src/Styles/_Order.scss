@@ -1,3 +1,6 @@
+@use "sass:color";
+
+
 $order-bg: #f8f8f8;
 $order-card-bg: #fff;
 $order-header-color: #333;
@@ -96,7 +99,7 @@ $order-transition: 0.3s;
                             transition: background-color $order-transition;
 
                             &:hover {
-                                background-color: darken($order-accent-color, 10%);
+                                background-color: #c8102e;
                             }
                         }
                     }

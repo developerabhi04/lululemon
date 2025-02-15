@@ -75,7 +75,7 @@ $font-family: "Arial, sans-serif";
             font-size: 1rem;
             color: #888;
             display: flex;
-            
+
 
             .product-details__stock {
                 font-size: 0.9rem;
@@ -209,7 +209,7 @@ $font-family: "Arial, sans-serif";
                 cursor: pointer;
 
                 &:hover {
-                    background-color: color.scale($product-primary-color, $lightness: -10%);
+                    background-color: #c8102e;
                 }
             }
         }

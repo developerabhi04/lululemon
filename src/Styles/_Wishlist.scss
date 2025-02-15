@@ -43,7 +43,7 @@ $box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 transition: background-color 0.3s;
 
                 &:hover {
-                    background-color: darken($accent-color, 10%);
+                    background-color: #c8102e;
                 }
             }
         }
@@ -123,7 +123,7 @@ $box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                             color: #fff;
 
                             &:hover {
-                                background-color: darken($accent-color, 10%);
+                                background-color: #c8102e;
                             }
                         }
 
@@ -132,7 +132,7 @@ $box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                             color: $primary-color;
 
                             &:hover {
-                                background-color: darken(#ddd, 10%);
+                                background-color: #ddd;
                             }
                         }
                     }

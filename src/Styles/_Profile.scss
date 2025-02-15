@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $profile-bg: #f8f8f8;
 $profile-card-bg: #fff;
 $primary-color: #333;
@@ -66,7 +68,7 @@ $box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                         transition: background-color 0.3s;
 
                         &:hover {
-                            background-color: darken($accent-color, 10%);
+                            background-color: #c8102e;
                         }
                     }
                 }
@@ -107,7 +109,8 @@ $box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                     transition: background-color 0.3s;
 
                     &:hover {
-                        background-color: darken($accent-color, 10%);
+
+                        background-color: color.scale($accent-color, $lightness: 10%);
                     }
                 }
             }

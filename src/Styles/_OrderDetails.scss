@@ -211,14 +211,14 @@ $order-transition: 0.3s;
                 transition: background-color $order-transition;
 
                 &:hover {
-                    background-color: darken($order-accent-color, 10%);
+                    background-color: #c8102e;
                 }
 
                 &.cancel-order {
                     background-color: red;
 
                     &:hover {
-                        background-color: darken(red, 10%);
+                        background-color: red;
                     }
                 }
 
