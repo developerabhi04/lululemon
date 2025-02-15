@@ -5,7 +5,7 @@ import { useState } from "react";
 // import colour4 from "../../assets/LW1DTWS_030722_1.webp";
 import Slider from "react-slick";
 import Category from "../Home/Category/Category";
-import { Add, ArrowBackIos, ArrowForwardIos,  Remove } from "@mui/icons-material";
+import { Add, ArrowBackIos, ArrowForwardIos, FavoriteBorder, Remove } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 
@@ -111,7 +111,7 @@ const Products = () => {
     const navigateUrl = useNavigate()
 
     // Settings for Main Product Slider
-   
+
 
     // Settings for the Color Slider
     const colorSettings = {
@@ -311,6 +311,13 @@ const Products = () => {
                                 const selectedColorIndex = activeColor[product.id] ?? 0;
                                 return (
                                     <div className="product-card" key={product.id}>
+
+                                        {/* Wishlist Button */}
+                                        <div className="wishlist">
+                                            <FavoriteBorder />
+                                        </div>
+
+
                                         {/* Product Image */}
                                         <div className="product-image" onClick={navigateLink}>
                                             <img src={product.image} alt={product.name} />
