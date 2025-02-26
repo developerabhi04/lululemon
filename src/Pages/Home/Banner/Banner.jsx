@@ -1,88 +1,84 @@
-import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
-import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+import { motion } from "framer-motion";
 import banner1 from "../../../assets/banner/6.png";
-
-const banners = [
-    {
-        src: banner1,
-        alt: "Banner 1",
-        title: "Favourite Brands",
-        description: "Discover the latest trends and redefine your fashion game with our exclusive women’s collection.",
-        buttonText: "Get Started",
-        buttonLink: "/GET COLLECTION",
-        icon: null,
-    }
-];
+import { FaShippingFast, FaTags, FaShieldAlt } from "react-icons/fa";
 
 const Banner = () => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const autoplayDuration = 4500; // Sync with slider
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % banners.length);
-        }, autoplayDuration);
-
-        return () => clearInterval(interval);
-    }, []);
-
     return (
         <section className="banner-section">
             <div className="banner-container">
-                {/* Banner Slider */}
-                <div className="banner-image">
-                    <img src={banner1} alt="banner"/>
-                </div>
-
-                {/* Dynamic Content with Framer Motion */}
-                <div className="banner-content">
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={currentIndex} // Ensure smooth transitions when changing content
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.5, ease: "easeInOut" }}
+                {/* 🚀 Left Content Section */}
+                <motion.div
+                    className="banner-content"
+                    initial={{ opacity: 0, x: -100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                >
+                    <motion.h1
+                        initial={{ opacity: 0, y: -50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, delay: 0.3 }}
+                    >
+                        Discover <span>Trendy Fashion</span> & More
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, delay: 0.6 }}
+                    >
+                        Upgrade your wardrobe with exclusive fashion collections, best prices, and fast delivery—curated just for you.
+                    </motion.p>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5, delay: 0.9 }}
+                    >
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            href="/collection"
+                            className="banner-btn"
+                            component={motion.button}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ type: "spring", stiffness: 300 }}
                         >
-                            <motion.h1
-                                initial={{ opacity: 0, x: -50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.6, ease: "easeOut" }}
-                            >
-                                {banners[currentIndex].title}
-                            </motion.h1>
+                            Shop Now
+                        </Button>
+                    </motion.div>
 
-                            <motion.p
-                                initial={{ opacity: 0, x: 50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-                            >
-                                {banners[currentIndex].description}
-                            </motion.p>
+                    {/* 🔥 Feature Section */}
+                    <motion.div
+                        className="feature-container"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1, duration: 1 }}
+                    >
+                        <div className="feature-item">
+                            <FaShippingFast className="feature-icon" />
+                            <p>Free & Fast Delivery</p>
+                        </div>
+                        <div className="feature-item">
+                            <FaTags className="feature-icon" />
+                            <p>Best Prices Guaranteed</p>
+                        </div>
+                        <div className="feature-item">
+                            <FaShieldAlt className="feature-icon" />
+                            <p>Secure Payments</p>
+                        </div>
+                    </motion.div>
+                </motion.div>
 
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.4, ease: "easeOut", delay: 0.4 }}
-                            >
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    href={banners[currentIndex].buttonLink}
-                                    className="banner-btn"
-                                    endIcon={banners[currentIndex].icon}
-                                    component={motion.button}
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                                >
-                                    {banners[currentIndex].buttonText}
-                                </Button>
-                            </motion.div>
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
+                {/* 🖼️ Right Image Section */}
+                <motion.div
+                    className="banner-image"
+                    initial={{ opacity: 0, x: 100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    whileHover={{ scale: 1.05 }}
+                >
+                    <img src={banner1} alt="Fashion Banner" />
+                </motion.div>
             </div>
         </section>
     );

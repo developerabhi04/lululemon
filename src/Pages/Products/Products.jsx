@@ -68,14 +68,69 @@ const products = [
         id: 4,
         name: "Denim Jacket",
         price: "$59.99",
-        image: img7,
-        hoverImage: img8,
+        image: img1,
+        hoverImage: img2,
         colorImages: [
             colorimg4, colorimg5, colorimg6, colorimg1, colorimg2,
             colorimg4, colorimg5, colorimg6, colorimg1, colorimg2
         ]
     },
-    // ... add more products if needed
+
+    {
+        id: 5,
+        name: "Elegant Dress",
+        price: "$49.99",
+        image: img3,
+        hoverImage: img4,
+        colorImages: [
+            colorimg2, colorimg3, colorimg4, colorimg5, colorimg6,
+            colorimg2, colorimg3, colorimg4, colorimg5, colorimg6
+        ]
+    },
+    {
+        id: 6,
+        name: "Elegant Dress",
+        price: "$49.99",
+        image: img7,
+        hoverImage: img8,
+        colorImages: [
+            colorimg2, colorimg3, colorimg4, colorimg5, colorimg6,
+            colorimg2, colorimg3, colorimg4, colorimg5, colorimg6
+        ]
+    },
+    {
+        id: 7,
+        name: "Elegant Dress",
+        price: "$49.99",
+        image: img1,
+        hoverImage: img2,
+        colorImages: [
+            colorimg2, colorimg3, colorimg4, colorimg5, colorimg6,
+            colorimg2, colorimg3, colorimg4, colorimg5, colorimg6
+        ]
+    },
+    {
+        id: 8,
+        name: "Elegant Dress",
+        price: "$49.99",
+        image: img3,
+        hoverImage: img4,
+        colorImages: [
+            colorimg2, colorimg3, colorimg4, colorimg5, colorimg6,
+            colorimg2, colorimg3, colorimg4, colorimg5, colorimg6
+        ]
+    },
+    {
+        id: 9,
+        name: "Elegant Dress",
+        price: "$49.99",
+        image: img1,
+        hoverImage: img2,
+        colorImages: [
+            colorimg2, colorimg3, colorimg4, colorimg5, colorimg6,
+            colorimg2, colorimg3, colorimg4, colorimg5, colorimg6
+        ]
+    },
 ];
 
 

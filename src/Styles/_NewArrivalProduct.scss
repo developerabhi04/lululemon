@@ -22,8 +22,13 @@
         margin: auto;
 
         .slick-slide {
-            padding: 0.5rem;
+            // padding: 0.5rem;
+            border-top: 1px solid rgb(120, 120, 120);
+            border-bottom: 1px solid rgb(120, 120, 120);
+            border-left: 1px solid rgb(185, 185, 185);
+            border-right: 1px solid rgb(120, 120, 120);
         }
+
 
         .product-card {
             // background: white;
@@ -40,7 +45,7 @@
                 align-items: center;
                 justify-content: center;
                 overflow: hidden;
-                border-radius: 5px;
+                // border-radius: 5px;
 
                 img {
                     width: 100%;
@@ -64,6 +69,7 @@
 
                 .slick-slide {
                     padding: 0.3rem;
+                    border: none;
                 }
 
                 /* Custom arrow styling for color slider */
@@ -78,11 +84,11 @@
                     z-index: 2;
 
                     &.next {
-                        right: -15px;
+                        right: -3px;
                     }
 
                     &.prev {
-                        left: -10px;
+                        left: -2px;
                     }
 
                     svg {
