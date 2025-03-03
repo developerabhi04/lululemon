@@ -1,5 +1,5 @@
 /* Variables */
-$primary-color: #333;
+$primary-color: #423f3f;
 $secondary-color: #555;
 $hover-color: #c8102e;
 $transition-speed: 0.3s;
@@ -79,7 +79,7 @@ header {
         border-bottom: 1px solid #e0e0e0;
         background-color: #fff;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 1rem;
+        padding: 0.479rem;
         z-index: 9999;
 
         .Header-container {
@@ -100,7 +100,7 @@ header {
                     margin: 0 2rem;
 
                     img {
-                        width: 70%;
+                        width: 100%;
                     }
                 }
             }
@@ -121,8 +121,8 @@ header {
                     .nav-item {
                         >a {
                             cursor: pointer;
-                            font-size: 1rem;
-                            font-weight: 600;
+                            font-size: 1.1rem;
+                            font-weight: 800;
                             color: $primary-color;
                             transition: color $transition-speed;
 

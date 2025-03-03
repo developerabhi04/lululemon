@@ -21,9 +21,15 @@ import logo from "../../assets/Fem-Cartel-Wording-1400x352.png";
 import womenImage from "../../assets/0106_SP25_MarketingMoment_Dreamknit_Womens.webp";
 import accessoriesImage from "../../assets/0106_SP25_MarketingMoment_Accessories.webp";
 import shoesImage from "../../assets/0106_SP25_MarketingMoment_ACTVCLUB.webp";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/slices/userSlices";
 
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+
+
   const [hoveredItem, setHoveredItem] = useState(null);
   const [showTopNav, setShowTopNav] = useState(true);
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -240,35 +246,46 @@ const Header = () => {
               {profileDropdownVisible && (
                 <div className="profile-dropdown">
                   <ul>
-                    <li>
-                      <Link to="/profile">
-                        <Face />Profile
-                      </Link>
-                    </li>
+                    {user && (
+                      <>
+                        <li>
+                          <Link to="/profile">
+                            <Face />Profile
+                          </Link>
+                        </li>
 
-                    <li>
-                      <Link to="/orders">
-                        <ShoppingBag /> Order
-                      </Link>
-                    </li>
+                        <li>
+                          <Link to="/orders">
+                            <ShoppingBag /> Order
+                          </Link>
+                        </li>
+                      </>
+                    )}
 
-                    <li>
-                      <Link to="/sign-in">
-                        <Login /> Sign In
-                      </Link>
-                    </li>
+                    {/* ✅ Show Sign In and Sign Up only when user is NOT logged in */}
+                    {!user && (
+                      <>
+                        <li>
+                          <Link to="/sign-in">
+                            <Login /> Sign In
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="/sign-up">
+                            <PersonAdd /> Sign Up
+                          </Link>
+                        </li>
+                      </>
+                    )}
 
-                    <li>
-                      <Link to="/sign-up">
-                        <PersonAdd /> Sign Up
-                      </Link>
-                    </li>
-
-                    <li>
-                      <Link to="/logout">
-                        <Logout /> Logout
-                      </Link>
-                    </li>
+                    {/* ✅ Show Logout only when user is logged in */}
+                    {user && (
+                      <li>
+                        <Link onClick={() => dispatch(logout())}>
+                          <Logout /> Logout
+                        </Link>
+                      </li>
+                    )}
 
                   </ul>
                 </div>

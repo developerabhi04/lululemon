@@ -1,127 +1,120 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { fetchOrderDetails, updateOrderStatus } from "../../../redux/slices/orderSlices";
 import AdminSidebar from "../../../Components/Admin/AdminSidebar";
-import { Link } from "react-router-dom";
-
-
-const img = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=804";
-
-const orderItems = [
-  {
-    name: "Puma Shoes",
-    photo: img,
-    _id: "asddfjffjffjjf",
-    quantity: 4,
-    price: 2000,
-  },
-];
 
 const TransactionManagement = () => {
-  const [order, setOrder] = useState({
-    name: "Abhishek Jain",
-    address: "77 Black Street",
-    city: "Neyword",
-    state: "Nevada",
-    country: "India",
-    pinCode: 2434341,
-    status: "Processing",
-    subtotal: 4000,
-    discount: 1200,
-    shippingCharges: 0,
-    tax: 200,
-    total: 4000 + 200 + 0 - 1200,
-    orderItems,
-    _id: "asdnasjdhbn",
-  });
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const { orderDetails, loading, error } = useSelector((state) => state.order);
+
+  const [selectedImage, setSelectedImage] = useState(null); // State for modal image
+
+  useEffect(() => {
+    dispatch(fetchOrderDetails(id)); // ✅ Fetch order details when the component loads
+  }, [dispatch, id]);
+
+  const updateHandler = async () => {
+    await dispatch(updateOrderStatus(id)); // ✅ Dispatch update action
+    dispatch(fetchOrderDetails(id)); // ✅ Immediately fetch updated order details to avoid image disappearance
+  };
+
+  if (loading) return <p>Loading order details...</p>;
+  if (error) return <p className="error">{error}</p>;
+  if (!orderDetails) return <p>No order details found.</p>;
 
   const {
-    name,
-    address,
-    city,
-    country,
-    state,
-    pinCode,
+    user,
+    shippingInfo,
     subtotal,
     shippingCharges,
     tax,
     discount,
     total,
     status,
-  } = order;
-
-  const updateHandler = () => {
-    setOrder((prev) => ({
-      ...prev,
-      status: prev.status === "Processing" ? "Shipped" : "Delivered",
-    }));
-  };
+    orderItems,
+  } = orderDetails;
 
   return (
     <div className="admin-container">
-      {/* Sidebar */}
       <AdminSidebar />
 
-      {/* main */}
       <main className="management-section">
-        <section style={{ padding: "2rem" }}>
+        {/* Order Items Section */}
+        <section className="order-items">
           <h2>Order Items</h2>
-          {order.orderItems.map((i) => (
-            <ProductCard
-              key={i._id}
-              name={i.name}
-              photo={i.photo}
-              _id={i._id}
-              quantity={i.quantity}
-              price={i.price}
-            />
+          {orderItems.map((item) => (
+            <div key={item.productId?._id || item._id} className="order-item-card">
+              <img
+                src={item.productId?.photos?.[0]?.url || "https://via.placeholder.com/100"}
+                alt={item.name}
+                className="product-image"
+                onClick={() => setSelectedImage(item.productId?.photos?.[0]?.url)}
+              />
+              <div className="order-item-details">
+                <p className="item-name">{item.name}</p>
+                <span className="item-price">
+                  ${item.price} x {item.quantity} = ${item.price * item.quantity}
+                </span>
+              </div>
+            </div>
           ))}
         </section>
 
+        {/* Order Details Section */}
         <article className="shipping-info-card">
           <h1>Order Info</h1>
-          <h5>User Info</h5>
-          <p>Name: {name}</p>
-          <p>
-            Address: {`${address}, ${city}, ${state}, ${country}, ${pinCode}`}
-          </p>
 
-          <h5>Amount Info</h5>
-          <p>Subtotal: {subtotal}</p>
-          <p>Shipping Charges: {shippingCharges}</p>
-          <p>Tax: {tax}</p>
-          <p>Discount: {discount}</p>
-          <p>Total: {total}</p>
+          {/* User Details */}
+          <div className="info-section">
+            <h5>User Info</h5>
+            <p>Name: {user?.name || "Guest User"}</p>
+            <p>Email: {user?.email || "Guest User"}</p>
+            <p>Phone: {user?.phone || "Guest User"}</p>
+            <p>
+              Address: {`${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.country}, ${shippingInfo.pinCode}`}
+            </p>
+          </div>
 
-          <h5>Status Info</h5>
-          <p>
-            Status:{" "}
-            <span
-              className={
-                status === "Delivered"
-                  ? "purple"
-                  : status === "Shipped"
-                    ? "green"
-                    : "red"
-              }
-            >
-              {status}
-            </span>
-          </p>
+          {/* Order Amount */}
+          <div className="info-section">
+            <h5>Amount Info</h5>
+            <p>Subtotal: ${subtotal}</p>
+            <p>Shipping Charges: ${shippingCharges}</p>
+            <p>Tax: ${tax}</p>
+            <p>Discount: ${discount}</p>
+            <p className="total-amount">Total: ${total}</p>
+          </div>
 
-          <button onClick={updateHandler}>Process Status</button>
+          {/* Order Status */}
+          <div className="info-section">
+            <h5>Status Info</h5>
+            <p>
+              Status:{" "}
+              <span className={`status ${status.toLowerCase()}`}>
+                {status}
+              </span>
+            </p>
+          </div>
+
+          {/* Hide Button if Status is Delivered */}
+          {status !== "Delivered" && (
+            <button className="update-button" onClick={updateHandler} disabled={loading}>
+              {loading ? "Updating..." : "Process Status"}
+            </button>
+          )}
         </article>
       </main>
+
+      {/* Image Modal */}
+      {selectedImage && (
+        <div className="image-modal" onClick={() => setSelectedImage(null)}>
+          <img src={selectedImage} alt="Product Preview" />
+        </div>
+      )}
     </div>
   );
 };
-
-const ProductCard = ({ name, photo, price, quantity, _id }) => (
-  <div className="transaction-product-card">
-    <img src={photo} alt={name} />
-    <Link to={`/product/${_id}`}>{name}</Link>
-    <span>
-      ${price} X {quantity} = ${price * quantity}
-    </span>
-  </div>
-);
 
 export default TransactionManagement;

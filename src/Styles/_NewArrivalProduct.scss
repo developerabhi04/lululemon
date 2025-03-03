@@ -37,6 +37,7 @@
             // text-align: center;
             // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             // margin-bottom: 2rem;
+            background-color: #E5E5E5;
 
             .image-container {
                 width: 100%;
@@ -132,7 +133,9 @@
                 flex-direction: row;
                 justify-content: space-between;
                 align-items: center;
-                padding: 0 1rem;
+                padding-bottom: 1rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
 
                 h3 {
                     font-size: 1rem;

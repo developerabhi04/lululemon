@@ -48,8 +48,12 @@ const AdminSidebar = () => {
                         : {}
                 }
             >
-                <h2 style={{ textAlign: "center", color: "pink" }}>Fem Cartel</h2>
-
+                {/* <h2 style={{ textAlign: "center", color: "pink" }}>Fem Cartel</h2> */}
+                <h2 style={{ textAlign: "center", color: "pink", cursor: "pointer" }}>
+                    <Link to="/" style={{ textDecoration: "none", color: "pink" }}>
+                        Fem Cartel
+                    </Link>
+                </h2>
                 <div>
                     <h5>Navigation</h5>
                     <ul>

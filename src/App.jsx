@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-
+import "react-toastify/dist/ReactToastify.css"; // ✅ Import Toastify CSS
 import Home from "./Pages/Home/Home";
 import Products from "./Pages/Products/Products";
 import ProductDetails from "./Pages/ProductsDetails/ProductDetails";
@@ -25,11 +25,15 @@ import Profile from "./Pages/User/Profile";
 import Order from "./Pages/Order/Order";
 import OrderDetails from "./Pages/Order/OrderDetails";
 import Wishlist from "./Pages/Wishlist/Wishlist";
+import { ToastContainer } from "react-toastify";
+import Banners from "./Pages/Admin/Banners";
+
 
 
 
 
 const App = () => {
+  // const { isAuthenticated, user } = useSelector((state) => state.user);
   return (
     <>
       <BrowserRouter>
@@ -40,14 +44,17 @@ const App = () => {
           <Route path="/cart" element={<MainLayout><Cart /></MainLayout>} />
           <Route path="/wishlist" element={<MainLayout><Wishlist /></MainLayout>} />
           <Route path="/checkout-user" element={<MainLayout><Checkout /></MainLayout>} />
-          <Route path="/sign-in" element={<MainLayout><SignIn /></MainLayout>} />
-          <Route path="/sign-up" element={<MainLayout><Signup /></MainLayout>} />
+
           <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
           <Route path="/orders" element={<MainLayout><Order /></MainLayout>} />
           <Route path="/orders-details" element={<MainLayout><OrderDetails /></MainLayout>} />
 
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<Signup />} />
+
           {/*Admin*/}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/banner" element={<Banners/>} />
           <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/customers" element={<Customers />} />
           <Route path="/admin/transaction" element={<Transaction />} />
@@ -61,10 +68,11 @@ const App = () => {
 
           {/* management */}
           <Route path="/admin/products/new" element={<NewProduct />} />
-          <Route path="/admin/product/:id" element={<ProductManagement />} />
+          <Route path="/admin/product/:productId" element={<ProductManagement />} />
           <Route path="/admin/transaction/:id" element={<TransactionManagement />} />
 
         </Routes>
+        <ToastContainer />
       </BrowserRouter>
     </>
   )

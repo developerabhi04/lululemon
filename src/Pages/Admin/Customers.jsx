@@ -1,85 +1,84 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteUser, fetchUsers } from "../../redux/slices/userSlices";
 import AdminSidebar from "../../Components/Admin/AdminSidebar";
 import TableHOC from "../../Components/Admin/TableHOC";
 import { FaTrash } from "react-icons/fa";
 
-
 const columns = [
-  {
-    Header: "Avatar",
-    accessor: "avatar",
-  },
-  {
-    Header: "Name",
-    accessor: "name",
-  },
-  {
-    Header: "Gender",
-    accessor: "gender",
-  },
-  {
-    Header: "Email",
-    accessor: "email",
-  },
-  {
-    Header: "Role",
-    accessor: "role",
-  },
-  {
-    Header: "Action",
-    accessor: "action",
-  },
-];
-
-const img = "https://randomuser.me/api/portraits/women/54.jpg";
-const img2 = "https://randomuser.me/api/portraits/women/50.jpg";
-
-const arr = [
-  {
-    avatar: (
-      <img style={{ borderRadius: "50%" }} src={img} alt="Avatar" />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img style={{ borderRadius: "50%" }} src={img2} alt="Avatar"/>
-    ),
-    name: "May Scoot",
-    email: "aunt.may@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
+  { Header: "Avatar", accessor: "avatar" },
+  { Header: "Name", accessor: "name" },
+  { Header: "Email", accessor: "email" },
+  { Header: "Phone", accessor: "phone" },
+  { Header: "Role", accessor: "role" },
+  { Header: "Action", accessor: "action" },
 ];
 
 const Customers = () => {
-  const [data] = useState(arr);
+  const dispatch = useDispatch();
+  const { users, loading, error } = useSelector((state) => state.user);
 
-  const Table = useCallback(
-    TableHOC(columns, data, "dashboard-product-box", "Customers", true),
-    []
-  );
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+
+  // ✅ Delete user function
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      dispatch(deleteUser(id));
+    }
+  };
+
+  // Transform users into table-friendly format
+  const data = users.map((user) => ({
+    avatar: (
+      <img
+        style={{ borderRadius: "50%", width: "40px", height: "40px" }}
+        src={user.avatar.url}
+        alt="Avatar"
+      />
+    ),
+    name: user.name,
+    email: user.email,
+    phone: user.phone || "N/A",
+    role: (
+      <span
+        style={{
+          background: user.role === "admin" ? "green" : "red",
+          fontWeight: "bold",
+          color: "white",
+          padding: "0.5rem",
+          borderRadius:"5px"
+        }}
+      >
+        {user.role || "user"}
+      </span>
+    ),
+    action: (
+      <button onClick={() => handleDelete(user._id)} style={{ color: "red", border: "none", background: "none", cursor: "pointer" }}>
+        <FaTrash />
+      </button>
+    ),
+  }));
+
+  // ✅ Corrected `useCallback`
+  const Table = useCallback(() => {
+    return TableHOC(columns, data, "dashboard-product-box", "Customers", true)();
+  }, [columns, data]);
 
   return (
     <div className="admin-container">
-      {/* Sidebar */}
       <AdminSidebar />
-
-      {/* Main */}
-      <main>{Table()}</main>
+      <main>
+        {loading ? (
+          <p>Loading customers...</p>
+        ) : error ? (
+          <p style={{ color: "red" }}>{error}</p>
+        ) : (
+          <Table />  // ✅ Call it properly inside JSX
+        )}
+      </main>
     </div>
   );
 };

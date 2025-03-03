@@ -1,11 +1,13 @@
-import img1 from "../../../assets/na_jan25_wk4_W_OTM_1_2_Lg_MediaAction_D_Pants.webp";
-import img2 from "../../../assets/na_jan25_wk4_W_OTM_1_2_Lg_MediaAction_D_Casual.webp"
+import img1 from "../../../assets/product_banner/IMG_9A9749.jpg";
+import img2 from "../../../assets/product_banner/IMG_6428 copy.png"
 
 const SecondBanner = () => {
     return (
         <section className="second-banner">
             <h1>Daydrift™ fits are flexible.</h1>
             <div className="second-container">
+
+
                 <div className="second-img-one">
                     <img src={img1} alt="Banner" />
 
@@ -18,8 +20,6 @@ const SecondBanner = () => {
                             <button>Shop Daydrift™ Trousers</button>
                         </div>
                     </div>
-
-
                 </div>
 
                 <div className="second-img-one">
@@ -33,9 +33,8 @@ const SecondBanner = () => {
                             <button>Shop Spring Preview</button>
                         </div>
                     </div>
-
-
                 </div>
+                
             </div>
         </section>
     )

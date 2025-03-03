@@ -1,39 +1,104 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminSidebar from "../../../Components/Admin/AdminSidebar";
-
-const img = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=804";
+import { toast } from "react-toastify";
+import { fetchSingleProduct, updateProduct } from "../../../redux/slices/productSlices";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ProductManagement = () => {
-  const [name, setName] = useState("Puma shoes");
-  const [price, setPrice] = useState(2000);
-  const [stock, setStock] = useState(10);
-  const [photo, setPhoto] = useState(img);
 
-  const [nameUpdate, setNameUpdate] = useState(name);
-  const [priceUpdate, setPriceUpdate] = useState(price);
-  const [stockUpdate, setStockUpdate] = useState(stock);
-  const [photoUpdate, setPhotoUpdate] = useState(photo);
+  const { productId } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  const { product, loading, error } = useSelector((state) => state.products);
+
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [stock, setStock] = useState(0);
+  const [photo, setPhoto] = useState("");
+  const [photoFile, setPhotoFile] = useState(null);
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+
+  // ✅ Fetch products if Redux store is empty
+  useEffect(() => {
+    // dispatch(fetchSingleProduct(productId));
+    if (productId) {
+      dispatch(fetchSingleProduct(productId));
+    } else {
+      console.error("Product ID is undefined")
+    }
+  }, [dispatch, productId]);
+
+  // ✅ Find product once products are loaded
+  useEffect(() => {
+console.log("product from redux store:", product)
+
+    // if (product.length) {
+      if (product) {
+        setName(product.name);
+        setPrice(product.price);
+        setStock(product.stock);
+        setDescription(product.description);
+        setCategory(product.category);
+        setPhoto(product.photos[0]?.url || "");
+      // } else {
+      //   toast.error("Product not found!");
+      // }
+    }
+  }, [product]);
+
+  // // ✅ Debugging: Check if productId and products are loaded
+  useEffect(() => {
+    console.log("Product ID:", productId);
+    console.log("Fetched Product:", product);
+  }, [productId, product]);
+
+  // ✅ Handle Image Upload
   const changeImageHandler = (e) => {
     const file = e.target.files?.[0];
-
     const reader = new FileReader();
 
     if (file) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        if (typeof reader.result === "string") setPhotoUpdate(reader.result);
+        if (typeof reader.result === "string") {
+          setPhoto(reader.result);
+          setPhotoFile(file);
+        }
       };
     }
   };
 
-  const submitHandler = (e) => {
+  // ✅ Handle Form Submission
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    setName(nameUpdate);
-    setPrice(priceUpdate);
-    setStock(stockUpdate);
-    setPhoto(photoUpdate);
+    if (!product) {
+      toast.error("Product not found! Cannot update.");
+      return;
+    }
+
+    const updatedData = new FormData();
+    updatedData.append("name", name);
+    updatedData.append("price", price);
+    updatedData.append("stock", stock);
+    updatedData.append("category", category);
+    updatedData.append("description", description);
+
+    if (photoFile) {
+      updatedData.append("photos", photoFile);
+    }
+
+    dispatch(updateProduct({ id: productId, updatedData })).then((res) => {
+      if (!res.error) {
+        toast.success("Product updated successfully! 🎉");
+        setTimeout(() => navigate("/admin/products"), 2000);
+      } else {
+        toast.error(res.error || "Failed to update product ❌");
+      }
+    });
   };
 
   return (
@@ -41,63 +106,67 @@ const ProductManagement = () => {
       {/* Sidebar */}
       <AdminSidebar />
 
-      {/* main */}
-      <main className="management-section">
-        <section>
-          <strong>ID - fmfnsnnvjvdnjvnvjdjf </strong>
-          <img src={photo} alt="product" />
-          <p>{name}</p>
-          {stock > 0 ? (
-            <span className="green">{stock} Available</span>
-          ) : (
-            <span className="red">Not Available</span>
-          )}
-          <h3>${price}</h3>
-        </section>
+      {loading ? (
+        <p>Loading product...</p>
+      ) : error ? (
+        <p style={{ color: "red" }}>{error}</p>
+      ) : product ? (
+        <>
+          {/* Main */}
+          <main className="management-section">
+            <section>
+              <strong>ID - {product._id} </strong>
+              <img src={photo} alt="product" />
+              <p>{name}</p>
+              {stock > 0 ? (
+                <span className="green">{stock} Available</span>
+              ) : (
+                <span className="red">Not Available</span>
+              )}
+              <h3>${price}</h3>
+            </section>
 
-        <article>
-          <form action="" onSubmit={submitHandler}>
-            <h2>Update Product</h2>
-            <div>
-              <label>Name</label>
-              <input
-                required
-                type="text"
-                placeholder="Name"
-                value={nameUpdate}
-                onChange={(e) => setNameUpdate(e.target.value)}
-              />
-            </div>
-            <div>
-              <label>Price</label>
-              <input
-                required
-                type="number"
-                placeholder="Price"
-                value={priceUpdate}
-                onChange={(e) => setPriceUpdate(Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <label>Stock</label>
-              <input
-                required
-                type="number"
-                placeholder="Stock"
-                value={stockUpdate}
-                onChange={(e) => setStockUpdate(Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <label>Photo</label>
-              <input required type="file" onChange={changeImageHandler} />
-            </div>
+            <article>
+              <form onSubmit={submitHandler}>
+                <h2>Update Product</h2>
+                <div>
+                  <label>Name</label>
+                  <input required type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                </div>
+                <div>
+                  <label>Price</label>
+                  <input required type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
+                </div>
+                <div>
+                  <label>Stock</label>
+                  <input required type="number" value={stock} onChange={(e) => setStock(Number(e.target.value))} />
+                </div>
+                <div>
+                  <label>Description</label>
+                  <input required type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+                </div>
+                <div>
+                  <label>Category</label>
+                  <input required type="text" value={category} onChange={(e) => setCategory(e.target.value)} />
+                </div>
+                <div>
+                  <label>Photo</label>
+                  <input type="file" onChange={changeImageHandler} />
+                </div>
 
-            {photoUpdate && <img src={photoUpdate} alt="New Image" />}
-            <button type="submit">Update</button>
-          </form>
-        </article>
-      </main>
+                {photo && <img src={photo} alt="New Image" style={{ width: "100px", marginTop: "10px" }} />}
+
+                <button type="submit" disabled={loading}>
+                  {loading ? "Updating..." : "Update Product"}
+                </button>
+              </form>
+            </article>
+          </main>
+        </>
+      ) : (
+        <p>Product not found.</p>
+      )}
+
     </div>
   );
 };

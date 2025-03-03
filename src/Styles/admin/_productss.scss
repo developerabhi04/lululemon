@@ -23,7 +23,7 @@
 
 
 
-// product-management-new product.tsx
+// // product-management-new product.tsx
 .management-section {
     @include flex(row, center, unset);
     padding: 4rem;
@@ -164,6 +164,310 @@
     }
 }
 
+
+// Variables
+$primary-color: #007bff;
+$primary-hover: #0056b3;
+$danger-color: #d9534f;
+$success-color: #28a745;
+$warning-color: #f39c12;
+$purple-color: #6f42c1;
+$text-dark: #333;
+$text-light: #555;
+$box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+$border-radius: 8px;
+
+// Base Layout
+// .management-section {
+//     display: flex;
+//     justify-content: center;
+//     padding: 4rem;
+//     gap: 2rem;
+
+//     .order-items {
+//         width: 100%;
+//         max-width: 500px;
+//         background-color: white;
+//         padding: 2rem;
+//         border-radius: 5px;
+//         box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+
+//         h2 {
+//             text-align: center;
+//             font-size: 1.8rem;
+//             margin-bottom: 1rem;
+//         }
+
+//         .order-item-card {
+//             display: flex;
+//             align-items: center;
+//             gap: 1rem;
+//             padding: 1rem;
+//             border-bottom: 1px solid #ddd;
+
+//             .product-image {
+//                 width: 80px;
+//                 height: 80px;
+//                 object-fit: cover;
+//                 border-radius: 5px;
+//                 cursor: pointer;
+//                 transition: transform 0.2s ease-in-out;
+
+//                 &:hover {
+//                     transform: scale(1.1);
+//                 }
+//             }
+
+//             .order-item-details {
+//                 flex-grow: 1;
+
+//                 .item-name {
+//                     font-weight: bold;
+//                 }
+
+//                 .item-price {
+//                     color: #555;
+//                 }
+//             }
+//         }
+//     }
+
+//     .shipping-info-card {
+//         width: 100%;
+//         max-width: 400px;
+//         background-color: white;
+//         padding: 2rem;
+//         border-radius: 5px;
+//         box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+
+//         h1 {
+//             text-align: center;
+//             font-size: 1.8rem;
+//             margin-bottom: 1rem;
+//         }
+
+//         .info-section {
+//             margin-bottom: 1rem;
+
+//             h5 {
+//                 font-size: 1.2rem;
+//                 font-weight: bold;
+//                 margin-bottom: 0.5rem;
+//             }
+
+//             p {
+//                 font-size: 1rem;
+//                 color: #333;
+//             }
+//         }
+
+//         .total-amount {
+//             font-size: 1.2rem;
+//             font-weight: bold;
+//             color: rgb(5, 107, 224);
+//         }
+
+//         .status {
+//             font-weight: bold;
+
+//             &.delivered {
+//                 color: purple;
+//             }
+
+//             &.shipped {
+//                 color: green;
+//             }
+
+//             &.processing {
+//                 color: red;
+//             }
+//         }
+
+//         .update-button {
+//             width: 100%;
+//             padding: 1rem;
+//             border: none;
+//             background-color: rgb(5, 107, 224);
+//             color: white;
+//             border-radius: 5px;
+//             font-size: 1.1rem;
+//             cursor: pointer;
+//             transition: 0.2s;
+
+//             &:hover {
+//                 background-color: rgb(3, 90, 200);
+//             }
+//         }
+//     }
+// }
+
+// Image Modal
+.image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    img {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 10px;
+    }
+}
+
+
+
+
+// Order Items Section
+.order-items {
+    width: 50%;
+    max-width: 500px;
+    background: #fff;
+    padding: 2rem;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+
+    h2 {
+        text-align: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+}
+
+// Order Item Card
+.order-item-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+
+    img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: $border-radius;
+    }
+
+    .order-item-details {
+        flex: 1;
+
+        .item-name {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .item-price {
+            font-size: 0.9rem;
+            color: $text-light;
+        }
+    }
+}
+
+// Shipping Info Card
+.shipping-info-card {
+    width: 50%;
+    max-width: 450px;
+    background: #fff;
+    padding: 2rem;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+
+    h1 {
+        text-align: center;
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+    }
+
+    .info-section {
+        margin-bottom: 1.5rem;
+
+        h5 {
+            font-size: 1rem;
+            color: $text-dark;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 0.95rem;
+            color: $text-light;
+        }
+
+        .total-amount {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: $danger-color;
+        }
+    }
+}
+
+// Order Status Styles
+.status {
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+
+    &.processing {
+        background: $warning-color;
+        color: white;
+    }
+
+    &.shipped {
+        background: $success-color;
+        color: white;
+    }
+
+    &.delivered {
+        background: $purple-color;
+        color: white;
+    }
+}
+
+// Update Button
+.update-button {
+    width: 100%;
+    padding: 0.8rem;
+    background: $primary-color;
+    color: white;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+        background: $primary-hover;
+    }
+
+    &:disabled {
+        background: #aaa;
+        cursor: not-allowed;
+    }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+    .management-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .order-items,
+    .shipping-info-card {
+        width: 90%;
+    }
+}
 
 
 

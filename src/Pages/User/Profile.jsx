@@ -1,31 +1,37 @@
 import { useState } from "react";
-import Avatar from "../../assets/profile/photo-1494790108377-be9c29b29330.jpg"
 import { AdminPanelSettings, Dashboard, Home, LockOpen, LockReset, PersonPin } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 
 const Profile = () => {
   const navigate = useNavigate();
+  // const dispatch = useDispatch();
 
-  const [isAdmin, setIsAdmin] = useState(true); // Simulate admin user
+  const {  user } = useSelector((state) => state.user);
+
+
+  // ✅ Ensure user data exists
+  const defaultAvatar = "https://via.placeholder.com/150"; // Placeholder image
+
   const [activeSection, setActiveSection] = useState("profile"); // Default section
-  const [user, setUser] = useState({
-    firstName: "Alexa",
-    lastName: "Doe",
-    phone: "123-456-7890",
-    dob: "1990-01-01",
-    email: "johndoe@example.com",
-    address: "123, Main Street, New York, NY 10001",
+  
+  const [updatedUser, setUpdatedUser] = useState({
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+    avatar: user?.avatar?.url || defaultAvatar, // Get avatar URL or default
   });
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUser((prev) => ({ ...prev, [name]: value }));
+    setUpdatedUser((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Changes saved successfully!");
+    // alert("Changes saved successfully!");
   };
 
 
@@ -39,21 +45,21 @@ const Profile = () => {
         return (
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>First Name</label>
+              <label>Full Name</label>
               <input
                 type="text"
-                name="firstName"
-                value={user.firstName}
+                name="name"
+                value={updatedUser.name}
                 onChange={handleChange}
               />
             </div>
             <div className="form-group">
-              <label>Last Name</label>
+              <label>Email ID</label>
               <input
                 type="text"
-                name="lastName"
-                value={user.lastName}
-                onChange={handleChange}
+                name="email"
+                value={updatedUser.email}
+                disabled
               />
             </div>
             <div className="form-group">
@@ -61,26 +67,8 @@ const Profile = () => {
               <input
                 type="tel"
                 name="phone"
-                value={user.phone}
+                value={updatedUser.phone}
                 onChange={handleChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>Date of Birth</label>
-              <input
-                type="date"
-                name="dob"
-                value={user.dob}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={user.email}
-                disabled
               />
             </div>
             <button type="submit" className="save-changes">
@@ -162,7 +150,7 @@ const Profile = () => {
             <h2>Profile</h2>
             <div className="profile-photo">
               <img
-                src={Avatar}
+                src={updatedUser.avatar}
                 alt="Profile"
               />
               <button className="update-photo">Change Photo</button>
@@ -176,7 +164,7 @@ const Profile = () => {
             <h2>Account Options</h2>
             <ul>
               <li onClick={() => setActiveSection("profile")}>
-                <PersonPin />Edit Profile
+                <PersonPin />Profile
               </li>
               <li onClick={() => setActiveSection("address")}><Home />Address</li>
               <li onClick={() => setActiveSection("changePassword")}>
@@ -187,7 +175,7 @@ const Profile = () => {
               </li>
             </ul>
 
-            {isAdmin && (
+            {user?.role === "admin" && (
               <div className="admin-section">
                 <h3><AdminPanelSettings /> Admin Dashboard</h3>
                 <ul>

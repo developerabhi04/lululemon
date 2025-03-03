@@ -26,11 +26,12 @@
 @use "./admin/productss" as *;
 
 
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: "Fira Sans", sans-serif;
     line-height: 1.5;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 
@@ -44,7 +45,7 @@ a {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Calibre, Verlag, Helvetica, sans-serif;
+    font-family: "Fira Sans", sans-serif;
 }
 
 
@@ -65,6 +66,20 @@ body {
 }
 
 
+.Toastify__toast {
+    font-family: "Arial", sans-serif;
+    font-size: 14px;
+}
+
+.Toastify__toast--success {
+    background-color: #28a745 !important;
+    color: #121111;
+}
+
+.Toastify__toast--error {
+    background-color: #dc3545 !important;
+    color: #121111;
+}
 
 
 

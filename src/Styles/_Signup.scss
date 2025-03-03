@@ -14,12 +14,12 @@ $border-radius: 8px;
     align-items: center;
     justify-content: center;
     background: $bg-color;
-    padding: 8rem;
+    padding: 1rem;
 }
 
 .signup-card {
     background: $white;
-    padding: 2.5rem;
+    padding: 2rem;
     border-radius: $border-radius;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
@@ -35,13 +35,13 @@ $border-radius: 8px;
     form {
         display: flex;
         flex-direction: column;
-        gap: 0.8rem;
+        gap: 0.4rem;
 
         .upload-heading {
             text-align: center;
             font-size: 1rem;
             color:#817e7e;
-            margin-top: 0.3rem;
+            // margin-top: 0.3rem;
         }
 
         .image-upload {
