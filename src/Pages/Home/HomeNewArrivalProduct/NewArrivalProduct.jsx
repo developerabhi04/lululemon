@@ -113,13 +113,14 @@ const NewArrivalProduct = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: 4, // Default for larger screens
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 768, settings: { slidesToShow: 1 } },
+      { breakpoint: 1024, settings: { slidesToShow: 3 } }, // Show 3 products on 1024px
+      { breakpoint: 768, settings: { slidesToShow: 1 } }, // Show 2 products on tablets
+      { breakpoint: 480, settings: { slidesToShow: 1 } }, // Show 1 product on mobile
     ],
   };
 
@@ -150,7 +151,7 @@ const NewArrivalProduct = () => {
           {products.map((product) => {
             // Get the selected color index; default to 0.
             const selectedColorIndex = activeColor[product.id] ?? 0;
-            
+
             return (
               <div key={product.id} className="product-card">
                 {/* Product Image */}

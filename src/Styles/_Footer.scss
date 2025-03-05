@@ -97,16 +97,8 @@
             }
         }
 
-        // Responsive adjustments
-        @media (max-width: 768px) {
-            flex-direction: column;
-            gap: 3rem;
 
-            [class^="footer-"] {
-                min-width: 100%;
-                padding: 0;
-            }
-        }
+
     }
 
     // Copyright section (you can add this if needed)
@@ -183,3 +175,156 @@ footer {
         }
     }
 }
+
+
+
+@media (max-width: 1025px) {
+    .footer-section {
+        background-color: #f0f0f0;
+        color: #53565a;
+        padding: 1rem;
+        margin-top: 2rem;
+        font-family: 'Arial', sans-serif;
+
+
+        .footer-container {
+            // max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: space-between;
+
+            // Common styles for all footer sections
+            [class^="footer-"] {
+                flex: 1;
+                min-width: 250px;
+                padding: 1rem;
+
+                h1 {
+                    font-size: 1rem;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    font-weight: 500;
+                    margin-bottom: 1.5rem;
+                    padding-bottom: 0.5rem;
+                    color: #191919;
+
+                }
+
+                ul {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+
+                    li {
+                        margin-bottom: 1rem;
+                        transition: all 0.3s ease;
+                        cursor: pointer;
+                        font-weight: 400;
+                        font-size: 0.9rem;
+
+                        &:hover {
+                            color: #c8102e;
+                            transform: translateY(5px);
+                        }
+                    }
+                }
+            }
+
+            // Get in Touch specific styles
+            .footer-get-in-touch {
+                ul li {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.3rem;
+                    margin-bottom: 1.5rem;
+
+                    .MuiSvgIcon-root {
+                        font-size: 1.5rem;
+                        color: #ff4d4d;
+                        flex-shrink: 0;
+                    }
+
+                    span {
+
+                        font-size: 0.9rem;
+                        line-height: 1.5;
+                    }
+                }
+            }
+
+            // Follow Us specific styles
+            .footer-follow-us {
+                ul li {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+
+                    .MuiSvgIcon-root {
+                        font-size: 1.5rem;
+                        transition: all 0.3s ease;
+                    }
+
+                    &:hover {
+                        .MuiSvgIcon-root {
+                            color: #ff4d4d;
+                        }
+                    }
+
+                    span {
+                        font-size: 0.9rem;
+                    }
+                }
+            }
+
+
+
+        }
+
+        // Copyright section (you can add this if needed)
+        .footer-copyright {
+            // width: 1200px;
+            width: 100%;
+
+            .footers-container {
+
+                // footer-right
+                .footer-copyright-right {
+                    // border: 1px solid red;
+                   
+
+
+                    >p {
+                        margin-right: 0.5rem;
+
+                    }
+
+                    >ul {
+                     
+
+                        >li {
+                          
+
+                            >img {
+                                width: 50%;
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+       
+
+
+    }
+
+}
+
+@media (max-width: 768px) {
+    
+}
+
+@media (max-width: 480px) {}
