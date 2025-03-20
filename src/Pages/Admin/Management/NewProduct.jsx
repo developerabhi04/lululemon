@@ -195,7 +195,7 @@ const NewProduct = () => {
 
                         <div className="input-group">
                             <label>Sizes:</label>
-                            <select multiple required value={sizes} onChange={handleSizeChange}>
+                            <select multiple  value={sizes} onChange={handleSizeChange}>
                                 {/* <option value="">Select Size</option> */}
                                 <option value="XS">XS</option>
                                 <option value="S">S</option>
@@ -208,7 +208,7 @@ const NewProduct = () => {
 
                         <div className="input-group">
                             <label>Seam Sizes:</label>
-                            <select multiple required value={seamSizes} onChange={handleSeamSizeChange}>
+                            <select multiple  value={seamSizes} onChange={handleSeamSizeChange}>
                                 {/* <option value="">Select Size</option> */}
                                 <option value="28">28</option>
                                 <option value="30">30</option>
