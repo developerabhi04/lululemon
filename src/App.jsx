@@ -27,6 +27,20 @@ import OrderDetails from "./Pages/Order/OrderDetails";
 import Wishlist from "./Pages/Wishlist/Wishlist";
 import { ToastContainer } from "react-toastify";
 import Banners from "./Pages/Admin/Banners";
+import Category from "./Pages/Admin/Category";
+import FirstBanner from "./Pages/Admin/Management/Banner/FirstBanner";
+import SecondBanner from "./Pages/Admin/Management/Banner/SecondBanner";
+import CompanyInfo from "./Pages/Admin/Management/Company/CompanyInfo";
+import Coupons from "./Pages/Admin/Coupon";
+import NewCoupon from "./Pages/Admin/Management/NewCoupon";
+import CouponManagement from "./Pages/Admin/Management/CouponManagement";
+import ThirdBanner from "./Pages/Admin/Management/Banner/ThirdBanner";
+import FAQ from "./Pages/FooterSections/FAQ";
+import AccessibilityStatement from "./Pages/FooterSections/AccessibilityStatement";
+import ServicesPage from "./Pages/FooterSections/Services";
+import Ordering from "./Pages/FooterSections/Ordering";
+import ShippingPolicy from "./Pages/FooterSections/ShippingPolicy";
+import PrivacyPolicy from "./Pages/FooterSections/PrivacyPolicy";
 
 
 
@@ -40,7 +54,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<MainLayout><Home /></MainLayout>} />
           <Route path="/products" element={<MainLayout><Products /></MainLayout>} />
-          <Route path="/product-details" element={<MainLayout><ProductDetails /></MainLayout>} />
+          <Route path="/product-details/:id" element={<MainLayout><ProductDetails /></MainLayout>} />
           <Route path="/cart" element={<MainLayout><Cart /></MainLayout>} />
           <Route path="/wishlist" element={<MainLayout><Wishlist /></MainLayout>} />
           <Route path="/checkout-user" element={<MainLayout><Checkout /></MainLayout>} />
@@ -49,12 +63,30 @@ const App = () => {
           <Route path="/orders" element={<MainLayout><Order /></MainLayout>} />
           <Route path="/orders-details" element={<MainLayout><OrderDetails /></MainLayout>} />
 
+
+          {/* help */}
+          <Route path="/faq" element={<MainLayout><FAQ /></MainLayout>} />
+          <Route path="/accessibility-statement" element={<MainLayout><AccessibilityStatement /></MainLayout>} />
+          <Route path="/services" element={<MainLayout><ServicesPage /></MainLayout>} />
+          <Route path="/ordering" element={<MainLayout><Ordering /></MainLayout>} />
+          <Route path="/shipping-policy" element={<MainLayout><ShippingPolicy /></MainLayout>} />
+          <Route path="/privacy-policy" element={<MainLayout><PrivacyPolicy /></MainLayout>} />
+
+
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<Signup />} />
 
+
           {/*Admin*/}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/banner" element={<Banners/>} />
+          <Route path="/admin/banner" element={<Banners />} />
+          <Route path="/admin/banner/first-banner" element={<FirstBanner />} />
+          <Route path="/admin/banner/second-banner" element={<SecondBanner />} />
+          <Route path="/admin/banner/third-banner" element={<ThirdBanner />} />
+
+          <Route path="/admin/banner/company-info" element={<CompanyInfo />} />
+          <Route path="/admin/coupons" element={<Coupons />} />
+          <Route path="/admin/category" element={<Category />} />
           <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/customers" element={<Customers />} />
           <Route path="/admin/transaction" element={<Transaction />} />
@@ -68,11 +100,13 @@ const App = () => {
 
           {/* management */}
           <Route path="/admin/products/new" element={<NewProduct />} />
+          <Route path="/admin/coupons/new" element={<NewCoupon />} />
           <Route path="/admin/product/:productId" element={<ProductManagement />} />
+          <Route path="/admin/coupon/:id" element={<CouponManagement />} />
           <Route path="/admin/transaction/:id" element={<TransactionManagement />} />
 
         </Routes>
-        <ToastContainer />
+        <ToastContainer position="top-right" autoClose={3000} />
       </BrowserRouter>
     </>
   )

@@ -1,79 +1,72 @@
-import { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { Box, Button, Typography, Card, CardContent, Divider } from "@mui/material";
+import { ViewCarousel, Image } from "@mui/icons-material";
 import AdminSidebar from "../../Components/Admin/AdminSidebar";
-import TableHOC from "../../Components/Admin/TableHOC";
-import { FaTrash } from "react-icons/fa";
-
-const columns = [
-  { Header: "Avatar", accessor: "avatar" },
-  { Header: "Name", accessor: "name" },
-  { Header: "Action", accessor: "action" },
-];
 
 const Banners = () => {
-  const dispatch = useDispatch();
-  const { users, loading, error } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
-
-
-  // ✅ Delete user function
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      dispatch(deleteUser(id));
-    }
-  };
-
-  // Transform users into table-friendly format
-  const data = users.map((user) => ({
-    avatar: (
-      <img
-        style={{ borderRadius: "50%", width: "40px", height: "40px" }}
-        src={user.avatar.url}
-        alt="Avatar"
-      />
-    ),
-    name: user.name,
-    email: user.email,
-    phone: user.phone || "N/A",
-    role: (
-      <span
-        style={{
-          background: user.role === "admin" ? "green" : "red",
-          fontWeight: "bold",
-          color: "white",
-          padding: "0.5rem",
-          borderRadius: "5px"
-        }}
-      >
-        {user.role || "user"}
-      </span>
-    ),
-    action: (
-      <button onClick={() => handleDelete(user._id)} style={{ color: "red", border: "none", background: "none", cursor: "pointer" }}>
-        <FaTrash />
-      </button>
-    ),
-  }));
-
-  // ✅ Corrected `useCallback`
-  const Table = useCallback(() => {
-    return TableHOC(columns, data, "dashboard-product-box", "Customers", true)();
-  }, [columns, data]);
-
   return (
     <div className="admin-container">
       <AdminSidebar />
-      <main>
-        {loading ? (
-          <p>Loading customers...</p>
-        ) : error ? (
-          <p style={{ color: "red" }}>{error}</p>
-        ) : (
-          <Table />  // ✅ Call it properly inside JSX
-        )}
+
+      <main className="banner-sections" style={{ background: "#fff" }}>
+        <Box display="flex">
+          <Box flex={1} p={4}>
+            <Typography variant="h3" fontWeight="bold" color="primary" gutterBottom>
+              Manage Banners
+            </Typography>
+
+            {/* Banners Section */}
+            <Box display="flex" gap={3} flexWrap="wrap" justifyContent="center" mt={3}>
+              {["first-banner", "second-banner", "third-banner"].map((banner, index) => (
+                <Card key={index} sx={{ width: 300, boxShadow: 5, borderRadius: 3 }}>
+                  <CardContent>
+                    <Typography variant="h5" textAlign="center" gutterBottom>
+                      Banner Section {index + 1}
+                    </Typography>
+                    <Box display="flex" justifyContent="center" mt={2}>
+                      <Button
+                        component={Link}
+                        to={`/admin/banner/${banner}`}
+                        variant="contained"
+                        color={index === 0 ? "primary" : index === 1 ? "secondary" : "success"}
+                        startIcon={<ViewCarousel />}
+                        sx={{ width: "100%" }}
+                      >
+                        View Banner
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              ))}
+            </Box>
+
+            {/* Divider */}
+            <Divider sx={{ my: 4 }} />
+
+            {/* Logo Section */}
+            <Card sx={{ maxWidth: 400, mx: "auto", boxShadow: 5, borderRadius: 3, textAlign: "center" }}>
+              <CardContent>
+                <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
+                  Logo Section
+                </Typography>
+
+                {/* Update Logo Button */}
+                <Box display="flex" justifyContent="center" alignItems="center" my={2}>
+                  <Button
+                    component={Link}  // Fix: Add component={Link} for navigation
+                    to={`/admin/banner/company-info`}  // Fix: Removed extra `}`
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<Image />}
+                    sx={{ width: "100%" }}
+                  >
+                    Update Logo
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Box>
+        </Box>
       </main>
     </div>
   );

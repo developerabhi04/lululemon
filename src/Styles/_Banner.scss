@@ -1,39 +1,41 @@
 .banner-section {
     position: relative;
-    padding-top: 5.58rem;
+    padding-top: 7.80rem;
     width: 100%;
-    height: 90vh;
+    height: 96vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #E9E7E8;
-    
+    background: #e9e7e8;
 
+    
     .banner-container {
+        border: 1px solid rgb(92, 86, 86);
         display: flex;
         align-items: center;
         justify-content: space-between;
         width: 100%;
         height: 100%;
+        gap: 2rem;
+
+        @media (max-width: 1024px) {
+            flex-direction: column-reverse;
+            gap: 1rem;
+        }
     }
 
     // 🚀 Left Content Section
     .banner-content {
-        border: 1px solid rgb(92, 86, 86);
-        flex: 1;
+
         width: 50%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
         padding-left: 2%;
         text-align: left;
 
-
         h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            line-height: 1.2;
+            font-size: clamp(2rem, 5vw, 2.7rem);
+            width: 100%;
+            font-weight: bold;
+            line-height: clamp(1.4rem, 2vw, 1.6rem);
             color: #333;
 
             span {
@@ -44,21 +46,20 @@
         }
 
         p {
-            font-size: 1rem;
-            margin: 20px 0;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            margin-top: clamp(10px, 2vw, 20px);
             color: #555;
-            line-height: 1.6;
+            line-height: clamp(1.4rem, 2vw, 1.6rem);
         }
 
         .banner-btn {
-            padding: 14px 40px;
-            font-size: 1rem;
-            background: linear-gradient(to right, #ac4f4f, #a52b2b);
-            border-radius: 5px;
+            margin-top: clamp(10px, 2vw, 20px);
+            padding: clamp(10px, 2vw, 14px) clamp(25px, 5vw, 40px);
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            background-color: #a52b2b;
+            border-radius: clamp(3px, 1vw, 5px);
             color: white;
-            transition: all 0.3s ease-in-out;
-            border: none;
-            cursor: pointer;
+            transition: all ease-in-out;
 
             &:hover {
                 background-color: #6e3dcf;
@@ -68,40 +69,49 @@
 
         .feature-container {
             display: flex;
-            gap: 30px;
-            margin-top: 40px;
+            gap: clamp(10px, 5vw, 30px);
+            margin-top: clamp(20px, 5vw, 40px);
 
             .feature-item {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                text-align: center;
 
                 .feature-icon {
-                    font-size: 2rem;
+                    font-size: clamp(1.5rem, 5vw, 2rem);
                     color: #a52b2b;
-                    margin-bottom: 10px;
+                    margin-bottom: clamp(5px, 2vw, 10px);
                 }
 
                 p {
-                    font-size: 1rem;
-                    font-weight: 600;
+                    font-size: clamp(0.8rem, 3vw, 1rem);
                     color: #555;
+                    text-align: center;
                 }
             }
         }
+
+        @media (max-width: 768px) {
+            text-align: center;
+        }
     }
+
 
     // 🖼️ Right Image Section - Full Width Banner
     .banner-image {
         border: 1px solid rgb(92, 86, 86);
-        flex: 1;
+        flex-grow: 1;
         width: 50%;
         height: 100%;
         overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
+
+        @media (max-width: 1024px) {
+            width: 100%;
+            height: 50vh;
+        }
 
         .swiper {
             width: 100%;
@@ -145,37 +155,10 @@
         }
     }
 
-    // 🌐 Responsive Design
-    @media (max-width: 1024px) {
-        .banner-container {
-            flex-direction: column;
-        }
+    // Responsive Design
 
-        .banner-content {
-            max-width: 100%;
-            padding-left: 5%;
-            text-align: center;
-        }
 
-        .banner-image {
-            width: 100%;
-            height: 50vh;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .banner-content {
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            p {
-                font-size: 1.1rem;
-            }
-        }
-    }
-
-    @media (max-width: 480px) {
+    @media (max-width: 600px) {
         .banner-content {
             h1 {
                 font-size: 2rem;
@@ -187,6 +170,87 @@
 
             .banner-btn {
                 padding: 10px 30px;
+            }
+        }
+
+        .feature-container {
+            flex-direction: column;
+            gap: 20px;
+        }
+    }
+
+
+}
+
+
+
+@media (max-width: 768px) {
+
+    .banner-section {
+        padding-top: 5.7rem;
+
+
+
+        .banner-content {
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+
+            .banner-btn {
+                padding: 8px 20px;
+            }
+        }
+
+        .feature-container {
+            .feature-item {
+                .feature-icon {
+                    font-size: 1.5rem;
+                }
+
+                p {
+                    font-size: 0.8rem;
+                }
+            }
+        }
+    }
+
+
+}
+
+@media (max-width: 480px) {
+    .banner-section {
+        padding-top: 4.8rem;
+        height: auto;
+
+
+
+        .banner-content {
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+
+            .banner-btn {
+                padding: 8px 20px;
+            }
+        }
+
+        .feature-container {
+            .feature-item {
+                .feature-icon {
+                    font-size: 1.5rem;
+                }
+
+                p {
+                    font-size: 0.8rem;
+                }
             }
         }
     }

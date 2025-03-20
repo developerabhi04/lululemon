@@ -23,11 +23,18 @@ import accessoriesImage from "../../assets/0106_SP25_MarketingMoment_Accessories
 import shoesImage from "../../assets/0106_SP25_MarketingMoment_ACTVCLUB.webp";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/userSlices";
+import { fetchCompanyInfo } from "../../redux/slices/companyDetailsSlices";
 
 
 const Header = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+
+  const { cartItems = [] } = useSelector((state) => state.shopCart);
+
+
+
+  const { companys } = useSelector((state) => state.company);
 
 
   const [hoveredItem, setHoveredItem] = useState(null);
@@ -38,6 +45,9 @@ const Header = () => {
   const profileDropdownRef = useRef(null);
   let hoverTimeout = null;
 
+  useEffect(() => {
+    dispatch(fetchCompanyInfo())
+  }, [dispatch])
 
   // Dropdown data for individual nav items
   const dropdownItems = {
@@ -163,38 +173,57 @@ const Header = () => {
     <header>
       {showTopNav && (
         <nav className="wapper-header">
-          <div className="nav">
-            <div className="nav-div">
-              <ul className="nav-ul">
-                <li className="nav-li">
-                  <Phone />
-                  <span className="nav-span">(+193) 889-4399</span>
-                </li>
-                <li className="nav-li">
-                  <Mail />
-                  <span className="nav-span">demo@email.com</span>
-                </li>
-              </ul>
+          {companys.map((com, index) => (
+            <div className="nav" key={index}>
+              <div className="nav-div">
+                <ul className="nav-ul">
+                  <li className="nav-li" >
+                    <Phone />
+                    <span className="nav-span">{com?.phone || ""}</span>
+                  </li>
+                  <li className="nav-li">
+                    <Mail />
+                    <span className="nav-span">{com?.email}</span>
+                  </li>
+                </ul>
+              </div>
+
+
+              <div className="social-div">
+                <ul className="social-media">
+
+                  <li className="link">
+                    <a href={com.facebook} target="_blank" rel="noopener noreferrer">
+                      <Facebook />
+                    </a>
+                  </li>
+
+                  <li className="link">
+                    <a href={com.instagram} target="_blank" rel="noopener noreferrer">
+                      <Instagram />
+                    </a>
+                  </li>
+
+                  <li className="link">
+                    <a href={com.twitter} target="_blank" rel="noopener noreferrer">
+                      <X />
+                    </a>
+                  </li>
+
+                  <li className="link">
+                    <a href={com.linkedin} target="_blank" rel="noopener noreferrer">
+                      <YouTube />
+                    </a>
+                  </li>
+
+                </ul>
+              </div>
+
             </div>
-            <div className="social-div">
-              <ul className="social-media">
-                <li className="link">
-                  <Facebook />
-                </li>
-                <li className="link">
-                  <Instagram />
-                </li>
-                <li className="link">
-                  <X />
-                </li>
-                <li className="link">
-                  <YouTube />
-                </li>
-              </ul>
-            </div>
-          </div>
+          ))}
         </nav>
-      )}
+      )
+      }
 
       <div className="Header">
         <div className="Header-container">
@@ -203,6 +232,8 @@ const Header = () => {
               <img src={logo} alt="Logo" />
             </Link>
           </div>
+
+          {/* middle-section */}
           <div className="middle">
             <ul className="nav-list">
 
@@ -232,7 +263,7 @@ const Header = () => {
           {/* icon-section */}
           <div className="icon-section">
             <Link className="icon-link">
-              <input type="text" placeholder="Search" name="search" />
+              {/* <input type="text" placeholder="Search" name="search" /> */}
               <span className="ddd">
                 <Search />
               </span>
@@ -303,9 +334,12 @@ const Header = () => {
 
             <Link to="/cart" className="icon-link">
               <AddShoppingCart />
+              {/* <span className="count">1</span> */}
+              <span className="count">{cartItems.length}</span>
             </Link>
 
           </div>
+
         </div>
 
         {dropdownVisible && hoveredItem && (

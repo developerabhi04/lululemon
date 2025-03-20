@@ -35,7 +35,7 @@ const Customers = () => {
     avatar: (
       <img
         style={{ borderRadius: "50%", width: "40px", height: "40px" }}
-        src={user.avatar.url}
+        src={user.avatar[0]?.url}
         alt="Avatar"
       />
     ),

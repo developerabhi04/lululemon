@@ -3,7 +3,7 @@ import { AiFillFileText } from "react-icons/ai";
 import { FaChartBar, FaChartLine, FaChartPie } from "react-icons/fa";
 import { HiMenuAlt4 } from "react-icons/hi";
 import { IoIosPeople } from "react-icons/io";
-import { RiDashboardFill, RiShoppingBag3Fill } from "react-icons/ri";
+import { RiCoupon2Fill, RiDashboardFill, RiShoppingBag3Fill } from "react-icons/ri";
 import { Link, useLocation } from "react-router-dom";
 import { FaRegImages } from "react-icons/fa";
 import { MdCategory } from "react-icons/md";
@@ -79,6 +79,12 @@ const AdminSidebar = () => {
                             url={"/admin/products"}
                             text={"Products"}
                             Icon={RiShoppingBag3Fill}
+                            location={location}
+                        />
+                        <Li
+                            url={"/admin/coupons"}
+                            text={"Coupon"}
+                            Icon={RiCoupon2Fill}
                             location={location}
                         />
                         <Li

@@ -1,41 +1,17 @@
 import { useState } from "react";
 import { ArrowDropUp, ArrowDropDown } from "@mui/icons-material";
-import product1 from "../../assets/LW2ELES_069005_1.webp";
-import product2 from "../../assets/LW1DTWS_030722_1.webp";
+import { useLocation } from "react-router-dom";
 
 const Checkout = () => {
-    // Coupon State
+    const location = useLocation();
+    const cartItems = location.state?.cartItems || [];
+
     const [coupon, setCoupon] = useState("");
     const [couponApplied, setCouponApplied] = useState(false);
 
-    // Dummy order summary data
-    const orderSummary = {
-        subtotal: 79.98,
-        shipping: 10.0,
-        tax: 10.0,
-    };
-
-    // Dummy Cart Items Data
-    const cartItems = [
-        {
-            id: 1,
-            name: "Classic T-Shirt",
-            quantity: 1,
-            size: "M",
-            colorName: "Blue",
-            price: 24.99,
-            image: product1,
-        },
-        {
-            id: 2,
-            name: "Elegant Dress",
-            quantity: 1,
-            size: "M",
-            colorName: "Blue",
-            price: 49.99,
-            image: product2,
-        },
-    ];
+    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const tax = subtotal * 0.07;
+    const total = couponApplied ? (subtotal + tax) * 0.9 : subtotal + tax;
 
     const handleApplyCoupon = () => {
         if (coupon.trim().toUpperCase() === "SAVE10") {
@@ -45,6 +21,16 @@ const Checkout = () => {
             setCouponApplied(false);
         }
     };
+
+
+    // const handleApplyCoupon = () => {
+    //     if (coupon.trim().toUpperCase() === "SAVE10") {
+    //         setCouponApplied(true);
+    //     } else {
+    //         alert("Invalid coupon code");
+    //         setCouponApplied(false);
+    //     }
+    // };
 
     const calculateTotal = () => {
         let total = orderSummary.subtotal + orderSummary.shipping + orderSummary.tax;
@@ -80,7 +66,7 @@ const Checkout = () => {
     ];
 
     return (
-        <section className="checkout-page">
+        <section className="checkout-pages">
             <h1>Checkout</h1>
             <div className="container">
 
@@ -252,17 +238,17 @@ const Checkout = () => {
                 </div>
 
                 {/* Checkout Order Section */}
-                <div className="checkout-order">
-                    <div className="order-summary">
+                <div className="checkout-orders">
+                    <div className="order-summarys">
                         <h2>Order Summary</h2>
                         <div className="summary-details">
 
                             {/* Product List (Cart Items) placed under Order Summary */}
                             <div className="cart-products">
                                 {cartItems.map((item) => (
-                                    <div key={item.id} className="cart-product">
+                                    <div key={item.productId} className="cart-product">
                                         <div className="cart-product-image">
-                                            <img src={item.image} alt={item.name} />
+                                            <img src={item.imageUrl} alt={item.name} />
                                         </div>
                                         <div className="cart-product-details">
                                             <div className="cart-product-name-price">
@@ -272,7 +258,8 @@ const Checkout = () => {
                                                 </h4>
                                             </div>
                                             <p>Qty: <span>{item.quantity}</span></p>
-                                            <p>size: <span>{item.size}</span></p>
+                                            <p>Size: {item.selectedSize}</p>
+                                            <p>Color: {item.selectedSeamSize}</p>
                                             <p>colour: <span>{item.colorName}</span></p>
 
 
@@ -283,25 +270,27 @@ const Checkout = () => {
 
                             <div className="summary-item">
                                 <span>Subtotal:</span>
-                                <span>${orderSummary.subtotal.toFixed(2)}</span>
+                                <span>${subtotal.toFixed(2)}</span>
                             </div>
-                            <div className="summary-item">
+                            {/* <div className="summary-item">
                                 <span>Shipping:</span>
                                 <span>${orderSummary.shipping.toFixed(2)}</span>
-                            </div>
+                            </div> */}
                             <div className="summary-item">
                                 <span>Tax:</span>
-                                <span>${orderSummary.tax.toFixed(2)}</span>
+                                <span>${tax.toFixed(2)}</span>
                             </div>
-                            {couponApplied && (
+                            {/* {couponApplied && (
                                 <div className="summary-item discount">
-                                    <span>Discount (10%):</span>
+                                    <span>Discount:</span>
                                     <span>-</span>
                                 </div>
-                            )}
+                            )} */}
+                            {couponApplied && <p>Discount (10% off): -${(subtotal * 0.1).toFixed(2)}</p>}
+
                             <div className="total">
                                 <span>Total:</span>
-                                <span>${calculateTotal()}</span>
+                                <span>${total.toFixed(2)}</span>
                             </div>
                         </div>
                         <div className="coupon-section">

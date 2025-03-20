@@ -8,19 +8,19 @@ const Profile = () => {
   const navigate = useNavigate();
   // const dispatch = useDispatch();
 
-  const {  user } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
 
 
   // ✅ Ensure user data exists
   const defaultAvatar = "https://via.placeholder.com/150"; // Placeholder image
 
   const [activeSection, setActiveSection] = useState("profile"); // Default section
-  
+
   const [updatedUser, setUpdatedUser] = useState({
     name: user?.name || "",
     email: user?.email || "",
     phone: user?.phone || "",
-    avatar: user?.avatar?.url || defaultAvatar, // Get avatar URL or default
+    avatar: user?.avatar[0]?.url || defaultAvatar, // Get avatar URL or default
   });
 
 

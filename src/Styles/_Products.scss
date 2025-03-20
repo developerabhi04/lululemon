@@ -17,6 +17,8 @@ $transition-speed: 0.3s;
         align-items: flex-start;
 
         .filter-sidebar {
+            position: sticky;
+            top: 6rem;
             width: 25%;
             background-color: $white;
             padding: 1.5rem;
@@ -257,6 +259,8 @@ $transition-speed: 0.3s;
             }
 
             .products-section-main {
+                margin: auto;
+
                 .products-grid {
                     grid-template-columns: repeat(2, 1fr);
                 }
@@ -267,8 +271,40 @@ $transition-speed: 0.3s;
     @media (max-width: 768px) {
         .container {
             .products-section-main {
+                margin: auto;
+                margin-top: 1rem;
+
                 .products-grid {
                     grid-template-columns: 1fr;
+
+                    .product-card {
+
+
+                        .product-image {
+                            height: 684px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            .products-section-main {
+                margin: auto;
+                margin-top: 1rem;
+
+                .products-grid {
+                    grid-template-columns: 1fr;
+
+                    .product-card {
+
+
+                        .product-image {
+                            height: 432px;
+                        }
+                    }
                 }
             }
         }

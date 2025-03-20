@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { server } from "../../server";
 
+
+
 // ✅ Fetch All Products
 export const fetchProducts = createAsyncThunk("products/fetchProducts", async (_, { rejectWithValue }) => {
     try {
@@ -12,6 +14,7 @@ export const fetchProducts = createAsyncThunk("products/fetchProducts", async (_
         return rejectWithValue(error.response?.data?.message || "Failed to fetch products");
     }
 });
+
 
 // ✅ Add New Product
 export const addProduct = createAsyncThunk("products/addProduct", async (productData, { rejectWithValue }) => {
@@ -39,6 +42,7 @@ export const addProduct = createAsyncThunk("products/addProduct", async (product
 export const updateProduct = createAsyncThunk("products/updateProduct", async ({ id, updatedData }, { rejectWithValue }) => {
     try {
         const token = localStorage.getItem("token");
+
         const response = await axios.put(`${server}/products/update-product/${id}`, updatedData, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -76,22 +80,40 @@ export const deleteProduct = createAsyncThunk("products/deleteProduct", async (i
         await axios.delete(`${server}/products/delete-product/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
         });
+
         return id; // Return the deleted product ID to remove from Redux store
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || "Failed to delete product");
     }
 });
 
+
+
+export const fetchNewArrivalProducts = createAsyncThunk("products/fetchNewArrivalProducts",
+    async (color, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${server}/products/new-arrivals`, { params: { color: color }, });
+            return response.data.products;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to fetch new arrival products");
+        }
+    }
+);
+
 // ✅ Product Slice
 const productSlices = createSlice({
     name: "products",
     initialState: {
         products: [],
-        product:null,
+        product: null,
         loading: false,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        setSelectedColor: (state, action) => {
+            state.selectedColor = action.payload;
+        },
+    },
     extraReducers: (builder) => {
         builder
 
@@ -165,8 +187,26 @@ const productSlices = createSlice({
             .addCase(deleteProduct.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+
+
+            .addCase(fetchNewArrivalProducts.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchNewArrivalProducts.fulfilled, (state, action) => {
+                state.loading = false;
+                state.products = action.payload;
+            })
+            .addCase(fetchNewArrivalProducts.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });
+
+
+export const { setSelectedColor } = productSlices.actions;
+
 
 export default productSlices.reducer;

@@ -47,7 +47,7 @@ const SignUp = () => {
         data.append("phone", formData.phone);
         data.append("password", formData.password);
         if (image) {
-            data.append("photo", image);
+            data.append("avatar", image);
         }
 
         dispatch(registerUser(data));

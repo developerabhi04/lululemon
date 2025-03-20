@@ -2,22 +2,11 @@ import { Link, useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import img1 from "../../../assets/category/na_Dec24_Q4_AppMerchandising_W_Hoodies_ShopCategories.webp";
-import img2 from "../../../assets/category/na_Dec24_Q4_AppMerchandising_W_Pants_ShopCategories.webp";
-import img3 from "../../../assets/category/na_Dec24_Q4_AppMerchandising_W_Shirts_ShopCategories.webp";
-import img4 from "../../../assets/category/na_Dec24_Q4_AppMerchandising_W_Shoes_ShopCategories.webp";
-import img5 from "../../../assets/category/na_Dec24_Q4_AppMerchandising_W_Bags_ShopCategories.webp";
-import img6 from "../../../assets/category/na_Dec24_Q4_AppMerchandising_W_Coats_ShopCategories.webp";
-import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material"; // Import MUI Icons
-
-const categories = [
-    { id: 1, name: "Hoodies & Sweatshirts", image: img1 },
-    { id: 2, name: "Pants", image: img2 },
-    { id: 3, name: "Shirts", image: img3 },
-    { id: 4, name: "Shoes", image: img4 },
-    { id: 5, name: "Bags", image: img5 },
-    { id: 6, name: "Coats & Jackets", image: img6 },
-];
+import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { fetchCategories } from "../../../redux/slices/categorySlices";
+import Skeleton from "@mui/material/Skeleton";
 
 // Custom Arrow Components
 const NextArrow = ({ onClick }) => (
@@ -32,16 +21,22 @@ const PrevArrow = ({ onClick }) => (
     </div>
 );
 
-const Category = ({ showHeading=true, showBar=true }) => {
+const Category = ({ showHeading = true, showBar = true }) => {
+    const dispatch = useDispatch();
     const navigateUrl = useNavigate();
+
+    const { categories, loading } = useSelector((state) => state.categories);
+
+    useEffect(() => {
+        dispatch(fetchCategories());
+    }, [dispatch]);
 
     const settings = {
         dots: false,
         infinite: true,
-        // speed: 500,
         slidesToShow: 5,
         slidesToScroll: 1,
-        // autoplay: true,
+        autoplay: true,
         autoplaySpeed: 2500,
         pauseOnHover: true,
         nextArrow: <NextArrow />,
@@ -54,7 +49,7 @@ const Category = ({ showHeading=true, showBar=true }) => {
     };
 
     const navigateLink = () => {
-        window.scrollTo(0, 0)
+        window.scrollTo(0, 0);
         navigateUrl("/products");
     };
 
@@ -66,16 +61,28 @@ const Category = ({ showHeading=true, showBar=true }) => {
 
             <div className="category-container">
                 <div>
-                    <Slider {...settings}>
-                        {categories.map((category) => (
-                            <div key={category.id} className="category-card" onClick={navigateLink}>
-                                <Link to="/">
-                                    <img src={category.image} alt={category.name} className="category-img" />
-                                </Link>
-                                <p className="category-name">{category.name}</p>
-                            </div>
-                        ))}
-                    </Slider>
+                    {loading ? (
+                        <div className="category-skeleton">
+                            {[...Array(5)].map((_, index) => (
+                                <Skeleton key={index} variant="rectangular" width={200} height={200} />
+                            ))}
+                        </div>
+                    ) : (
+                        <Slider {...settings}>
+                            {categories.map((category) => (
+                                <div key={category._id} className="category-card" onClick={navigateLink}>
+                                    <Link to="/">
+                                        <img
+                                            src={category.photos?.[0]?.url || "default-placeholder.jpg"}
+                                            alt={category.name}
+                                            className="category-img"
+                                        />
+                                    </Link>
+                                    <p className="category-name">{category.name}</p>
+                                </div>
+                            ))}
+                        </Slider>
+                    )}
                 </div>
             </div>
         </section>

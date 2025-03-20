@@ -1,41 +1,52 @@
-import img1 from "../../../assets/product_banner/IMG_9A9749.jpg";
-import img2 from "../../../assets/product_banner/IMG_6428 copy.png"
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { fetchSecondBanners } from "../../../redux/slices/secondBannerSlices";
 
 const SecondBanner = () => {
+    const dispatch = useDispatch();
+
+    const { banners} = useSelector((state) => state.secondBanner);
+
+    useEffect(() => {
+        dispatch(fetchSecondBanners())
+    }, [dispatch])
     return (
+        
         <section className="second-banner">
-            <h1>Daydrift™ fits are flexible.</h1>
-            <div className="second-container">
+            {banners.map((banner) => (
+                <>
+                    <h1>{banner.headingOne}</h1>
+                    <div className="second-container">
 
+                        <div className="second-img-one">
+                            <img src={banner.photos[0]?.url} alt="Banner" />
+                            <div className="content-one">
+                                <h1>Break the rules.</h1>
+                                <p>Meet Daydrift™, a tailored trouser that stretches the imagination.</p>
 
-                <div className="second-img-one">
-                    <img src={img1} alt="Banner" />
-
-                    <div className="content-one">
-                        <h1>Break the rules.</h1>
-                        <p>Meet Daydrift™, a tailored trouser that stretches the imagination.</p>
-
-                        <div className="content-button">
-                            <button>Shop pants</button>
-                            <button>Shop Daydrift™ Trousers</button>
+                                <div className="content-button">
+                                    <button>Shop pants</button>
+                                    <button>Shop Daydrift™ Trousers</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div className="second-img-one">
-                    <img src={img2} alt="Banner" />
+                        <div className="second-img-one">
+                            <img src={banner.photos[1]?.url} alt="Banner" />
+                            <div className="content-one">
+                                <h1>Practically unstoppable.</h1>
+                                <p>In these soft, stretchy layers, you’re comfortable enough to do almost anything.</p>
 
-                    <div className="content-one">
-                        <h1>Practically unstoppable.</h1>
-                        <p>In these soft, stretchy layers, you’re comfortable enough to do almost anything.</p>
-
-                        <div className="content-button">
-                            <button>Shop Spring Preview</button>
+                                <div className="content-button">
+                                    <button>Shop Spring Preview</button>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
-                </div>
-                
-            </div>
+                </>
+            ))}
+
         </section>
     )
 }
