@@ -121,8 +121,16 @@ const Cart = () => {
                                                 {/* <p>Available Sizes: {item.sizeOptions && item.sizeOptions.join(', ')}</p> */}
                                                 {/* <p>Available Seam Sizes: {item.seamSizeOptions && item.seamSizeOptions.join(', ')}</p> */}
 
-                                                <p className="item-variant">Size: {item.selectedSize}</p>
-                                                <p className="item-variant">SeamSize: {item.selectedSeamSize}</p>
+                                                {/* <p className="item-variant">Size: {item.selectedSize}</p>
+                                                <p className="item-variant">SeamSize: {item.selectedSeamSize}</p> */}
+
+                                                {/* Show Size if available, otherwise show SeamSize */}
+                                                {item.selectedSize ? (
+                                                    <p className="item-variant">Size: {item.selectedSize}</p>
+                                                ) : (
+                                                    <p className="item-variant">Seam Size: {item.selectedSeamSize}</p>
+                                                )}
+
                                                 <p className="item-variant">Color: {item.selectedColorName}</p>
 
                                             </div>
