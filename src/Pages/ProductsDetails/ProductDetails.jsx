@@ -177,39 +177,49 @@ const ProductDetails = () => {
           </div> */}
 
           {/* Size Selector */}
-          <div className="product-details__sizes">
-            <p>Choose Seam-Size:</p>
-            <div className="product-details__size-options">
-              {product.sizes.map((size) => (
-                <span
-                  key={size}
-                  className={`size-box ${selectedSize === size ? "selected" : ""}`}
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
-                </span>
-              ))}
+          {!selectedSeamSize && (
+            <div className="product-details__sizes">
+              <p>Choose Size (For Tops):</p>
+              <div className="product-details__size-options">
+                {product.sizes.map((size) => (
+                  <span
+                    key={size}
+                    className={`size-box ${selectedSize === size ? "selected" : ""}`}
+                    onClick={() => {
+                      setSelectedSize(size);
+                      setSelectedSeamSize(null); // Clear seam size if size is selected
+                    }}
+                  >
+                    {size}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
 
 
 
           {/* SeamSize Options */}
-          <div className="product-details__sizes">
-            <p>Choose Size:</p>
-            <div className="product-details__size-options">
-              {product.seamSizes.map((size) => (
-                <span
-                  key={size}
-                  className={`size-box ${selectedSize === size ? "selected" : ""}`}
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
-                </span>
-              ))}
+          {!selectedSize && (
+            <div className="product-details__sizes">
+              <p>Choose Seam Size (For Bottoms):</p>
+              <div className="product-details__size-options">
+                {product.seamSizes.map((size) => (
+                  <span
+                    key={size}
+                    className={`size-box ${selectedSeamSize === size ? "selected" : ""}`}
+                    onClick={() => {
+                      setSelectedSeamSize(size);
+                      setSelectedSize(null); // Clear size if seam size is selected
+                    }}
+                  >
+                    {size}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
 
 
