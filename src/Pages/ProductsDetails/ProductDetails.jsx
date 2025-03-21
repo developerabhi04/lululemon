@@ -41,6 +41,7 @@ const ProductDetails = () => {
     if (product) {
       if (product.colors && product.colors.length > 0) {
         setSelectedColor(product.colors[0].colorName);
+        setSelectedColorName(product.colors[0].colorName);
       }
       if (product.sizes && product.sizes.length > 0) {
         setSelectedSize(product.sizes[0]);
@@ -67,8 +68,9 @@ const ProductDetails = () => {
     //   return;
     // }
 
-    if (!selectedColorName) {
-      toast.error("Please select a colour before adding to cart.")
+    if (!selectedColorName || selectedColorName.trim() === "") {
+      toast.error("Please select a color before adding to cart.");
+      return;
     }
 
     dispatch(
@@ -156,7 +158,10 @@ const ProductDetails = () => {
                     src={color?.url}
                     alt={color?.colorName || `Color ${index + 1}`}
                     className={`color-image ${selectedColor === color.colorName ? "selected" : ""}`}
-                    onClick={() => setSelectedColor(color.colorName)}
+                    onClick={() => {
+                      setSelectedColor(color.colorName);
+                      setSelectedColorName(color.colorName); // ✅ Fix here
+                    }}
                   />
                   <span className="color-name">{color.colorName}</span>
                 </div>
