@@ -62,9 +62,13 @@ const ProductDetails = () => {
       return;
     }
 
-    if (!selectedSize || !selectedSeamSize ) {
+    if (!selectedSize && !selectedSeamSize) {
       toast.error("Please select a size, seam size and color before adding to cart.");
       return;
+    }
+
+    if (!selectedColorName) {
+      toast.error("Please select a colour before adding to cart.")
     }
 
     dispatch(
