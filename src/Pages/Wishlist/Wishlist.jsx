@@ -1,33 +1,81 @@
-import product1 from "../../assets/products/LW3IKTS_069005_1.webp";
-import product2 from "../../assets/products/LW3IKTS_069005_2.webp";
-import product3 from "../../assets/products/LW3IKTS_069005_3.webp";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchWishlistItems, moveToCart, removeFromWishlist } from "../../redux/slices/wishlistSlices";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Wishlist = () => {
-  const wishlistItems = [
-    {
-      id: 1,
-      name: "Classic T-Shirt",
-      price: "$24.99",
-      image: product1,
-    },
-    {
-      id: 2,
-      name: "Elegant Dress",
-      price: "$49.99",
-      image: product2,
-    },
-    {
-      id: 3,
-      name: "Stylish Sneakers",
-      price: "$79.99",
-      image: product3,
-    },
-  ];
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.user);
+  const { wishlistItems, isLoading, error } = useSelector((state) => state.wishlist);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchWishlistItems(user._id));
+    }
+  }, [dispatch, user]);
+
+  const handleRemoveFromWishlist = async (productId, sizes, seamSizes, colorName) => {
+    try {
+      await dispatch(removeFromWishlist({ userId: user._id, productId, sizes, seamSizes, colorName })).unwrap();
+      toast.success("Item removed from wishlist!");
+      // dispatch(fetchWishlistItems(user._id));
+    } catch (error) {
+      toast.error(error?.message || "Failed to remove item from wishlist");
+    }
+  };
+
+
+  const handleMoveToCart = async (product) => {
+    if (!user) {
+      toast.error("Please log in to move items to your cart.");
+      return;
+    }
+
+    console.log("🛒 Moving to cart with:", {
+      userId: user._id,
+      productId: product.productId,
+      sizes: product.selectedSize || null,
+      seamSizes: product.selectedSeamSize || null,
+      colorName: product.selectedColorName, // ✅ FIXED: Using correct field name
+    });
+
+    try {
+      await dispatch(
+        moveToCart({
+          userId: user._id,
+          productId: product.productId,
+          sizes: product.selectedSize || null,
+          seamSizes: product.selectedSeamSize || null,
+          colorName: product.selectedColorName, // ✅ FIXED
+        })
+      ).unwrap();
+
+      toast.success("Item moved to cart successfully!");
+    } catch (error) {
+      console.error("❌ Move to Cart Error:", error);
+      toast.error(error?.message || "Failed to move item to cart.");
+    }
+  };
+
+
+
+  if (isLoading) return <p>Loading wishlist...</p>;
+  if (error) return <p>Error loading wishlist: {error}</p>;
+
+
+
+  const navigateLink = (id) => {
+    window.scrollTo(0, 0); // Scrolls to the top of the page
+    navigate(`/product-details/${id}`);
+  }
 
   return (
     <section className="wishlist-page">
       <div className="container">
         <h1 className="page-heading">My Wishlist</h1>
+
         {wishlistItems.length === 0 ? (
           <div className="empty-wishlist">
             <p>Your wishlist is empty. Start adding your favorite products!</p>
@@ -36,16 +84,25 @@ const Wishlist = () => {
         ) : (
           <div className="wishlist-grid">
             {wishlistItems.map((item) => (
-              <div key={item.id} className="wishlist-card">
-                <div className="wishlist-image">
-                  <img src={item.image} alt={item.name} />
+              <div className="wishlist-card" key={`${item.productId}-${item.selectedSize || 'noSize'}-${item.selectedSeamSize || 'noSeamSize'}-${item.selectedColorName}`} >
+                <div className="wishlist-image" onClick={() => navigateLink(item.productId)}>
+                  <img src={item.imageUrl} alt={item.name} />
                 </div>
                 <div className="wishlist-details">
                   <h3>{item.name}</h3>
-                  <p className="price">{item.price}</p>
+
+                  {item.selectedSize && (<p>Size: {item.selectedSize}</p>)}
+                  {item.selectedSeamSize && (<p>Seam Size: {item.selectedSeamSize}</p>)}
+                  <p className="price">${item.price}.00</p>
+
                   <div className="wishlist-actions">
-                    <button className="move-to-cart">Move to Cart</button>
-                    <button className="remove-item">Remove</button>
+                    <button className="move-to-cart" onClick={() => handleMoveToCart(item)}>
+                      Move to Cart
+                    </button>
+
+                    <button className="remove-item"
+                      onClick={() => handleRemoveFromWishlist(item.productId, item.selectedSize, item.selectedSeamSize, item.selectedColorName)}
+                    >Remove</button>
                   </div>
                 </div>
               </div>

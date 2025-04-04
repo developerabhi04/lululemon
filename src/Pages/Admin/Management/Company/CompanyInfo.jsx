@@ -204,7 +204,7 @@ const CompanyInfo = () => {
                     </div>
 
                     <div className="input-group">
-                        <label>Twitter Link</label>
+                        <label>Tiktok Link</label>
                         <textarea
                             type="text"
                             name="twitter"

@@ -1,70 +1,100 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import "react-toastify/dist/ReactToastify.css"; // ✅ Import Toastify CSS
-import Home from "./Pages/Home/Home";
-import Products from "./Pages/Products/Products";
-import ProductDetails from "./Pages/ProductsDetails/ProductDetails";
-import Cart from "./Pages/Cart/Cart";
-import SignIn from "./Pages/User/SignIn";
-import Signup from "./Pages/User/Signup";
-import Checkout from "./Pages/User/Checkout";
-import MainLayout from "./Components/Layout/MainLayout";
-
-
-// Admin
-import AdminDashboard from "./Pages/Admin/AdminDashboard";
-import AdminProducts from "./Pages/Admin/Products";
-import Customers from "./Pages/Admin/Customers";
-import Transaction from "./Pages/Admin/Transaction";
-import BarCharts from "./Pages/Admin/Charts/BarCharts";
-import PieCharts from "./Pages/Admin/Charts/PieCharts";
-import LineCharts from "./Pages/Admin/Charts/LineCharts";
-import NewProduct from "./Pages/Admin/Management/NewProduct";
-import ProductManagement from "./Pages/Admin/Management/ProductManagement";
-import TransactionManagement from "./Pages/Admin/Management/TransactionManagement";
-import Profile from "./Pages/User/Profile";
-import Order from "./Pages/Order/Order";
-import OrderDetails from "./Pages/Order/OrderDetails";
-import Wishlist from "./Pages/Wishlist/Wishlist";
+import { lazy, Suspense } from "react";
 import { ToastContainer } from "react-toastify";
-import Banners from "./Pages/Admin/Banners";
-import Category from "./Pages/Admin/Category";
-import FirstBanner from "./Pages/Admin/Management/Banner/FirstBanner";
-import SecondBanner from "./Pages/Admin/Management/Banner/SecondBanner";
-import CompanyInfo from "./Pages/Admin/Management/Company/CompanyInfo";
-import Coupons from "./Pages/Admin/Coupon";
-import NewCoupon from "./Pages/Admin/Management/NewCoupon";
-import CouponManagement from "./Pages/Admin/Management/CouponManagement";
-import ThirdBanner from "./Pages/Admin/Management/Banner/ThirdBanner";
-import FAQ from "./Pages/FooterSections/FAQ";
-import AccessibilityStatement from "./Pages/FooterSections/AccessibilityStatement";
-import ServicesPage from "./Pages/FooterSections/Services";
-import Ordering from "./Pages/FooterSections/Ordering";
-import ShippingPolicy from "./Pages/FooterSections/ShippingPolicy";
-import PrivacyPolicy from "./Pages/FooterSections/PrivacyPolicy";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import MainLayout from "./Components/Layout/MainLayout";
+import "react-toastify/dist/ReactToastify.css"; // ✅ Toastify CSS
+import Loadertwo from "./Components/Loader/Loadertwo";
+import NotFound from "./Components/Notfound";
+import ProductPage from "./Pages/Products/ProductCategory";
+import ScrollTop from "./Components/Loader/ScrollTop";
+import ChatSupport from "./Pages/Order/Contact";
+import ProtectedRoute from "./auth/ProtectedRoute";
+import AdminRoute from "./auth/AdminRoute";
 
+// Lazy load pages
+const Home = lazy(() => import("./Pages/Home/Home"));
+const Products = lazy(() => import("./Pages/Products/Products"));
+const ProductDetails = lazy(() => import("./Pages/ProductsDetails/ProductDetails"));
+const Cart = lazy(() => import("./Pages/Cart/Cart"));
+const Wishlist = lazy(() => import("./Pages/Wishlist/Wishlist"));
+const Checkout = lazy(() => import("./Pages/User/Checkout"));
+const Profile = lazy(() => import("./Pages/User/Profile"));
+const Order = lazy(() => import("./Pages/Order/Order"));
+const OrderDetails = lazy(() => import("./Pages/Order/OrderDetails"));
+const OrderSuccessful = lazy(() => import("./Pages/Order/OrderSuccessful"));
+const SignIn = lazy(() => import("./Pages/User/SignIn"));
+const Signup = lazy(() => import("./Pages/User/Signup"));
 
+// Help & Policy
+const FAQ = lazy(() => import("./Pages/FooterSections/FAQ"));
+const AccessibilityStatement = lazy(() => import("./Pages/FooterSections/AccessibilityStatement"));
+const ServicesPage = lazy(() => import("./Pages/FooterSections/Services"));
+const Ordering = lazy(() => import("./Pages/FooterSections/Ordering"));
+const ShippingPolicy = lazy(() => import("./Pages/FooterSections/ShippingPolicy"));
+const PrivacyPolicy = lazy(() => import("./Pages/FooterSections/PrivacyPolicy"));
 
+// Admin Pages
+const AdminDashboard = lazy(() => import("./Pages/Admin/AdminDashboard"));
+const AdminProducts = lazy(() => import("./Pages/Admin/Products"));
+const Customers = lazy(() => import("./Pages/Admin/Customers"));
+const Transaction = lazy(() => import("./Pages/Admin/Transaction"));
+const BarCharts = lazy(() => import("./Pages/Admin/Charts/BarCharts"));
+const PieCharts = lazy(() => import("./Pages/Admin/Charts/PieCharts"));
+const LineCharts = lazy(() => import("./Pages/Admin/Charts/LineCharts"));
+const ProductManagement = lazy(() => import("./Pages/Admin/Management/ProductManagement"));
+const TransactionManagement = lazy(() => import("./Pages/Admin/Management/TransactionManagement"));
+const Banners = lazy(() => import("./Pages/Admin/Banners"));
+const NewProduct = lazy(() => import("./Pages/Admin/Management/NewProduct"));
+const Category = lazy(() => import("./Pages/Admin/Category"));
+const FirstBanner = lazy(() => import("./Pages/Admin/Management/Banner/FirstBanner"));
+const SecondBanner = lazy(() => import("./Pages/Admin/Management/Banner/SecondBanner"));
+const ThirdBanner = lazy(() => import("./Pages/Admin/Management/Banner/ThirdBanner"));
+const CompanyInfo = lazy(() => import("./Pages/Admin/Management/Company/CompanyInfo"));
+const Coupons = lazy(() => import("./Pages/Admin/Coupon"));
+const NewCoupon = lazy(() => import("./Pages/Admin/Management/NewCoupon"));
+const CouponManagement = lazy(() => import("./Pages/Admin/Management/CouponManagement"));
 
+// PayPal config
+const initialOptions = {
+  "client-id": "AWBqUFZvUwKo5MnU57O7qeZka0Yb-PEEOrSOIfliDRrCoIJ1M5Z-OyKZmdtOYh7R9B3Km1ThtgYUTins",  // Replace with actual client ID
+  currency: "USD",
+};
 
 const App = () => {
-  // const { isAuthenticated, user } = useSelector((state) => state.user);
   return (
-    <>
-      <BrowserRouter>
+    <BrowserRouter>
+      <ScrollTop />
+      <Suspense fallback={<Loadertwo />}>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<MainLayout><Home /></MainLayout>} />
           <Route path="/products" element={<MainLayout><Products /></MainLayout>} />
+          <Route path="/product/:id" element={<MainLayout><ProductDetails /></MainLayout>} />
+          <Route path="/products/:category" element={<MainLayout><ProductPage /></MainLayout>} />
           <Route path="/product-details/:id" element={<MainLayout><ProductDetails /></MainLayout>} />
           <Route path="/cart" element={<MainLayout><Cart /></MainLayout>} />
           <Route path="/wishlist" element={<MainLayout><Wishlist /></MainLayout>} />
-          <Route path="/checkout-user" element={<MainLayout><Checkout /></MainLayout>} />
+          <Route path="/chat-support" element={<MainLayout><ChatSupport /></MainLayout>} />
 
-          <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
-          <Route path="/orders" element={<MainLayout><Order /></MainLayout>} />
-          <Route path="/orders-details" element={<MainLayout><OrderDetails /></MainLayout>} />
+          {/* User Routes */}
+          <Route path="/checkout-user" element={
+            <ProtectedRoute>
+              <MainLayout>
+                <PayPalScriptProvider options={initialOptions}>
+                  <Checkout />
+                </PayPalScriptProvider>
+              </MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={<ProtectedRoute><MainLayout><Profile /></MainLayout> </ProtectedRoute>} />
+          <Route path="/orders" element={<ProtectedRoute><MainLayout><Order /></MainLayout> </ProtectedRoute>} />
+          <Route path="/orders-details/:id" element={<ProtectedRoute><MainLayout><OrderDetails /></MainLayout></ProtectedRoute>} />
+          <Route path="/orders-success" element={<ProtectedRoute><OrderSuccessful /></ProtectedRoute>} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<Signup />} />
 
-
-          {/* help */}
+          {/* Help & Policy Pages */}
           <Route path="/faq" element={<MainLayout><FAQ /></MainLayout>} />
           <Route path="/accessibility-statement" element={<MainLayout><AccessibilityStatement /></MainLayout>} />
           <Route path="/services" element={<MainLayout><ServicesPage /></MainLayout>} />
@@ -72,44 +102,37 @@ const App = () => {
           <Route path="/shipping-policy" element={<MainLayout><ShippingPolicy /></MainLayout>} />
           <Route path="/privacy-policy" element={<MainLayout><PrivacyPolicy /></MainLayout>} />
 
-
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<Signup />} />
-
-
-          {/*Admin*/}
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/banner" element={<Banners />} />
-          <Route path="/admin/banner/first-banner" element={<FirstBanner />} />
-          <Route path="/admin/banner/second-banner" element={<SecondBanner />} />
-          <Route path="/admin/banner/third-banner" element={<ThirdBanner />} />
-
-          <Route path="/admin/banner/company-info" element={<CompanyInfo />} />
-          <Route path="/admin/coupons" element={<Coupons />} />
-          <Route path="/admin/category" element={<Category />} />
-          <Route path="/admin/products" element={<AdminProducts />} />
-          <Route path="/admin/customers" element={<Customers />} />
-          <Route path="/admin/transaction" element={<Transaction />} />
-
+          {/* Admin Routes */}
+          <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+          <Route path="/admin/banner" element={<AdminRoute><Banners /></AdminRoute>} />
+          <Route path="/admin/banner/first-banner" element={<AdminRoute><FirstBanner /></AdminRoute>} />
+          <Route path="/admin/banner/second-banner" element={<AdminRoute><SecondBanner /></AdminRoute>} />
+          <Route path="/admin/banner/third-banner" element={<AdminRoute><ThirdBanner /></AdminRoute>} />
+          <Route path="/admin/banner/company-info" element={<AdminRoute><CompanyInfo /> </AdminRoute>} />
+          <Route path="/admin/coupons" element={<AdminRoute><Coupons /></AdminRoute>} />
+          <Route path="/admin/category" element={<AdminRoute><Category /> </AdminRoute>} />
+          <Route path="/admin/products" element={<AdminRoute><AdminProducts /> </AdminRoute>} />
+          <Route path="/admin/customers" element={<AdminRoute><Customers /> </AdminRoute>} />
+          <Route path="/admin/transaction" element={<AdminRoute><Transaction /> </AdminRoute>} />
 
           {/* Charts */}
-          <Route path="/admin/chart/bar" element={<BarCharts />} />
-          <Route path="/admin/chart/pie" element={<PieCharts />} />
-          <Route path="/admin/chart/line" element={<LineCharts />} />
+          <Route path="/admin/chart/bar" element={<AdminRoute><BarCharts /> </AdminRoute>} />
+          <Route path="/admin/chart/pie" element={<AdminRoute><PieCharts /> </AdminRoute>} />
+          <Route path="/admin/chart/line" element={<AdminRoute > <LineCharts /> </AdminRoute>} />
 
+          {/* Admin Management */}
+          <Route path="/admin/products/new" element={<AdminRoute><NewProduct /> </AdminRoute>} />
+          <Route path="/admin/coupons/new" element={<AdminRoute><NewCoupon /> </AdminRoute>} />
+          <Route path="/admin/product/:productId" element={<AdminRoute><ProductManagement /> </AdminRoute>} />
+          <Route path="/admin/coupon/:id" element={<AdminRoute><CouponManagement /> </AdminRoute>} />
+          <Route path="/admin/transaction/:id" element={<AdminRoute><TransactionManagement /> </AdminRoute>} />
 
-          {/* management */}
-          <Route path="/admin/products/new" element={<NewProduct />} />
-          <Route path="/admin/coupons/new" element={<NewCoupon />} />
-          <Route path="/admin/product/:productId" element={<ProductManagement />} />
-          <Route path="/admin/coupon/:id" element={<CouponManagement />} />
-          <Route path="/admin/transaction/:id" element={<TransactionManagement />} />
-
+          <Route path="*" element={<NotFound />} />
         </Routes>
-        <ToastContainer position="top-right" autoClose={3000} />
-      </BrowserRouter>
-    </>
-  )
-}
+      </Suspense>
+      <ToastContainer position="top-right" autoClose={3000} />
+    </BrowserRouter>
+  );
+};
 
-export default App
+export default App;

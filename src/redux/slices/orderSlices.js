@@ -2,6 +2,24 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { server } from "../../server";
 
+//Create an Asynchronous Redux Thunk
+export const createNewOrder = createAsyncThunk(
+    "order/createNewOrder",
+    async (orderData, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`${server}/order/new-order`, orderData, {
+                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to create order");
+        }
+    }
+);
+
+
+
 // ✅ Fetch all orders
 export const fetchOrders = createAsyncThunk("order/fetchOrders", async (_, { rejectWithValue }) => {
     try {
@@ -84,14 +102,35 @@ const orderSlice = createSlice({
     name: "order",
     initialState: {
         orders: [],
-        latestOrders:[],
+        latestOrders: [],
         orderDetails: null,
         loading: false,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        resetNewOrderSuccess: (state) => {
+            state.newOrderSuccess = false;
+            state.orderPlaced = false;
+        },
+    },
     extraReducers: (builder) => {
         builder
+
+
+            .addCase(createNewOrder.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createNewOrder.fulfilled, (state, action) => {
+                state.loading = false;
+                state.newOrderSuccess = true;
+                state.newOrder = action.payload;
+            })
+            .addCase(createNewOrder.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
             // ✅ Fetch all orders
             .addCase(fetchOrders.pending, (state) => {
                 state.loading = true;
@@ -100,7 +139,7 @@ const orderSlice = createSlice({
             .addCase(fetchOrders.fulfilled, (state, action) => {
                 state.loading = false;
                 state.orders = action.payload;
-                
+
             })
             .addCase(fetchOrders.rejected, (state, action) => {
                 state.loading = false;
@@ -127,8 +166,9 @@ const orderSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchOrderDetails.fulfilled, (state, action) => {
-                state.orderDetails = action.payload;
                 state.loading = false;
+                state.orderDetails = action.payload;
+
             })
             .addCase(fetchOrderDetails.rejected, (state, action) => {
                 state.loading = false;
@@ -144,7 +184,9 @@ const orderSlice = createSlice({
                 state.orders = state.orders.map((order) =>
                     order._id === action.payload._id ? action.payload : order
                 );
-                state.orderDetails = action.payload; // Ensure updated order details
+                if (state.orderDetails && state.orderDetails._id === action.payload._id) {
+                    state.orderDetails.status = action.payload.status; // Update status in details view
+                }
             })
             .addCase(updateOrderStatus.rejected, (state, action) => {
                 state.loading = false;
@@ -165,5 +207,5 @@ const orderSlice = createSlice({
             });
     },
 });
-
+export const { resetNewOrderSuccess } = orderSlice.actions;
 export default orderSlice.reducer;

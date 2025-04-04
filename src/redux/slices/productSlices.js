@@ -4,16 +4,84 @@ import { server } from "../../server";
 
 
 
-// ✅ Fetch All Products
-export const fetchProducts = createAsyncThunk("products/fetchProducts", async (_, { rejectWithValue }) => {
-    try {
-        const response = await axios.get(`${server}/products/get-all-product`);
-        console.log(response)
-        return response.data.products;
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Failed to fetch products");
+// ✅ Fetch Products with Filters
+export const fetchProducts = createAsyncThunk("products/fetchProducts", async (filterParams = {}, { rejectWithValue }) => {
+        try {
+            const params = {};
+            if (filterParams.keyword) {
+                params.keyword = filterParams.keyword;
+            }
+            if (filterParams.category && filterParams.category.length > 0) {
+                params.category = Array.isArray(filterParams.category)
+                    ? filterParams.category.join(",")
+                    : filterParams.category;
+            }
+            if (filterParams.size && filterParams.size.length > 0) {
+                params.size = Array.isArray(filterParams.size)
+                    ? filterParams.size.join(",")
+                    : filterParams.size;
+            }
+            if (filterParams.seamSize && filterParams.seamSize.length > 0) {
+                params.seamSize = Array.isArray(filterParams.seamSize)
+                    ? filterParams.seamSize.join(",")
+                    : filterParams.seamSize;
+            }
+            if (filterParams.color && filterParams.color.length > 0) {
+                params.color = Array.isArray(filterParams.color)
+                    ? filterParams.color.join(",")
+                    : filterParams.color;
+            }
+            if (filterParams.priceRange) {
+                params.price = JSON.stringify({
+                    min: filterParams.priceRange[0],
+                    max: filterParams.priceRange[1],
+                });
+            }
+            if (filterParams.sort) {
+                params.sort = filterParams.sort;
+            }
+            const response = await axios.get(`${server}/products/get-all-products`, { params });
+            return response.data.products;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Failed to fetch products"
+            );
+        }
     }
-});
+);
+
+// ✅ Live Search Thunk for OnChange Searches
+export const fetchLiveSearchProducts = createAsyncThunk(
+    "products/fetchLiveSearchProducts",
+    async (keyword, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${server}/products/get-all-products`, {
+                params: { keyword },
+            });
+            return response.data.products;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Failed to fetch live search products"
+            );
+        }
+    }
+);
+
+
+// ✅ Fetch Similar Products for a given product ID
+export const fetchSimilarProducts = createAsyncThunk(
+    "products/fetchSimilarProducts",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${server}/products/similar/${id}`);
+            return response.data.products;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Failed to fetch similar products"
+            );
+        }
+    }
+);
 
 
 // ✅ Add New Product
@@ -38,6 +106,8 @@ export const addProduct = createAsyncThunk("products/addProduct", async (product
     }
 });
 
+
+
 // ✅ Update Product
 export const updateProduct = createAsyncThunk("products/updateProduct", async ({ id, updatedData }, { rejectWithValue }) => {
     try {
@@ -56,14 +126,14 @@ export const updateProduct = createAsyncThunk("products/updateProduct", async ({
 });
 
 // ✅ Fetch Single Product
-export const fetchSingleProduct = createAsyncThunk(
-    "products/fetchSingleProduct",
+export const fetchSingleProduct = createAsyncThunk("products/fetchSingleProduct",
     async (id, { rejectWithValue }) => {
         try {
             if (!id) throw new Error("Product ID is missing");
 
             const response = await axios.get(`${server}/products/get-single-product/${id}`);
-            console.log("🟢 API Response for Product:", response.data.product); // ✅ Debugging
+
+            // console.log("🟢 API Response for Product:", response.data.product); // ✅ Debugging
             return response.data.product;
         } catch (error) {
             console.error("🔴 Error fetching product:", error.response?.data || error.message);
@@ -104,32 +174,79 @@ export const fetchNewArrivalProducts = createAsyncThunk("products/fetchNewArriva
 const productSlices = createSlice({
     name: "products",
     initialState: {
-        products: [],
+        products: [], // List of products
         product: null,
-        loading: false,
-        error: null,
+        liveSearchResults: [],   // Live search suggestions
+        searchLoading: false,
+        loading: false, // Loading state
+        error: null, // Error messages
+        // selectedColor: null,
+        similarProducts: [],
+        filters: {
+            keyword: "",
+            category: [], // multi-select: array of category names or IDs
+            size: [], // e.g., ["S", "M", "L"]
+            seamSize: [], // e.g., ["28", "30", "32", "34"]
+            color: [], // e.g., ["Black", "Blue"]
+            priceRange: [0, 1000],
+            sort: "",
+        },
     },
     reducers: {
         setSelectedColor: (state, action) => {
             state.selectedColor = action.payload;
+        },
+
+        setFilters: (state, action) => {
+            state.filters = { ...state.filters, ...action.payload };
         },
     },
     extraReducers: (builder) => {
         builder
 
             // get-Fetch Products
+            // Fetch Products (Pending)
             .addCase(fetchProducts.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
+            // Fetch Products (Fulfilled)
             .addCase(fetchProducts.fulfilled, (state, action) => {
                 state.loading = false;
-                state.products = action.payload;
+                state.products = action.payload; // Update the product list
             })
+            // Fetch Products (Rejected)
             .addCase(fetchProducts.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload; // Set error message
+            })
+
+            .addCase(fetchSimilarProducts.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchSimilarProducts.fulfilled, (state, action) => {
+                state.loading = false;
+                state.similarProducts = action.payload;
+            })
+            .addCase(fetchSimilarProducts.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
+            
+            .addCase(fetchLiveSearchProducts.pending, (state) => {
+                state.searchLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchLiveSearchProducts.fulfilled, (state, action) => {
+                state.searchLoading = false;
+                state.liveSearchResults = action.payload;
+            })
+            .addCase(fetchLiveSearchProducts.rejected, (state, action) => {
+                state.searchLoading = false;
+                state.error = action.payload;
+            })
+
 
             // Add Product
             .addCase(addProduct.pending, (state) => {
@@ -167,7 +284,7 @@ const productSlices = createSlice({
                 state.error = null;
             })
             .addCase(fetchSingleProduct.fulfilled, (state, action) => {
-                console.log("🟢 Updating Redux Store with Product:", action.payload); // ✅ Debug Redux
+                // console.log("🟢 Updating Redux Store with Product:", action.payload); // ✅ Debug Redux
                 state.loading = false;
                 state.product = action.payload;
             })
@@ -206,7 +323,7 @@ const productSlices = createSlice({
 });
 
 
-export const { setSelectedColor } = productSlices.actions;
+export const { setSelectedColor, setFilters } = productSlices.actions;
 
 
 export default productSlices.reducer;

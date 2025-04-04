@@ -1,123 +1,89 @@
 import { useNavigate } from "react-router-dom";
-import product1 from "../../assets/products/LW3IKTS_069005_1.webp";
-import product2 from "../../assets/products/LW3IKTS_069005_2.webp";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { fetchOrders } from "../../redux/slices/orderSlices";
 
 
 const Order = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { orders, loading, error } = useSelector((state) => state.order);
 
-  const orderDetails = () => {
-    navigate("/orders-details")
-  }
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
+
+  const handleOrderDetails = (id) => {
+    navigate(`/orders-details/${id}`);
+  };
+
+  if (loading) return <p className="error">Loading... {error}</p>;
+  if (error) return <p className="error">Error loading orders: {error}</p>;
+
   return (
     <section className="order-page">
       <div className="container">
-        {/* Page Header */}
-        <header className="order-header">
+        <div className="order-header">
           <h1>My Orders</h1>
           <p>Track your past orders and view their details below.</p>
-        </header>
+        </div>
 
-        {/* Orders List */}
         <div className="orders-list">
-          {/* Single Order Card */}
-          <div className="order-card">
-            {/* Order Info */}
-            <div className="order-header-info">
-              <div className="order-info">
-                <h3>Order #12345</h3>
-                <p>Placed on: January 12, 2025</p>
-                <p>Status: <span className="status delivered">Delivered</span></p>
-              </div>
-              <div className="view-details-btn">
-                <button onClick={orderDetails}>View Details</button>
-              </div>
-            </div>
-
-            {/* Order Summary */}
-            <div className="order-summary">
-              <p><strong>Total:</strong> $199.99</p>
-            </div>
-
-            {/* Product Details */}
-            <div className="order-details">
-              <h4>Order Details:</h4>
-              <div className="product-list">
-                {/* Single Product */}
-                <div className="product-item">
-                  <div className="product-image">
-                    <img
-                      src={product1}
-                      alt="Product"
-                    />
+          {orders?.length === 0 ? (
+            <p className="no-orders">No orders found.</p>
+          ) : (
+            orders?.map((order) => (
+              <div className="order-card" key={order._id}>
+                <div className="order-header-info">
+                  <div className="order-info">
+                    <h3>Order #{order._id.slice(-10).toUpperCase()}</h3>
+                    <p>Placed on: {new Date(order.createdAt).toLocaleDateString()}</p>
+                    <p>
+                      Status:{" "}
+                      <span className={`status ${order.status.toLowerCase()}`}>
+                        {order.status}
+                      </span>
+                    </p>
                   </div>
-                  <div className="product-info">
-                    <h5>{"Women's T-Shirt"}</h5>
-                    <p>Size: M</p>
-                    <p>Quantity: 1</p>
-                  </div>
-                  <div className="product-price">
-                    <p>$49.99</p>
+                  <div className="view-details-btn">
+                    <button onClick={() => handleOrderDetails(order._id)}>
+                      View Details
+                    </button>
                   </div>
                 </div>
 
-                <div className="product-item">
-                  <div className="product-image">
-                    <img
-                      src={product2}
-                      alt="Product"
-                    />
-                  </div>
-                  <div className="product-info">
-                    <h5>{"Women's Jeans"}</h5>
-                    <p>Size: 32</p>
-                    <p>Quantity: 1</p>
-                  </div>
-                  <div className="product-price">
-                    <p>$149.99</p>
-                  </div>
+                <div className="order-summary">
+                  <p>
+                    <strong>Total:</strong> ${order.total}
+                  </p>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Another Order Card */}
-          <div className="order-card">
-            <div className="order-header-info">
-              <div className="order-info">
-                <h3>Order #12346</h3>
-                <p>Placed on: December 25, 2024</p>
-                <p>Status: <span className="status in-progress">In Progress</span></p>
-              </div>
-              <div className="view-details-btn">
-                <button>View Details</button>
-              </div>
-            </div>
-            <div className="order-summary">
-              <p><strong>Total:</strong> $49.99</p>
-            </div>
-            <div className="order-details">
-              <h4>Order Details:</h4>
-              <div className="product-list">
-                <div className="product-item">
-                  <div className="product-image">
-                    <img
-                      src={product1}
-                      alt="Product"
-                    />
-                  </div>
-                  <div className="product-info">
-                    <h5>{"women's Hoodie"}</h5>
-                    <p>Size: L</p>
-                    <p>Quantity: 1</p>
-                  </div>
-                  <div className="product-price">
-                    <p>$49.99</p>
+                <div className="order-details">
+                  <h4>Order Details:</h4>
+                  <div className="product-list">
+                    {order.cartItems?.map((item) => (
+                      <div className="product-item" key={item._id}>
+                        <div className="product-image">
+                          <img
+                            src={item.imageUrl || "https://via.placeholder.com/100"}
+                            alt={item.name}
+                          />
+                        </div>
+                        <div className="product-info">
+                          <h5>{item.name}</h5>
+                          <p>Size: {item.selectedSize}</p>
+                          <p>Quantity: {item.quantity}</p>
+                        </div>
+                        <div className="product-price">
+                          <p>${item.price}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            ))
+          )}
         </div>
       </div>
     </section>

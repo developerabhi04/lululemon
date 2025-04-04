@@ -59,6 +59,39 @@ $border-radius: 8px;
                 margin-bottom: 0.3rem;
                 overflow: hidden;
 
+                .MuiTextField-root {
+                    width: 100%;
+
+                    .MuiOutlinedInput-root {
+
+                        // Default border color
+                        fieldset {
+                            border-color: $primary-color !important;
+                        }
+
+                        // Change color when hovered
+                        &:hover fieldset {
+                            border-color: $primary-color;
+                        }
+
+                        // Change color when focused
+                        &.Mui-focused fieldset {
+                            border-color: $primary-color !important;
+                            border-width: 2px;
+                        }
+                    }
+
+                    // Change label color to red
+                    .MuiInputLabel-root {
+                        // color: $primary-color;
+                    }
+
+                    // When input is focused, make label red
+                    .MuiInputLabel-root.Mui-focused {
+                        color: $primary-color;
+                    }
+                }
+
                 .accordion-header {
                     width: 100%;
                     background: $white;
@@ -146,7 +179,7 @@ $border-radius: 8px;
                 width: 100%;
             }
 
-            .order-summarys{
+            .order-summarys {
                 background: $white;
                 padding: 1.5rem;
                 border: 1px solid #ddd;

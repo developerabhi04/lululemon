@@ -9,7 +9,6 @@ const columns = [
   { Header: "Avatar", accessor: "avatar" },
   { Header: "Name", accessor: "name" },
   { Header: "Email", accessor: "email" },
-  { Header: "Phone", accessor: "phone" },
   { Header: "Role", accessor: "role" },
   { Header: "Action", accessor: "action" },
 ];
@@ -41,7 +40,6 @@ const Customers = () => {
     ),
     name: user.name,
     email: user.email,
-    phone: user.phone || "N/A",
     role: (
       <span
         style={{
@@ -55,8 +53,29 @@ const Customers = () => {
         {user.role || "user"}
       </span>
     ),
-    action: (
-      <button onClick={() => handleDelete(user._id)} style={{ color: "red", border: "none", background: "none", cursor: "pointer" }}>
+    action: user.role === "admin" ? ( // Disable delete button for admins
+      <button
+        disabled
+        style={{
+          color: "gray",
+          border: "none",
+          background: "none",
+          cursor: "not-allowed",
+          opacity: 0.6,
+        }}
+      >
+        <FaTrash />
+      </button>
+    ) : (
+      <button
+        onClick={() => handleDelete(user._id)}
+        style={{
+          color: "red",
+          border: "none",
+          background: "none",
+          cursor: "pointer",
+        }}
+      >
         <FaTrash />
       </button>
     ),

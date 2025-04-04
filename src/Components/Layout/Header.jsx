@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   AddShoppingCart,
+  Clear,
   Face,
   Facebook,
   Favorite,
@@ -17,39 +18,51 @@ import {
   X,
   YouTube,
 } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCompanyInfo } from "../../redux/slices/companyDetailsSlices";
+;
 import logo from "../../assets/Fem-Cartel-Wording-1400x352.png";
 import womenImage from "../../assets/0106_SP25_MarketingMoment_Dreamknit_Womens.webp";
 import accessoriesImage from "../../assets/0106_SP25_MarketingMoment_Accessories.webp";
 import shoesImage from "../../assets/0106_SP25_MarketingMoment_ACTVCLUB.webp";
-import { useDispatch, useSelector } from "react-redux";
+import { fetchLiveSearchProducts } from "../../redux/slices/productSlices";
 import { logout } from "../../redux/slices/userSlices";
-import { fetchCompanyInfo } from "../../redux/slices/companyDetailsSlices";
 
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
-
+  const { wishlistItems } = useSelector((state) => state.wishlist);
   const { cartItems = [] } = useSelector((state) => state.shopCart);
-
-
-
   const { companys } = useSelector((state) => state.company);
+  const { liveSearchResults, searchLoading } = useSelector((state) => state.products);
 
+  // Local state for search and suggestions
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [displayedSuggestions, setDisplayedSuggestions] = useState([]);
 
+  // Other Header UI states
   const [hoveredItem, setHoveredItem] = useState(null);
   const [showTopNav, setShowTopNav] = useState(true);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [profileDropdownVisible, setProfileDropdownVisible] = useState(false);
 
   const profileDropdownRef = useRef(null);
+  const searchRef = useRef(null);
   let hoverTimeout = null;
 
   useEffect(() => {
-    dispatch(fetchCompanyInfo())
-  }, [dispatch])
+    dispatch(fetchCompanyInfo());
+  }, [dispatch]);
 
-  // Dropdown data for individual nav items
+  // Whenever live search results update, update the local displayed suggestions
+  useEffect(() => {
+    setDisplayedSuggestions(liveSearchResults);
+  }, [liveSearchResults]);
+
+  // Dropdown data for nav items
   const dropdownItems = {
     women: {
       featured: [
@@ -81,17 +94,9 @@ const Header = () => {
         "Dresses & Jumpsuits",
         "Shop All Bottoms",
       ],
-      shopByActivity: [
-        "Training",
-        "Running",
-        "Swim",
-        "Yoga",
-        "Travel",
-        "Tennis & Golf",
-      ],
+      shopByActivity: ["Training", "Running", "Swim", "Yoga", "Travel", "Tennis & Golf"],
       image: womenImage,
     },
-
     accessories: {
       product: [
         "Bags",
@@ -105,7 +110,6 @@ const Header = () => {
       ],
       image: accessoriesImage,
     },
-
     shoes: {
       items: [
         "Cross Training Shoes",
@@ -119,12 +123,11 @@ const Header = () => {
     },
   };
 
-  // Scroll event listener to hide top nav on scroll
+  // Hide top nav on scroll
   useEffect(() => {
     const handleScroll = () => {
       setShowTopNav(window.scrollY === 0);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -139,35 +142,68 @@ const Header = () => {
     hoverTimeout = setTimeout(() => {
       setDropdownVisible(false);
       setHoveredItem(null);
-    }, 200); // Delay to prevent accidental hiding
+    }, 200);
   };
-
-
-  // const toggleProfileDropdown = () => {
-  //   setProfileDropdownVisible(!profileDropdownVisible);
-  // };
-
 
   const toggleProfileDropdown = () => {
     setProfileDropdownVisible((prev) => !prev);
   };
 
-
-  // Close dropdown if clicked outside
+  // Close profile dropdown if clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        profileDropdownRef.current &&
-        !profileDropdownRef.current.contains(event.target)
-      ) {
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
         setProfileDropdownVisible(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Debounce live search: dispatch live search thunk after delay when searchQuery changes
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchQuery.trim().length > 0) {
+        dispatch(fetchLiveSearchProducts(searchQuery.trim()));
+      }
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery, dispatch]);
+
+  // Close the search bar if user clicks outside the search container
+  useEffect(() => {
+    const handleClickOutsideSearch = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSearch(false);
+        setSearchQuery("");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutsideSearch);
+    return () => document.removeEventListener("mousedown", handleClickOutsideSearch);
+  }, []);
+
+  // Handle search submission (navigates to full search results page)
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      navigate(`/products?keyword=${encodeURIComponent(searchQuery.trim())}`);
+      setShowSearch(false);
+      setSearchQuery("");
+    }
+  };
+
+  // Navigate to product detail on suggestion click
+  const handleSuggestionClick = (product) => {
+    navigate(`/product/${product._id}`);
+    setShowSearch(false);
+    setSearchQuery("");
+  };
+
+  // Remove one suggestion from the list
+  const removeSuggestion = (id, e) => {
+    // Prevent suggestion click event propagation
+    e.stopPropagation();
+    setDisplayedSuggestions((prev) => prev.filter((product) => product._id !== id));
+  };
 
   return (
     <header>
@@ -177,7 +213,7 @@ const Header = () => {
             <div className="nav" key={index}>
               <div className="nav-div">
                 <ul className="nav-ul">
-                  <li className="nav-li" >
+                  <li className="nav-li">
                     <Phone />
                     <span className="nav-span">{com?.phone || ""}</span>
                   </li>
@@ -187,89 +223,129 @@ const Header = () => {
                   </li>
                 </ul>
               </div>
-
-
               <div className="social-div">
                 <ul className="social-media">
-
                   <li className="link">
                     <a href={com.facebook} target="_blank" rel="noopener noreferrer">
                       <Facebook />
                     </a>
                   </li>
-
                   <li className="link">
                     <a href={com.instagram} target="_blank" rel="noopener noreferrer">
                       <Instagram />
                     </a>
                   </li>
-
                   <li className="link">
                     <a href={com.twitter} target="_blank" rel="noopener noreferrer">
                       <X />
                     </a>
                   </li>
-
                   <li className="link">
                     <a href={com.linkedin} target="_blank" rel="noopener noreferrer">
                       <YouTube />
                     </a>
                   </li>
-
                 </ul>
               </div>
-
             </div>
           ))}
         </nav>
-      )
-      }
+      )}
 
       <div className="Header">
         <div className="Header-container">
           <div className="logo">
-            <Link to={`/`}>
+            <Link to="/">
               <img src={logo} alt="Logo" />
             </Link>
           </div>
 
-          {/* middle-section */}
+          {/* Middle Navigation Menu */}
           <div className="middle">
             <ul className="nav-list">
-
-              <li className="nav-item" onMouseEnter={() => handleMouseEnter("women")} onMouseLeave={handleMouseLeave}>
-                <Link to={"/products"}>Women</Link>
+              <li
+                className="nav-item"
+                onMouseEnter={() => handleMouseEnter("women")}
+                onMouseLeave={handleMouseLeave}
+              >
+                <Link to="/products">Women</Link>
               </li>
-
-              <li className="nav-item" onMouseEnter={() => handleMouseEnter("accessories")} onMouseLeave={handleMouseLeave}>
-                <Link to={"/products"}>Accessories</Link>
+              <li
+                className="nav-item"
+                onMouseEnter={() => handleMouseEnter("accessories")}
+                onMouseLeave={handleMouseLeave}
+              >
+                <Link to="/products">Accessories</Link>
               </li>
-
-              <li className="nav-item" onMouseEnter={() => handleMouseEnter("shoes")} onMouseLeave={handleMouseLeave}>
-                <Link to={"/products"}>Shoes</Link>
+              <li
+                className="nav-item"
+                onMouseEnter={() => handleMouseEnter("shoes")}
+                onMouseLeave={handleMouseLeave}
+              >
+                <Link to="/products">Shoes</Link>
               </li>
-
               <li className="nav-item">
-                <Link to={"/products"}>We Made Too Much</Link>
+                <Link to="/products">We Made Too Much</Link>
               </li>
-
               <li className="nav-item active">
-                <Link to={"/products"} className="active">{"Valentine's Day"}</Link>
+                <Link to="/products" className="active">
+                  Valentine's Day
+                </Link>
               </li>
-
             </ul>
           </div>
 
-          {/* icon-section */}
+          {/* Icon Section */}
           <div className="icon-section">
-            <Link className="icon-link">
-              {/* <input type="text" placeholder="Search" name="search" /> */}
-              <span className="ddd">
+            {showSearch ? (
+              <div className="search-bar" ref={searchRef}>
+                <input
+                  type="text"
+                  placeholder="Search for products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSearchSubmit();
+                  }}
+                />
+                <button onClick={handleSearchSubmit}>
+                  <Search />
+                </button>
+                <button className="close-btn" onClick={() => setShowSearch(false)}>
+                  <Clear />
+                </button>
+                {((displayedSuggestions && displayedSuggestions.length > 0) || searchLoading) && (
+                  <div className="search-suggestions">
+                    {searchLoading && <div className="search-loading">Searching...</div>}
+                    {!searchLoading &&
+                      displayedSuggestions.map((product) => (
+                        <div
+                          key={product._id}
+                          className="suggestion-item"
+                          onClick={() => handleSuggestionClick(product)}
+                        >
+                          {product.image && (
+                            <img src={product.image.url || product.image} alt={product.name} />
+                          )}
+                          <span>{product.name}</span>
+                          <button
+                            className="delete-suggestion-btn"
+                            onClick={(e) => removeSuggestion(product._id, e)}
+                          >
+                            <Clear fontSize="6px" />
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="search-icon" onClick={() => setShowSearch(true)}>
                 <Search />
-              </span>
-            </Link>
+              </div>
+            )}
 
-            {/* Person Icon with Dropdown */}
+            {/* Profile Dropdown */}
             <div className="profile-dropdown-container" ref={profileDropdownRef}>
               <div className="icon-link" onClick={toggleProfileDropdown}>
                 <Person />
@@ -277,24 +353,20 @@ const Header = () => {
               {profileDropdownVisible && (
                 <div className="profile-dropdown">
                   <ul>
-                    {user && (
+                    {user ? (
                       <>
                         <li>
                           <Link to="/profile">
-                            <Face />Profile
+                            <Face /> Profile
                           </Link>
                         </li>
-
                         <li>
                           <Link to="/orders">
                             <ShoppingBag /> Order
                           </Link>
                         </li>
                       </>
-                    )}
-
-                    {/* ✅ Show Sign In and Sign Up only when user is NOT logged in */}
-                    {!user && (
+                    ) : (
                       <>
                         <li>
                           <Link to="/sign-in">
@@ -308,38 +380,27 @@ const Header = () => {
                         </li>
                       </>
                     )}
-
-                    {/* ✅ Show Logout only when user is logged in */}
                     {user && (
                       <li>
-                        <Link onClick={() => dispatch(logout())}>
+                        <button onClick={() => dispatch(logout())}>
                           <Logout /> Logout
-                        </Link>
+                        </button>
                       </li>
                     )}
-
                   </ul>
                 </div>
               )}
             </div>
 
-            {/* person icon */}
-            {/* <Link to="/sign-in" className="icon-link">
-              <Person />
-            </Link> */}
-
             <Link to="/wishlist" className="icon-link">
               <Favorite />
+              <span className="counts">{wishlistItems.length}</span>
             </Link>
-
             <Link to="/cart" className="icon-link">
               <AddShoppingCart />
-              {/* <span className="count">1</span> */}
               <span className="count">{cartItems.length}</span>
             </Link>
-
           </div>
-
         </div>
 
         {dropdownVisible && hoveredItem && (
@@ -357,11 +418,7 @@ const Header = () => {
 
 const Dropdown = ({ items, category, onMouseEnter, onMouseLeave }) => {
   return (
-    <div
-      className="full-width-dropdown open"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+    <div className="full-width-dropdown open" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <div className="dropdown-content">
         <div className="dropdown-sections">
           {Object.entries(items).map(([section, values]) =>
@@ -371,11 +428,7 @@ const Dropdown = ({ items, category, onMouseEnter, onMouseLeave }) => {
                 <ul>
                   {values.map((item, index) => (
                     <li key={index}>
-                      <Link
-                        to={`/${category}/${item.toLowerCase().replace(/\s+/g, "-")}`}
-                      >
-                        {item}
-                      </Link>
+                      <Link to={`/${category}/${item.toLowerCase().replace(/\s+/g, "-")}`}>{item}</Link>
                     </li>
                   ))}
                 </ul>

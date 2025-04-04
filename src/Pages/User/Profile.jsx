@@ -10,9 +10,12 @@ const Profile = () => {
 
   const { user } = useSelector((state) => state.user);
 
+  // Default Google profile picture URL format
+  const googleProfilePicture = user?.avatar.url;
 
-  // ✅ Ensure user data exists
-  const defaultAvatar = "https://via.placeholder.com/150"; // Placeholder image
+// console.log(googleProfilePicture);
+
+
 
   const [activeSection, setActiveSection] = useState("profile"); // Default section
 
@@ -20,7 +23,7 @@ const Profile = () => {
     name: user?.name || "",
     email: user?.email || "",
     phone: user?.phone || "",
-    avatar: user?.avatar[0]?.url || defaultAvatar, // Get avatar URL or default
+    avatar: googleProfilePicture || user?.avatar[0]?.url, // Get avatar URL or default
   });
 
 
@@ -77,7 +80,7 @@ const Profile = () => {
           </form>
         );
 
-      case "address":
+     case "address":
         return (
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -153,7 +156,7 @@ const Profile = () => {
                 src={updatedUser.avatar}
                 alt="Profile"
               />
-              <button className="update-photo">Change Photo</button>
+              {/* <button className="update-photo">Change Photo</button> */}
             </div>
 
             <div className="profile-info">{renderSection()}</div>

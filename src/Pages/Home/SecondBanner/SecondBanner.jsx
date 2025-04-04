@@ -1,15 +1,25 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchSecondBanners } from "../../../redux/slices/secondBannerSlices";
+import { useNavigate } from "react-router-dom";
+
+
 
 const SecondBanner = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate()
 
     const { banners} = useSelector((state) => state.secondBanner);
 
     useEffect(() => {
         dispatch(fetchSecondBanners())
     }, [dispatch])
+
+
+    const HandleUrl = () => {
+        navigate("/products")
+    }
+    
     return (
         
         <section className="second-banner">
@@ -25,8 +35,8 @@ const SecondBanner = () => {
                                 <p>Meet Daydrift™, a tailored trouser that stretches the imagination.</p>
 
                                 <div className="content-button">
-                                    <button>Shop pants</button>
-                                    <button>Shop Daydrift™ Trousers</button>
+                                    <button onClick={HandleUrl}>Shop pants</button>
+                                    <button onClick={HandleUrl}>Shop Daydrift™ Trousers</button>
                                 </div>
                             </div>
                         </div>
@@ -38,7 +48,7 @@ const SecondBanner = () => {
                                 <p>In these soft, stretchy layers, you’re comfortable enough to do almost anything.</p>
 
                                 <div className="content-button">
-                                    <button>Shop Spring Preview</button>
+                                    <button onClick={HandleUrl}>Shop Spring Preview</button>
                                 </div>
                             </div>
                         </div>

@@ -5,7 +5,13 @@ import { server } from "../../server"; // Your API base URL
 // ✅ Fetch All Banners
 export const fetchBanners = createAsyncThunk("banners/fetchBanners", async (_, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${server}/banner/public/getbanner`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${server}/banner/public/getbanner`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
+        });
         return response.data.banners;
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || "Failed to fetch banners");
@@ -47,7 +53,13 @@ export const updateBanner = createAsyncThunk("banners/updateBanner", async ({ id
 // ✅ Fetch Single Banner
 export const fetchSingleBanner = createAsyncThunk("banners/fetchSingleBanner", async (id, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${server}/banner/public/getbanner/${id}`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${server}/banner/public/getbanner/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
+        });
         return response.data.banner;
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || "Failed to fetch banner");
@@ -60,7 +72,10 @@ export const deleteBanner = createAsyncThunk("banners/deleteBanner", async (id, 
         const token = localStorage.getItem("token");
 
         await axios.delete(`${server}/banner/admin/delete/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
         });
         return id; // Return deleted ID for removal from store
     } catch (error) {

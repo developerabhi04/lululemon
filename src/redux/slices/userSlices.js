@@ -1,6 +1,36 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { server } from "../../server";
+import { signInWithGoogle } from "../../firebase";
+
+
+
+
+// ✅ Google Sign-In Thunk
+export const googleLogin = createAsyncThunk("user/googleLogin",async (_, { rejectWithValue }) => {
+        try {
+            const { token } = await signInWithGoogle();
+            // console.log("🟢 Sending Token to Backend:", token);
+
+            // Send the token to your backend
+            const response = await axios.post(`${server}/user/google-login`, { token },
+                { headers: { "Content-Type": "application/json" } }
+            );
+
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("user", JSON.stringify(response.data.user));
+
+            return response.data;
+        } catch (error) {
+            console.error("❌ Google Login Error:", error);
+            return rejectWithValue(error.response?.data?.message || "Google Login failed");
+        }
+    }
+);
+
+
+
+
 
 
 // ✅ Async thunk for user registration
@@ -89,6 +119,22 @@ const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+
+            .addCase(googleLogin.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(googleLogin.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload.user;
+                state.token = action.payload.token;
+            })
+            .addCase(googleLogin.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+
             // ✅ Registration cases
             .addCase(registerUser.pending, (state) => {
                 state.loading = true;

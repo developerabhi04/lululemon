@@ -1,15 +1,37 @@
-import { BsSearch } from "react-icons/bs";
 import AdminSidebar from "../../Components/Admin/AdminSidebar";
-import { FaRegBell } from "react-icons/fa";
-import UserImg from "../../assets/userpic.png";
+// import UserImg from "../../assets/userpic.png";
 import { HiTrendingDown, HiTrendingUp } from "react-icons/hi";
-import data from "../../assets/data.json";
 import { BarChart } from "../../Components/Admin/Chart";
 import DashboardTable from "../../Components/Admin/DashboardTable";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { fetchBarCharts, fetchDashboardStats, fetchLineCharts, fetchPieCharts } from "../../redux/slices/AdminChartSlices";
 
 
 
 const AdminDashboard = () => {
+    const dispatch = useDispatch();
+
+    // Extract data from Redux store
+    const { stats, pieCharts, barCharts, loading, error } = useSelector((state) => state.dashboard);
+    console.log(barCharts)
+
+    // Fetch data when the component mounts
+    useEffect(() => {
+        dispatch(fetchDashboardStats());
+        dispatch(fetchPieCharts());
+        dispatch(fetchBarCharts());
+        dispatch(fetchLineCharts());
+    }, [dispatch]);
+
+    if (loading) {
+        return <p>Loading dashboard data...</p>;
+    }
+
+    if (error) {
+        return <p>Error: {error}</p>;
+    }
+
     return (
         <div className="admin-container">
             {/* Sidebar */}
@@ -17,39 +39,32 @@ const AdminDashboard = () => {
 
             {/* Main */}
             <main className="dashboard">
-                {/* Bar */}
-                <div className="bar">
-                    <BsSearch />
-                    <input type="text" placeholder="Search for data, users, docs" />
-                    <FaRegBell />
-                    <img src={UserImg} alt="User" />
-                </div>
 
                 {/* Section 1 */}
                 <section className="widget-container">
                     <WidgetItem
-                        percent={40}
+                        percent={stats?.changePercent?.revenue.toFixed(0) || 0}
                         amount={true}
-                        value={34000}
+                        value={stats?.count?.revenue.toFixed(2) || 0}
                         heading={"Revenue"}
                         color={"rgb(0, 115, 255)"}
                     />
                     <WidgetItem
-                        percent={-14}
-                        value={4000}
+                        percent={stats?.changePercent?.user || 0}
+                        value={stats?.count?.user || 0}
                         heading={"User"}
                         color={"rgb(0, 198, 202)"}
                     />
                     <WidgetItem
-                        percent={80}
-                        value={3400000}
+                        percent={stats?.changePercent?.order || 0}
+                        value={stats?.count?.order || 0}
                         heading={"Transactions"}
                         color={"rgb(225, 196, 0)"}
                     />
                     <WidgetItem
-                        percent={40}
-                        amount={true}
-                        value={3400000}
+                        percent={stats?.changePercent?.product || 0}
+                        amount={false}
+                        value={stats?.count?.product || 0}
                         heading={"Products"}
                         color={"rgb(76 0 255)"}
                     />
@@ -60,8 +75,9 @@ const AdminDashboard = () => {
                     <div className="revenue-chart">
                         <h2>Revenue & Transaction</h2>
                         <BarChart
-                            data_1={[300, 144, 433, 655, 237, 755, 190]}
-                            data_2={[200, 444, 343, 556, 778, 445, 990]}
+                            data_1={barCharts?.revenue || []}
+                            data_2={barCharts?.orders || []}
+                            labels={barCharts?.months || []}
                             title_1={"Revenue"}
                             title_2={"Transaction"}
                             bgColor_1={"rgb(0, 115, 255)"}
@@ -72,12 +88,12 @@ const AdminDashboard = () => {
                     <div className="dashboard-categories">
                         <h2>Inventory</h2>
                         <div>
-                            {data.categories.map((i) => (
+                            {Object.entries(pieCharts?.categoryCount || {}).map(([category, value]) => (
                                 <CategoryItem
-                                    key={i.heading}
-                                    heading={i.heading}
-                                    value={i.value}
-                                    color={`hsl(${i.value * 4}, ${i.value}%, 50%)`}
+                                    key={category}
+                                    heading={category}
+                                    value={value}
+                                    color={`hsl(${value * 4}, ${value}%, 50%)`}
                                 />
                             ))}
                         </div>
@@ -104,11 +120,11 @@ const WidgetItem = ({ heading, value, percent, color, amount = false }) => (
             <h4>{amount ? `$${value}` : value}</h4>
             {percent > 0 ? (
                 <span className="green">
-                    <HiTrendingUp /> + {percent}%{" "}
+                    <HiTrendingUp /> + {percent}%
                 </span>
             ) : (
                 <span className="red">
-                    <HiTrendingDown /> - {percent}%{" "}
+                    <HiTrendingDown /> - {percent}%
                 </span>
             )}
         </div>

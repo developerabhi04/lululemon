@@ -2,10 +2,18 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { server } from "../../server";
 
+
+
 // ✅ Fetch All Categories with Subcategories
 export const fetchCategories = createAsyncThunk("categories/fetchCategories", async (_, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${server}/category/public/category/all`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${server}/category/public/category/all`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
+        });
         return response.data.categories;
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || "Failed to fetch categories");
@@ -17,7 +25,10 @@ export const addCategory = createAsyncThunk("categories/addCategory", async (for
     try {
         const token = localStorage.getItem("token");
         const response = await axios.post(`${server}/category/admin/category/add`, formData, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
         });
         return response.data.category;
     } catch (error) {
@@ -30,7 +41,10 @@ export const updateCategory = createAsyncThunk("categories/updateCategory", asyn
     try {
         const token = localStorage.getItem("token");
         const response = await axios.put(`${server}/category/admin/category/update/${id}`, formData, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
         });
         return response.data.category;
     } catch (error) {
@@ -43,7 +57,10 @@ export const deleteCategory = createAsyncThunk("categories/deleteCategory", asyn
     try {
         const token = localStorage.getItem("token");
         await axios.delete(`${server}/category/admin/category/delete/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
         });
         return id;
     } catch (error) {
@@ -56,7 +73,10 @@ export const addSubCategory = createAsyncThunk("categories/addSubCategory", asyn
     try {
         const token = localStorage.getItem("token");
         const response = await axios.post(`${server}/category/admin/subcategory/add`, { name, categoryId }, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
         });
         return response.data.subCategory;
     } catch (error) {
@@ -69,7 +89,10 @@ export const updateSubCategory = createAsyncThunk("categories/updateSubCategory"
     try {
         const token = localStorage.getItem("token");
         const response = await axios.put(`${server}/category/admin/subcategory/update/${id}`, { name, categoryId }, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
         });
         return response.data.subCategory;
     } catch (error) {
@@ -82,7 +105,10 @@ export const deleteSubCategory = createAsyncThunk("categories/deleteSubCategory"
     try {
         const token = localStorage.getItem("token");
         await axios.delete(`${server}/category/admin/subcategory/delete/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
         });
         return id;
     } catch (error) {

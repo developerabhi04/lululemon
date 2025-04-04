@@ -1,38 +1,82 @@
-import { useState } from "react";
-// import colour1 from "../../assets/LW1DTWS_030722_1.webp";
-// import colour2 from "../../assets/LW1DTWS_030722_1.webp";
-// import colour3 from "../../assets/LW1DTWS_030722_1.webp";
-// import colour4 from "../../assets/LW1DTWS_030722_1.webp";
-
-import Category from "../Home/Category/Category";
+import { useEffect, useState } from "react";
 import { Add, Remove } from "@mui/icons-material";
-
-
 import ProductCard from "./ProductCard";
-
-
-
-
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../../redux/slices/productSlices";
+import { fetchCategories } from "../../redux/slices/categorySlices";
+import { useSearchParams } from "react-router-dom";
 
 const Products = () => {
-  
-    const [filters, setFilters] = useState({
-        category: true,
-        sizeAlphabet: true,
-        sizeNumber: true,
-        color: true,
-        price: true,
-    });
+    const dispatch = useDispatch();
+    const [searchParams] = useSearchParams();
 
-    const toggleFilter = (filter) => {
-        setFilters((prev) => ({ ...prev, [filter]: !prev[filter] }));
+    // Initialize filters with keyword and category from the URL
+    const initialFilters = {
+        keyword: searchParams.get("keyword") || "",
+        category: searchParams.get("category") ? [searchParams.get("category")] : [],
+        size: [],
+        seamSize: [],
+        color: [],
+        priceRange: [0, 1000],
+        sort: "",
     };
 
+    const [filters, setFilters] = useState(initialFilters);
+
+    const { products, loading: prodLoading } = useSelector((state) => state.products);
+    const { categories, loading: catLoading } = useSelector((state) => state.categories);
+
+    // UI toggles for filter groups (collapse/expand)
+    const [filterUI, setFilterUI] = useState({
+        category: true,
+        sizeAlphabet: true,
+        sizeNumber: false,
+        color: false,
+        price: false,
+    });
+
+    // Fetch products whenever filters change
+    useEffect(() => {
+        dispatch(fetchProducts(filters));
+    }, [dispatch, filters]);
+
+    // Fetch categories for filters and lookup
+    useEffect(() => {
+        dispatch(fetchCategories());
+    }, [dispatch]);
+
+    // Toggle UI collapse/expand for filter groups
+    const toggleFilterUI = (filter) => {
+        setFilterUI((prev) => ({ ...prev, [filter]: !prev[filter] }));
+    };
+
+    // Generic handler for checkbox changes (multi-select filters)
+    const handleCheckboxChange = (e, filterKey) => {
+        const { value, checked } = e.target;
+        setFilters((prev) => {
+            let updated = prev[filterKey] || [];
+            if (checked) {
+                updated = [...updated, value];
+            } else {
+                updated = updated.filter((item) => item !== value);
+            }
+            return { ...prev, [filterKey]: updated };
+        });
+    };
+
+    // Handler for price range slider changes
+    const handlePriceChange = (e) => {
+        const value = Number(e.target.value);
+        setFilters((prev) => ({ ...prev, priceRange: [prev.priceRange[0], value] }));
+    };
+
+    // Handler for sort selection changes
+    const handleSortChange = (e) => {
+        setFilters((prev) => ({ ...prev, sort: e.target.value }));
+    };
 
     return (
         <section className="products-section">
-            <Category showHeading={false} showBar={false} />
-
             <div className="container">
                 {/* Filter Sidebar */}
                 <aside className="filter-sidebar">
@@ -40,131 +84,123 @@ const Products = () => {
 
                     {/* Category Filter */}
                     <div className="filter-group">
-                        <h3 onClick={() => toggleFilter("category")}>
-                            Category {filters.category ? <Remove /> : <Add />}
+                        <h3 onClick={() => toggleFilterUI("category")}>
+                            Category {filterUI.category ? <Remove /> : <Add />}
                         </h3>
-                        {filters.category && (
+                        {filterUI.category && (
                             <ul className="filter-options">
-                                <label>
-                                    <input type="checkbox" value="Shirt" /> Shirt
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="Jeans" /> Jeans
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="Jackets" /> Jackets
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="Shoes" /> Shoes
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="Accessories" /> Accessories
-                                </label>
+                                {catLoading ? (
+                                    <p>Loading categories...</p>
+                                ) : (
+                                    categories.map((cat) => (
+                                        <label key={cat._id}>
+                                            <input
+                                                type="checkbox"
+                                                value={cat._id}
+                                                onChange={(e) => handleCheckboxChange(e, "category")}
+                                                // Check if this category is already selected
+                                                checked={filters.category.includes(cat._id)}
+                                            />{" "}
+                                            {cat.name}
+                                        </label>
+                                    ))
+                                )}
                             </ul>
                         )}
                     </div>
 
-                    {/* Alphabet Size Filter */}
+                    {/* Size Filter */}
                     <div className="filter-group">
-                        <h3 onClick={() => toggleFilter("sizeAlphabet")}>
-                            Size {filters.sizeAlphabet ? <Remove /> : <Add />}
+                        <h3 onClick={() => toggleFilterUI("sizeAlphabet")}>
+                            Size {filterUI.sizeAlphabet ? <Remove /> : <Add />}
                         </h3>
-                        {filters.sizeAlphabet && (
+                        {filterUI.sizeAlphabet && (
                             <div className="filter-options sizes">
-                                <label>
-                                    <input type="checkbox" value="S" /> S
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="M" /> M
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="L" /> L
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="XL" /> XL
-                                </label>
+                                {["S", "M", "L", "XL"].map((size) => (
+                                    <label key={size}>
+                                        <input
+                                            type="checkbox"
+                                            value={size}
+                                            onChange={(e) => handleCheckboxChange(e, "size")}
+                                            checked={filters.size.includes(size)}
+                                        />{" "}
+                                        {size}
+                                    </label>
+                                ))}
                             </div>
                         )}
                     </div>
 
-                    {/* Number Size Filter */}
+                    {/* Inseam Size Filter */}
                     <div className="filter-group">
-                        <h3 onClick={() => toggleFilter("sizeNumber")}>
-                            Inseam Size {filters.sizeNumber ? <Remove /> : <Add />}
+                        <h3 onClick={() => toggleFilterUI("sizeNumber")}>
+                            Inseam Size {filterUI.sizeNumber ? <Remove /> : <Add />}
                         </h3>
-                        {filters.sizeNumber && (
+                        {filterUI.sizeNumber && (
                             <div className="filter-options sizes">
-                                <label>
-                                    <input type="checkbox" value="28" /> 28
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="30" /> 30
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="32" /> 32
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="34" /> 34
-                                </label>
+                                {["28", "30", "32", "34"].map((inseam) => (
+                                    <label key={inseam}>
+                                        <input
+                                            type="checkbox"
+                                            value={inseam}
+                                            onChange={(e) => handleCheckboxChange(e, "seamSize")}
+                                            checked={filters.seamSize.includes(inseam)}
+                                        />{" "}
+                                        {inseam}
+                                    </label>
+                                ))}
                             </div>
                         )}
                     </div>
 
                     {/* Color Filter */}
                     <div className="filter-group">
-                        <h3 onClick={() => toggleFilter("color")}>
-                            Color {filters.color ? <Remove /> : <Add />}
+                        <h3 onClick={() => toggleFilterUI("color")}>
+                            Color {filterUI.color ? <Remove /> : <Add />}
                         </h3>
-                        {filters.color && (
+                        {filterUI.color && (
                             <div className="filter-options colors">
-                                <label>
-                                    <input type="checkbox" value="Black" />
-                                    <span
-                                        className="color-box"
-                                        style={{ backgroundColor: "#000" }}
-                                    ></span>{" "}
-                                    Black
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="Red" />
-                                    <span
-                                        className="color-box"
-                                        style={{ backgroundColor: "#FF5733" }}
-                                    ></span>{" "}
-                                    Red
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="Blue" />
-                                    <span
-                                        className="color-box"
-                                        style={{ backgroundColor: "#1E90FF" }}
-                                    ></span>{" "}
-                                    Blue
-                                </label>
-                                <label>
-                                    <input type="checkbox" value="Green" />
-                                    <span
-                                        className="color-box"
-                                        style={{ backgroundColor: "#32CD32" }}
-                                    ></span>{" "}
-                                    Green
-                                </label>
+                                {[
+                                    { name: "Black", code: "#000" },
+                                    { name: "Red", code: "#FF5733" },
+                                    { name: "Blue", code: "#1E90FF" },
+                                    { name: "Green", code: "#32CD32" },
+                                ].map((col) => (
+                                    <label key={col.name}>
+                                        <input
+                                            type="checkbox"
+                                            value={col.name}
+                                            onChange={(e) => handleCheckboxChange(e, "color")}
+                                            checked={filters.color.includes(col.name)}
+                                        />
+                                        <span
+                                            className="color-box"
+                                            style={{ backgroundColor: col.code }}
+                                        ></span>{" "}
+                                        {col.name}
+                                    </label>
+                                ))}
                             </div>
                         )}
                     </div>
 
-
                     {/* Price Filter */}
                     <div className="filter-group">
-                        <h3 onClick={() => toggleFilter("price")}>
-                            Price {filters.price ? <Remove /> : <Add />}
+                        <h3 onClick={() => toggleFilterUI("price")}>
+                            Price {filterUI.price ? <Remove /> : <Add />}
                         </h3>
-                        {filters.price && (
+                        {filterUI.price && (
                             <div className="price-range">
-                                <input type="range" min="0" max="1000" />
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="1000"
+                                    value={filters.priceRange[1]}
+                                    onChange={handlePriceChange}
+                                />
                                 <div className="price-values">
-                                    <span>$0</span>
-                                    <span>$1000</span>
+                                    <span>${filters.priceRange[0]}</span>
+                                    <span>${filters.priceRange[1]}</span>
                                 </div>
                             </div>
                         )}
@@ -173,22 +209,29 @@ const Products = () => {
 
                 {/* Products and Sort */}
                 <div className="products-section-main">
-
-                    {/* Sorting */}
                     <div className="sort-bar">
-
                         <h3>All Items</h3>
                         <label>Sort by:</label>
-                        <select>
-                            <option>Featured</option>
-                            <option>New Arrivals</option>
-                            <option>Top Rated</option>
-                            <option>Price: High to Low</option>
-                            <option>Price: Low to High</option>
+                        <select onChange={handleSortChange} value={filters.sort}>
+                            <option value="">Featured</option>
+                            <option value="createdAt">New Arrivals</option>
+                            <option value="averageRating">Top Rated</option>
+                            <option value="-price">Price: High to Low</option>
+                            <option value="price">Price: Low to High</option>
                         </select>
                     </div>
 
-                    <ProductCard />
+                    <div className="products-grid">
+                        {prodLoading ? (
+                            <p>Loading products...</p>
+                        ) : products.length === 0 ? (
+                            <p>No products found</p>
+                        ) : (
+                            products.map((product) => (
+                                <ProductCard key={product._id} product={product} />
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
         </section>

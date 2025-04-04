@@ -2,11 +2,17 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { server } from "../../server"; // Your API base URL
 
+
 // ✅ Fetch All Banners
 export const fetchCompanyInfo = createAsyncThunk("company-details/fetchCompanyDetails", async (_, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${server}/company-details/public/company`);
-        console.log("Fetched Company Data:", response.data.companys); 
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${server}/company-details/public/company`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
+        });
         return response.data.companys;
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || "Failed to fetch banners");
@@ -50,7 +56,13 @@ export const updateCompanyInfo = createAsyncThunk("company-details/update-compan
 // ✅ Fetch Single Banner
 export const fetchSingleCompanyInfo = createAsyncThunk("company-details/fetchSingleBanner", async (id, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${server}/company-details/public/get-company-info/${id}`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${server}/company-details/public/get-company-info/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
+        });
         return response.data.company;
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || "Failed to fetch banner");
@@ -63,7 +75,10 @@ export const deleteCompanyInfo = createAsyncThunk("company-details/deleteBanner"
         const token = localStorage.getItem("token");
 
         await axios.delete(`${server}/company-details/admin/delete/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
         });
         return id; // Return deleted ID for removal from store
     } catch (error) {

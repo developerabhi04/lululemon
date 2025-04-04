@@ -182,7 +182,7 @@ const Footer = () => {
 
             {/* follow-us */}
             <div className="footer-follow-us">
-              <h1>Our Products</h1>
+              {/* <h1>Our Products</h1>
               <ul>
                 <li>
                   <span>About Us</span>
@@ -209,7 +209,7 @@ const Footer = () => {
                   <span>Customer Service</span>
                 </li>
 
-              </ul>
+              </ul> */}
 
               <h1>Follow Us</h1>
               <ul>
@@ -223,7 +223,7 @@ const Footer = () => {
                 <li>
                   <Link to={company.twitter} target="_blank" rel="noopener noreferrer">
                     <X />
-                    <span>Twitter-X</span>
+                    <span>Tiktok</span>
                   </Link>
                 </li>
 

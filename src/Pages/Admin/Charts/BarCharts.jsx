@@ -1,54 +1,57 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import AdminSidebar from "../../../Components/Admin/AdminSidebar";
 import { BarChart } from "../../../Components/Admin/Chart";
+import { fetchBarCharts } from "../../../redux/slices/AdminChartSlices";
 
-const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "Aug",
-    "Sept",
-    "Oct",
-    "Nov",
-    "Dec",
-];
 
 const BarCharts = () => {
+    const dispatch = useDispatch();
+    const { barCharts, loading } = useSelector((state) => state.dashboard);
+
+    useEffect(() => {
+        dispatch(fetchBarCharts());
+    }, [dispatch]);
+
     return (
         <div className="admin-container">
             <AdminSidebar />
 
             <main className="chart-container">
                 <h1>Bar Charts</h1>
-                <section>
-                    <BarChart
-                        horizontal={false}
-                        data_1={[200, 444, 555, 666, 777, 888, 902]}
-                        data_2={[300, 144, 897, 789, 334, 890, 909]}
-                        title_1="Products"
-                        title_2="Users"
-                        bgColor_1={`hsl(260, 50%, 30%)`}
-                        bgColor_2={`hsl(360, 90%, 90%)`}
-                    />
-                    <h2>TOP SELLING PRODUCTS & TOP CUSTOMERS</h2>
-                </section>
 
-                <section>
-                    <BarChart
-                        horizontal={true}
-                        data_1={[200, 444, 344, 555, 666, 444, 543, 777, 455, 888, 546, 902]}
-                        data_2={[]}
-                        title_1="Products"
-                        title_2=""
-                        bgColor_1={`hsl(180, 40%, 50%)`}
-                        bgColor_2=""
-                        labels={months}
-                    />
-                    <h2>Order Through The Year</h2>
-                </section>
+                {loading ? (
+                    <p>Loading bar charts...</p>
+                ) : barCharts ? (
+                    <>
+                        <section>
+                            <BarChart
+                                horizontal={false}
+                                data_1={barCharts.revenue || []}
+                                data_2={barCharts.orders || []}
+                                title_1="Revenue"
+                                title_2="Transactions"
+                                bgColor_1="rgb(0, 115, 255)"
+                                bgColor_2="rgb(53, 162, 235, 0.8)"
+                                labels={barCharts?.months || []} // Show last 6 months
+                            />
+                            <h2>Revenue & Transactions (Last 6 Months)</h2>
+                        </section>
+
+                        <section>
+                            <BarChart
+                                horizontal={true}
+                                data_1={barCharts.orders || []}
+                                title_1="Orders"
+                                bgColor_1="hsl(180, 40%, 50%)"
+                                labels={barCharts?.months || []}
+                            />
+                            <h2>Orders Over The Last 6 Months</h2>
+                        </section>
+                    </>
+                ) : (
+                    <p>No bar chart data available.</p>
+                )}
             </main>
         </div>
     );

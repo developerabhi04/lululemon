@@ -1,15 +1,21 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchThirdBanners } from "../../../redux/slices/thirdBannerSlices";
+import {useNavigate} from "react-router-dom"
 
 const ThirdBanner = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate()
 
     const { thirdBanners } = useSelector((state) => (state.thirdbanners));
 
     useEffect(() => {
         dispatch(fetchThirdBanners())
     }, [dispatch])
+
+    const HandleUrl = () => {
+        navigate("/products")
+    }
 
     return (
         <section className="third-banner">
@@ -30,7 +36,7 @@ const ThirdBanner = () => {
                                 </div>
 
                                 <div>
-                                    <button>Start Here</button>
+                                    <button onClick={HandleUrl}>Start Here</button>
                                 </div>
                             </div>
                         </div>
@@ -49,7 +55,7 @@ const ThirdBanner = () => {
                             <div className="contents">
                                 <h1>Essentially effortless.</h1>
                                 <p>The Leather Alternative Mini Bag - storage and style for everywhere you go.</p>
-                                <button>Shop bags</button>
+                                <button onClick={HandleUrl}>Shop bags</button>
                             </div>
 
                         </div>

@@ -3,7 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom"; // For redirection
 import { MdAccountCircle } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../../redux/slices/userSlices";
+import { googleLogin, registerUser } from "../../redux/slices/userSlices";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import CSS
 
@@ -17,7 +17,6 @@ const SignUp = () => {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
-        phone: "",
         password: "",
         confirmPassword: "",
     });
@@ -33,6 +32,15 @@ const SignUp = () => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
     };
 
+
+    const handleGoogleSignUp = async () => dispatch(googleLogin());
+
+
+    useEffect(() => {
+        if (error) toast.error(error);
+        if (user) navigate("/");
+    }, [error, user]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.password !== formData.confirmPassword) {
@@ -44,7 +52,7 @@ const SignUp = () => {
         const data = new FormData();
         data.append("name", formData.name);
         data.append("email", formData.email);
-        data.append("phone", formData.phone);
+        
         data.append("password", formData.password);
         if (image) {
             data.append("avatar", image);
@@ -53,6 +61,8 @@ const SignUp = () => {
         dispatch(registerUser(data));
     };
 
+
+    
     // Show success message & redirect after successful registration
     useEffect(() => {
         if (user) {
@@ -67,6 +77,8 @@ const SignUp = () => {
             toast.error(error, { position: "top-right" });
         }
     }, [error]);
+
+
 
     return (
         <div className="signup-container">
@@ -96,10 +108,6 @@ const SignUp = () => {
                         <input type="email" id="email" placeholder="Enter your email" required onChange={handleChange} />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="phone">Phone Number</label>
-                        <input type="tel" id="phone" placeholder="Enter your phone number" required onChange={handleChange} />
-                    </div>
-                    <div className="form-group">
                         <label htmlFor="password">Password</label>
                         <input type="password" id="password" placeholder="Enter your password" required onChange={handleChange} />
                     </div>
@@ -120,9 +128,9 @@ const SignUp = () => {
                 </form>
 
                 <div className="google-signin">
-                    <button type="button" className="google-btn">
+                    <button type="button" className="google-btn" onClick={handleGoogleSignUp} disabled={loading}>
                         <FcGoogle />
-                        <span>Sign in With Google</span>
+                        <span>{loading ? "Signing in..." : "Sign up With Google"}</span>
                     </button>
                 </div>
             </div>

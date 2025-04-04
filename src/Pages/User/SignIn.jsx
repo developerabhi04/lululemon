@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { loginUser } from "../../redux/slices/userSlices";
+import { toast } from "react-toastify";
+import { googleLogin, loginUser } from "../../redux/slices/userSlices";
 
 
 
@@ -34,19 +33,41 @@ const SignIn = () => {
         }
     }, [error]);
 
-    // On successful login, show toast and redirect to home page
+    // google
+    const handleGoogleSignIn = async () => {
+        try {
+            await dispatch(googleLogin()).unwrap();
+            toast.info("Google Login Successful!");
+        } catch (error) {
+            toast.error(error || "Google Login Failed");
+        }
+    };
+
+
     useEffect(() => {
+        if (error) toast.error(error);
         if (user) {
             toast.success("Login Successful! Redirecting...", { position: "top-right" });
-            setTimeout(() => {
-                navigate("/");
-            }, 2000);
+            navigate("/");
         }
-    }, [user, navigate]);
+    }, [error, user, navigate]);
+
+
+
+
+    // On successful login, show toast and redirect to home page
+    // useEffect(() => {
+    //     if (user) {
+    //         toast.success("Login Successful! Redirecting...", { position: "top-right" });
+    //         setTimeout(() => {
+    //             navigate("/");
+    //         }, 2000);
+    //     }
+    // }, [user, navigate]);
 
     return (
         <div className="signin-container">
-            <ToastContainer /> {/* Toast notifications */}
+            
             <div className="signin-card">
                 <h2>Sign In</h2>
                 <form onSubmit={handleSubmit}>
@@ -84,9 +105,9 @@ const SignIn = () => {
 
                 {/* Google Sign In Button */}
                 <div className="google-signin">
-                    <button type="button" className="google-btn">
+                    <button type="button" className="google-btn" onClick={handleGoogleSignIn} disabled={loading}>
                         <FcGoogle />
-                        <span>Sign in With Google</span>
+                        <span>{loading ? "Signing in..." : "Sign in With Google"}</span>
                     </button>
                 </div>
             </div>

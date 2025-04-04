@@ -1,9 +1,22 @@
+import { useDispatch, useSelector } from "react-redux";
 import AdminSidebar from "../../../Components/Admin/AdminSidebar";
 import { DoughnutChart, PieChart } from "../../../Components/Admin/Chart";
-import { categories } from '../../../assets/data.json';
+import { useEffect } from "react";
+import { fetchPieCharts } from "../../../redux/slices/AdminChartSlices";
 
 
 const PieCharts = () => {
+
+  const dispatch = useDispatch();
+  const { pieCharts, loading, error } = useSelector((state) => state.dashboard);
+
+  useEffect(() => {
+    dispatch(fetchPieCharts());
+  }, [dispatch]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  
   return (
     <div className="admin-container">
       <AdminSidebar />
@@ -14,7 +27,11 @@ const PieCharts = () => {
           <div>
             <PieChart
               labels={["Processing", "Shipped", "Delivered"]}
-              data={[12, 9, 13]}
+              data={[
+                pieCharts?.statusCount?.processing || 0,
+                pieCharts?.statusCount?.shipped || 0,
+                pieCharts?.statusCount?.delivered || 0,
+              ]}
               backgroundColor={[
                 `hsl(110, 80%, 80%)`,
                 `hsl(110, 80%, 50%)`,
@@ -31,12 +48,33 @@ const PieCharts = () => {
         <section>
           <div>
             <DoughnutChart
-              labels={categories.map((i) => i.heading)}
-              data={categories.map((i) => i.value)}
-              backgroundColor={categories.map((i) => `hsl(${i.value * 4}, ${i.value}%, 50%)`)}
+              labels={
+                pieCharts?.categoryCount &&
+                  typeof pieCharts.categoryCount === "object" &&
+                  !Array.isArray(pieCharts.categoryCount)
+                  ? Object.keys(pieCharts.categoryCount)
+                  : ["No Data"]
+              }
+              data={
+                pieCharts?.categoryCount &&
+                  typeof pieCharts.categoryCount === "object" &&
+                  !Array.isArray(pieCharts.categoryCount)
+                  ? Object.values(pieCharts.categoryCount)
+                  : [1] // Default value to prevent errors
+              }
+              backgroundColor={
+                pieCharts?.categoryCount &&
+                  typeof pieCharts.categoryCount === "object" &&
+                  !Array.isArray(pieCharts.categoryCount)
+                  ? Object.keys(pieCharts.categoryCount).map(
+                    (_, index) => `hsl(${index * 40}, 80%, 50%)`
+                  )
+                  : ["#ccc"]
+              }
               legends={true}
               offset={[0, 0, 0, 80]}
             />
+
 
           </div>
           <h2>Product Categories Ratio</h2>
@@ -47,7 +85,10 @@ const PieCharts = () => {
           <div>
             <DoughnutChart
               labels={["In Stock", "Out Of Stock"]}
-              data={[40, 20]}
+              data={[
+                pieCharts?.stockCount?.inStock || 0,
+                pieCharts?.stockCount?.outOfStock || 0,
+              ]}
               backgroundColor={["hsl(269, 80%, 40%)", "rgb(53, 162, 255)"]}
               legends={false}
               offset={[0, 80]}
@@ -58,65 +99,7 @@ const PieCharts = () => {
           <h2>Stock Availablity</h2>
         </section>
 
-        {/*  */}
-        <section>
-          <div>
-            <DoughnutChart
-              labels={[
-                "Marketing Cost",
-                "Discount",
-                "Burnt",
-                "Production Cost",
-                "Net Margin",
-              ]}
-              data={[32, 18, 5, 20, 25]}
-              backgroundColor={[
-                "hsl(110,80%,40%)",
-                "hsl(19,80%,40%)",
-                "hsl(69,80%,40%)",
-                "hsl(300,80%,40%)",
-                "rgb(53, 162, 255)",
-              ]}
-              legends={false}
-              offset={[20, 30, 20, 30, 80]}
-            />
-
-          </div>
-          <h2>Revenue Distribution</h2>
-        </section>
-
-        {/*  */}
-        <section>
-          <div>
-            <PieChart
-              labels={[
-                "Teenager(Below 20)",
-                "Adult (20-40)",
-                "Older (above 40)",
-              ]}
-              data={[30, 250, 70]}
-              backgroundColor={[
-                `hsl(10, ${80}%, 80%)`,
-                `hsl(10, ${80}%, 50%)`,
-                `hsl(10, ${40}%, 50%)`,
-              ]}
-              offset={[0, 0, 50]}
-            />
-          </div>
-          <h2>Users Age Group</h2>
-        </section>
-
-        {/*  */}
-        <section>
-          <div>
-            <DoughnutChart
-              labels={["Admin", "Customers"]}
-              data={[40, 250]}
-              backgroundColor={[`hsl(335, 100%, 38%)`, "hsl(44, 98%, 50%)"]}
-              offset={[0, 80]}
-            />
-          </div>
-        </section>
+        
 
       </main>
     </div>

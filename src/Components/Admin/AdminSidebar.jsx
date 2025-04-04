@@ -150,9 +150,9 @@ const Li = ({ url, text, location, Icon }) => (
         style={{
             backgroundColor: location.pathname.includes(url)
                 ? "rgba(0, 115, 255, 0.1)"
-                : "white",
+                : "#144f67",
         }}
-    >
+    >  
         <Link
             to={url}
             style={{

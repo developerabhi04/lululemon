@@ -25,7 +25,7 @@ const DashboardTable = () => {
       .map((order) => ({
         id: order._id,
         user: order.user?.name || "Guest User",
-        quantity: order.orderItems.reduce((sum, item) => sum + item.quantity, 0),
+        quantity: order.orderItems?.reduce((sum, item) => sum + item.quantity, 0),
         amount: `$${order.total}`,
         status: (
           <span className={order.status === "Processing" ? "red" : order.status === "Shipped" ? "green" : "purple"}>

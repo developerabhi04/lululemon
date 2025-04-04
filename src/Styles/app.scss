@@ -15,7 +15,10 @@
 @use "Profile" as *;
 @use "Order" as *;
 @use "OrderDetails" as *;
+@use "OrderSuccessful" as *;
 @use "Help" as *;
+@use "SimilarProduct" as *;
+@use "ChatSupport" as *;
 
 
 // admin
@@ -76,74 +79,21 @@ body {
 }
 
 .Toastify__toast--success {
-    background-color: #28a745 !important;
-    color: #121111;
+    background-color: #8d1a1a !important;
+    color: #ffffff;
 }
 
 .Toastify__toast--error {
-    background-color: #dc3545 !important;
-    color: #121111;
+    background-color: #ff071f !important;
+    color: #ffffff;
+}
+
+.Toastify__toast--info {
+    background-color: #8d1a1a !important;
+    color: #ffffff;
 }
 
 
-
-// .admin-container {
-//     // border: 2px solid red;
-//     display: grid;
-//     grid-template-columns: 1fr 4fr;
-//     gap: 2rem;
-//     height: 100vh;
-//     background-color: rgb(247, 247, 247);
-
-//     >aside {
-//         // border: 2px solid red;
-//         width: 100%;
-//         background-color: white;
-//         padding: 1rem;
-//         z-index: 10;
-//         overflow: auto;
-
-//         &::-webkit-scrollbar {
-//             display: none;
-//         }
-
-//         >div {
-//             margin: 2rem 1rem;
-
-//             >h5 {
-//                 letter-spacing: 2px;
-//                 font-weight: 300;
-//                 text-transform: uppercase;
-//                 opacity: .8;
-//                 margin: 1rem 0
-//             }
-
-//             >ul {
-//                 display: flex;
-//                 flex-direction: column;
-//                 justify-content: unset;
-//                 align-items: unset .5rem;
-//                 gap: 1rem;
-//                 list-style: none;
-
-//                 >li {
-//                     padding: 0.5rem 1rem;
-//                     border-radius: 10px;
-
-//                     a {
-//                         color: rgba(0, 0, 0, .825);
-//                         display: flex;
-//                         flex-direction: row;
-//                         justify-content: unset;
-//                         align-items: center;
-//                         gap: 1rem;
-//                         display: flex;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
 
 
 .red {
@@ -162,27 +112,34 @@ body {
 .admin-container {
     // border: 2px solid red;
     @include grid(1fr 4fr, 2rem);
-    height: 100vh;
-    background-color: rgb(247, 247, 247);
+    // height: 100vh;
+    background-color: rgb(6 14 29 / 96%);
 
     >aside {
         // border: 2px solid red;
         width: 100%;
-        background-color: white;
+        background-color: rgb(19, 19, 19);
         padding: 1rem;
-        z-index: 10;
-        overflow: auto;
+
+        // overflow: auto;
+        z-index: 1000;
+        position: sticky;
+        top: 0;
+        // align-self: start;
 
         &::-webkit-scrollbar {
             display: none;
         }
 
+
         >div {
             margin: 2rem 1rem;
 
             >h5 {
-                @include heading(2px);
-
+                letter-spacing: 3px;
+                font-weight: 400;
+                text-transform: uppercase;
+                color: rgb(40, 167, 69);
                 opacity: 0.8;
                 margin: 1rem 0;
             }
@@ -194,6 +151,8 @@ body {
                 >li {
                     padding: 0.5rem 1rem;
                     border-radius: 10px;
+                    // background-color: #144f67 !important;
+                    color: #db1b1b9e;
 
                     a {
                         color: rgba(0, 0, 0, 0.825);

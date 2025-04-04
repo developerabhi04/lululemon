@@ -7,6 +7,10 @@ import { Link } from "react-router-dom";
 import { AiOutlineDelete } from "react-icons/ai";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from "@mui/material"; // ✅ Material UI Dialog
 import { toast } from "react-toastify"; // ✅ Import Toastify
+
+
+
+
 const Transaction = () => {
   const dispatch = useDispatch();
   const { orders, loading, error } = useSelector((state) => state.order);
@@ -63,18 +67,21 @@ const Transaction = () => {
     orderId: order._id,
     user: order.user?.name || "Guest user",
     total: `$${order.total}`,
-    discount: `$${order.discount}`,
-    quantity: order.orderItems.reduce((sum, item) => sum + item.quantity, 0),
+    discount: `$${order.discountAmount}`,
+    quantity: order?.cartItems?.reduce((sum, item) => sum + item.quantity, 0),
     status: (
       <span className={order.status === "Processing" ? "red" : order.status === "Shipped" ? "green" : "purple"}>
         {order.status}
       </span>
     ),
+
     action: <Link to={`/admin/transaction/${order._id}`}>Manage</Link>,
+
     delete: (
       <button onClick={() => handleOpenDialog(order._id)} className="delete-btn">
         <AiOutlineDelete />
       </button>
+      
     ),
   })) || [];
 

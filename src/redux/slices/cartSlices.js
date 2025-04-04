@@ -1,38 +1,60 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { server } from "../../server"; // Your API base URL
+import { server } from "../../server";
 
 const initialState = {
     cartItems: [],
     isLoading: false,
     error: null,
+    clearCartSuccess: false,
 };
 
-// 🛒 Add to Cart
-export const addToCart = createAsyncThunk("cart/addToCart", async ({ userId, productId, quantity, sizes, seamSizes }, { rejectWithValue }) => {
-    try {
-        const token = localStorage.getItem("token");
-
-        const response = await axios.post(`${server}/cart/add`,
-            { userId, productId, quantity, sizes, seamSizes },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
+export const clearOrderedProducts = createAsyncThunk("cart/clearOrderedProducts",async ({ userId, orderedItems }, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`${server}/cart/clear-ordered/${userId}`,{ orderedItems },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            if (response.data.success) {
+                return response.data.cart.items;
+            } else {
+                return rejectWithValue(response.data.message || "Failed to clear ordered products");
             }
-        );
-
-        return response.data.cart.items; // Ensure response data is structured correctly
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Failed to add item to cart");
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to clear ordered products");
+        }
     }
-}
 );
 
-// 📥 Fetch Cart Items
-export const fetchCartItems = createAsyncThunk("cart/fetchCartItems",
-    async (userId, { rejectWithValue }) => {
+export const addToCart = createAsyncThunk(
+    "cart/addToCart",
+    async ({ userId, productId, quantity, sizes, seamSizes, colorName }, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`${server}/cart/add`,
+                { userId, productId, quantity, sizes, seamSizes, colorName },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            if (response.data.success) {
+                return response.data.cart.items;
+            }
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to add item to cart");
+        }
+    }
+);
+
+export const fetchCartItems = createAsyncThunk("cart/fetchCartItems", async (userId, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.get(`${server}/cart/get/${userId}`, {
@@ -41,9 +63,8 @@ export const fetchCartItems = createAsyncThunk("cart/fetchCartItems",
                     "Content-Type": "application/json",
                 },
             });
-
             if (response.data.success) {
-                return response.data.data; // Return cart items directly
+                return response.data.data;
             } else {
                 return rejectWithValue(response.data.message || "Failed to fetch cart items");
             }
@@ -53,129 +74,124 @@ export const fetchCartItems = createAsyncThunk("cart/fetchCartItems",
     }
 );
 
-
-// ❌ Delete Cart Item
-export const deleteCartItem = createAsyncThunk("cart/deleteCartItem",
-    async ({ userId, productId, sizes, seamSizes }, { rejectWithValue }) => {
+export const deleteCartItem = createAsyncThunk("cart/deleteCartItem", async ({ userId, productId, sizes, seamSizes, colorName }, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem("token");
-            const url = `${server}/cart/delete/${userId}/${productId}?sizes=${sizes}&seamSizes=${seamSizes}`;
+            let url = `${server}/cart/delete/${userId}/${productId}`;
 
-            await axios.delete(url, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
+            const params = new URLSearchParams();
+
+            if (sizes) params.append("sizes", sizes);
+            if (seamSizes) params.append("seamSizes", seamSizes);
+            if (colorName) params.append("colorName", colorName);
+            const queryString = params.toString();
+            if (queryString) url += `?${queryString}`;
+            const response = await axios.delete(url, {
+                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
             });
-
-            return { productId, sizes, seamSizes };
+            if (response.status === 200) {
+                return { productId, sizes, seamSizes, colorName };
+            } else {
+                return rejectWithValue(`Failed to delete item. Status: ${response.status}`);
+            }
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Failed to delete cart item");
         }
     }
 );
 
-
-// 🔄 Update Cart Quantity
-export const updateCartQuantity = createAsyncThunk("cart/updateCartQuantity", async ({ userId, productId, quantity, sizes, seamSizes }, { rejectWithValue }) => {
-    try {
-        const token = localStorage.getItem("token");
-        const response = await axios.put(`${server}/cart/update`, { userId, productId, quantity, sizes, seamSizes }, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-        return response.data.cart.items;
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Failed to update cart quantity");
+export const updateCartQuantity = createAsyncThunk("cart/updateCartQuantity",
+    async ({ userId, productId, quantity, sizes, seamSizes, colorName }, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.put(
+                `${server}/cart/update`,
+                { userId, productId, quantity, sizes, seamSizes, colorName },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            if (response.data.success) return response.data.cart.items;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to update cart quantity");
+        }
     }
-}
 );
 
-// 🛍️ Shopping Cart Slice
 const shoppingCartSlice = createSlice({
     name: "shoppingCart",
     initialState,
-    reducers: {},
+    reducers: {
+        resetCartState: (state) => {
+            state.cartItems = [];
+            state.clearCartSuccess = false;
+        },
+    },
     extraReducers: (builder) => {
         builder
-            // Add to Cart
+            .addCase(clearOrderedProducts.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(clearOrderedProducts.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.cartItems = action.payload;
+            })
+            .addCase(clearOrderedProducts.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
             .addCase(addToCart.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(addToCart.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.cartItems = action.payload; // Ensure correct key
+                state.cartItems = action.payload;
             })
             .addCase(addToCart.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             })
-
-            // Fetch Cart Items
             .addCase(fetchCartItems.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(fetchCartItems.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.cartItems = action.payload.map(item => ({
-                    productId: item.productId,
-                    name: item.name,
-                    imageUrl: item.imageUrl,
-                    price: item.price,
-                    stock: item.stock,
-                    colorOptions: item.colorOptions,
-                    sizeOptions: item.sizeOptions,
-                    seamSizeOptions: item.seamSizeOptions,
-                    selectedSize: item.selectedSize,
-                    selectedSeamSize: item.selectedSeamSize,
-                    quantity: item.quantity
-                }));
+                state.cartItems = action.payload;
             })
             .addCase(fetchCartItems.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             })
-
-            // Update Cart Quantity
             .addCase(updateCartQuantity.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(updateCartQuantity.fulfilled, (state, action) => {
                 state.isLoading = false;
-                // Update the cartItems in the state with the updated items from the server
-                state.cartItems = action.payload.map(item => ({
-                    productId: item.productId,
-                    name: item.name,
-                    imageUrl: item.imageUrl,
-                    price: item.price,
-                    stock: item.stock,
-                    colorOptions: item.colorOptions,
-                    sizeOptions: item.sizeOptions,
-                    seamSizeOptions: item.seamSizeOptions,
-                    selectedSize: item.selectedSize,
-                    selectedSeamSize: item.selectedSeamSize,
-                    quantity: item.quantity
-                }));
+                state.cartItems = action.payload;
             })
             .addCase(updateCartQuantity.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             })
-
-            // Delete Cart Item
             .addCase(deleteCartItem.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(deleteCartItem.fulfilled, (state, action) => {
                 state.isLoading = false;
-                const { productId, sizes, seamSizes } = action.payload;
-                state.cartItems = state.cartItems.filter(item =>
-                    !(item.productId === productId &&
-                        item.selectedSize === sizes &&
-                        item.selectedSeamSize === seamSizes)
-                );
+                const { productId, sizes, seamSizes, colorName } = action.payload;
+                state.cartItems = state.cartItems.filter((item) => {
+                    const sizeMatch = String(item.selectedSize) === String(sizes);
+                    const seamSizeMatch = String(item.selectedSeamSize) === String(seamSizes);
+                    return !(
+                        item.productId === productId &&
+                        sizeMatch &&
+                        seamSizeMatch &&
+                        item.selectedColorName === colorName
+                    );
+                });
             })
             .addCase(deleteCartItem.rejected, (state, action) => {
                 state.isLoading = false;
@@ -184,4 +200,5 @@ const shoppingCartSlice = createSlice({
     },
 });
 
+export const { resetCartState } = shoppingCartSlice.actions;
 export default shoppingCartSlice.reducer;

@@ -12,22 +12,20 @@ const columns = [
   { Header: "Name", accessor: "name" },
   { Header: "Price", accessor: "price" },
   { Header: "Stock", accessor: "stock" },
-  { Header: "Category", accessor: "categoryName" },  // Show category name
-  { Header: "Subcategory", accessor: "subcategoryName" }, // Show subcategory name
-  { Header: "Colors", accessor: "colors" }, // Show color images
+  { Header: "Category", accessor: "categoryName" },
+  { Header: "Subcategory", accessor: "subcategoryName" },
+  { Header: "Colors", accessor: "colors" },
   { Header: "Edit", accessor: "edit" },
   { Header: "Delete", accessor: "delete" },
 ];
 
 const Products = () => {
   const dispatch = useDispatch();
-  const { products, loading } = useSelector((state) => state.products);
+  const { products } = useSelector((state) => state.products);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
-
-
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
@@ -42,67 +40,90 @@ const Products = () => {
     }
   };
 
+  // Transform Redux products into table-friendly format
+  const data = products.map((product) => {
+    // Use the first color variant's first photo for the "photo" column.
+    const firstColorPhoto =
+      product.colors &&
+        product.colors.length > 0 &&
+        product.colors[0].photos &&
+        product.colors[0].photos.length > 0
+        ? product.colors[0].photos[0].url
+        : "https://via.placeholder.com/50";
 
+    // Compute overall stock from all color variants sizes
+    const overallStock = product.colors
+      ? product.colors.reduce((total, color) => {
+        const colorStock = color.sizes
+          ? color.sizes.reduce((sum, s) => sum + s.stock, 0)
+          : 0;
+        return total + colorStock;
+      }, 0)
+      : 0;
 
-
-  // ✅ Transform Redux products into table-friendly format
-  const data = products.map((product) => ({
-    photo: (
-      <img
-        style={{ width: "50px", height: "50px", borderRadius: "5px" }}
-        src={product.photos[0]?.url || "https://via.placeholder.com/50"}
-        alt="Product"
-      />
-    ),
-    name: product.name,
-    price: `$${product.price.toFixed(2)}`,
-    stock: product.stock,
-    categoryName: product.category?.name || "N/A",
-    subcategoryName: product.subcategory?.name || "N/A",
-    colors: (
-      <div style={{ display: "flex", gap: "5px" }}>
-        {product.colors?.length > 0 ? (
-          product.colors.map((color, index) => (
-            <img
-              key={index}
-              src={color.url}
-              alt={color.colorName}
-              title={color.colorName}
-              style={{ width: "30px", height: "30px", borderRadius: "5px", cursor: "pointer" }}
+    return {
+      photo: (
+        <img
+          style={{ width: "50px", height: "50px", borderRadius: "5px" }}
+          src={firstColorPhoto}
+          alt="Product"
+        />
+      ),
+      name: product.name,
+      price: `$${product.price.toFixed(2)}`,
+      stock: overallStock,
+      categoryName: product.category?.name || "N/A",
+      subcategoryName: product.subcategory?.name || "N/A",
+      colors: (
+        <div style={{ display: "flex", gap: "5px" }}>
+          {product.colors && product.colors.length > 0 ? (
+            product.colors.map((color, index) => (
+              <img
+                key={index}
+                src={
+                  color.photos && color.photos.length > 0
+                    ? color.photos[0].url
+                    : "https://via.placeholder.com/30"
+                }
+                alt={color.colorName}
+                title={color.colorName}
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              />
+            ))
+          ) : (
+            <span>No Colors</span>
+          )}
+        </div>
+      ),
+      edit: (
+        <div style={{ display: "flex", gap: "10px" }}>
+          <Link to={`/admin/product/${product._id}`}>
+            <FaEdit style={{ cursor: "pointer", color: "blue" }} title="Edit" />
+          </Link>
+        </div>
+      ),
+      delete: (
+        <div style={{ display: "flex", gap: "10px" }}>
+          <Link>
+            <FaTrash
+              style={{ cursor: "pointer", color: "red" }}
+              title="Delete"
+              onClick={() => handleDelete(product._id)}
             />
-          ))
-        ) : (
-          <span>No Colors</span>
-        )}
-      </div>
-    ),
-    edit: (
-      <div style={{ display: "flex", gap: "10px" }}>
-        <Link to={`/admin/product/${product._id}`}>
-          <FaEdit style={{ cursor: "pointer", color: "blue" }} title="Edit" />
-        </Link>
-      </div>
-    ),
+          </Link>
+        </div>
+      ),
+    };
+  });
 
-    delete: (
-      <div style={{ display: "flex", gap: "10px" }}>
-        <Link>
-          <FaTrash
-            style={{ cursor: "pointer", color: "red" }}
-            title="Delete"
-            onClick={() => handleDelete(product._id)}
-          />
-        </Link>
-      </div>
-    ),
-  }));
-
-
-
-  // ✅ Corrected `useCallback`
   const Table = useCallback(() => {
     return TableHOC(columns, data, "dashboard-product-box", "Products", true)();
-  }, [columns, data]);
+  }, [data]);
 
   return (
     <div className="admin-container">

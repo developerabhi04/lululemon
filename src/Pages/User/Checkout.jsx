@@ -1,44 +1,102 @@
 import { useState } from "react";
 import { ArrowDropUp, ArrowDropDown } from "@mui/icons-material";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Grid, TextField } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { validateCoupon } from "../../redux/slices/couponSlices";
+import { toast } from "react-toastify"
+import { createNewOrder } from "../../redux/slices/orderSlices";
+import { clearOrderedProducts } from "../../redux/slices/cartSlices";
+import { PayPalButtons } from "@paypal/react-paypal-js";
+
+
 
 const Checkout = () => {
     const location = useLocation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const cartItems = location.state?.cartItems || [];
+    const [errors, setErrors] = useState({});
 
-    const [coupon, setCoupon] = useState("");
-    const [couponApplied, setCouponApplied] = useState(false);
+    const { user } = useSelector((state) => state.user);
+    const [shippingDetails, setShippingDetails] = useState({
+        fullName: "",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        phoneNumber: "",
+        email: "",
+    });
+
+    // coupon section
+    const { loading } = useSelector((state) => state.coupons);
+    const [couponCode, setCouponCode] = useState("");
+    const [discountedTotal, setDiscountedTotal] = useState(null);
+    const [discountAmount, setdiscountAmount] = useState(0);
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const tax = subtotal * 0.07;
-    const total = couponApplied ? (subtotal + tax) * 0.9 : subtotal + tax;
+    const tax = subtotal * 0.07; // Example tax rate of 7%
+    // const total = subtotal + tax;
 
-    const handleApplyCoupon = () => {
-        if (coupon.trim().toUpperCase() === "SAVE10") {
-            setCouponApplied(true);
-        } else {
-            alert("Invalid coupon code");
-            setCouponApplied(false);
+    const totalAmountBeforeDiscount = subtotal + tax;
+
+    const [localTotal, setLocalTotal] = useState(totalAmountBeforeDiscount)
+
+    const handleApplyCoupon = async () => {
+        try {
+            const result = await dispatch(validateCoupon({ code: couponCode.trim(), totalAmount: localTotal })).unwrap();
+            setDiscountedTotal(result.discountedTotal);
+            setdiscountAmount(result.discountAmount);
+            toast.success(result.message);
+        } catch (err) {
+            toast.error(err || "Failed to apply coupon");
         }
     };
 
 
-    // const handleApplyCoupon = () => {
-    //     if (coupon.trim().toUpperCase() === "SAVE10") {
-    //         setCouponApplied(true);
-    //     } else {
-    //         alert("Invalid coupon code");
-    //         setCouponApplied(false);
-    //     }
-    // };
 
-    const calculateTotal = () => {
-        let total = orderSummary.subtotal + orderSummary.shipping + orderSummary.tax;
-        if (couponApplied) {
-            total = total * 0.9; // 10% discount
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+
+        // Update shipping details state
+        setShippingDetails({ ...shippingDetails, [id]: value });
+
+        // Validation rules
+        let errorMsg = "";
+
+        switch (id) {
+            case "fullName":
+                errorMsg = value.trim().length < 3 ? "Full name must be at least 3 characters." : "";
+                break;
+            case "address":
+                errorMsg = value.trim().length < 5 ? "Address must be at least 5 characters." : "";
+                break;
+            case "city":
+                errorMsg = value.trim().length < 2 ? "City name is too short." : "";
+                break;
+            case "state":
+                errorMsg = value.trim().length < 2 ? "State name is too short." : "";
+                break;
+            case "zipCode":
+                errorMsg = !/^\d{5}(-\d{4})?$/.test(value) ? "Invalid ZIP Code format." : "";
+                break;
+            case "phoneNumber":
+                errorMsg = !/^\d{10}$/.test(value) ? "Phone number must be 10 digits." : "";
+                break;
+            case "email":
+                errorMsg = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? "Invalid email format." : "";
+                break;
+            default:
+                errorMsg = "";
         }
-        return total.toFixed(2);
+
+        // Update error state
+        setErrors({ ...errors, [id]: errorMsg });
     };
+
+
+
 
     // Accordion state for sections (shipping, payment, faq)
     const [activeSection, setActiveSection] = useState(null);
@@ -65,6 +123,53 @@ const Checkout = () => {
         },
     ];
 
+
+
+
+    const handleOrderCreation = async (paymentResult) => {
+        if (
+            !shippingDetails.fullName ||
+            !shippingDetails.address ||
+            !shippingDetails.city ||
+            !shippingDetails.state ||
+            !shippingDetails.zipCode ||
+            !shippingDetails.phoneNumber ||
+            !shippingDetails.email
+        ) {
+            toast.error("Please fill in all shipping details!");
+            return;
+        }
+
+        const orderData = {
+            user: user._id,
+            cartItems,
+            shippingDetails,
+            subtotal,
+            tax,
+            total: discountedTotal || totalAmountBeforeDiscount,
+            discount: discountedTotal,
+            discountAmount: totalAmountBeforeDiscount - (discountedTotal || totalAmountBeforeDiscount).toFixed(2),  // Total discount amount
+            paymentResult,
+            paymentMethod: "Paypal",
+        };
+
+        console.log("Order Data Sent to API", orderData);
+
+        try {
+            const orderResponse = await dispatch(createNewOrder(orderData)).unwrap();
+
+            await dispatch(clearOrderedProducts({ userId: user._id, orderedItems: cartItems.map((item) => item.productId) }));
+            toast.success("Order placed successfully! Redirecting...", { position: "top-right" });
+
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+                navigate("/orders-success", { state: { orderId: orderResponse._id } });
+            }, 2000);
+        } catch (error) {
+            toast.error(error || "Failed to place order");
+        }
+    };
+
     return (
         <section className="checkout-pages">
             <h1>Checkout</h1>
@@ -85,132 +190,32 @@ const Checkout = () => {
                                 <ArrowDropDown />
                             )}
                         </button>
+
+
                         {activeSection === "shipping" && (
                             <div className="accordion-content">
-                                <form>
-                                    <div className="form-group">
-                                        <label htmlFor="fullName">Full Name</label>
-                                        <input
-                                            type="text"
-                                            id="fullName"
-                                            placeholder="Enter your full name"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="address">Address</label>
-                                        <input
-                                            type="text"
-                                            id="address"
-                                            placeholder="Enter your address"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="city">City</label>
-                                        <input
-                                            type="text"
-                                            id="city"
-                                            placeholder="Enter your city"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="state">State</label>
-                                        <input
-                                            type="text"
-                                            id="state"
-                                            placeholder="Enter your state"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="zip">ZIP Code</label>
-                                        <input
-                                            type="text"
-                                            id="zip"
-                                            placeholder="Enter your ZIP code"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="phone">Phone Number</label>
-                                        <input
-                                            type="tel"
-                                            id="phone"
-                                            placeholder="Enter your phone number"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="email">Email Address</label>
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            placeholder="Enter your email"
-                                            required
-                                        />
-                                    </div>
-                                </form>
+                                <Grid container spacing={2}>
+                                    {["fullName", "address", "city", "state", "zipCode", "phoneNumber", "email"].map((field) => (
+                                        <Grid key={field} item xs={field === "email" ? 12 : 6}>
+                                            <TextField
+                                                fullWidth
+                                                label={field}
+                                                variant="outlined"
+                                                required
+                                                id={field}
+                                                onChange={handleChange}
+                                                error={Boolean(errors[field])} // Show error state
+                                                helperText={errors[field]} // Show error message
+                                            />
+                                        </Grid>
+                                    ))}
+                                </Grid>
                             </div>
                         )}
+
                     </div>
 
-                    <div className="accordion-section">
-                        <button
-                            className="accordion-header"
-                            onClick={() => toggleSection("payment")}
-                        >
-                            <span>Payment Information</span>
-                            {activeSection === "payment" ? (
-                                <ArrowDropUp />
-                            ) : (
-                                <ArrowDropDown />
-                            )}
-                        </button>
-                        {activeSection === "payment" && (
-                            <div className="accordion-content">
-                                <form>
-                                    <div className="form-group">
-                                        <label htmlFor="cardNumber">Card Number</label>
-                                        <input
-                                            type="text"
-                                            id="cardNumber"
-                                            placeholder="Enter your card number"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="cardName">Name on Card</label>
-                                        <input
-                                            type="text"
-                                            id="cardName"
-                                            placeholder="Enter the name on your card"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="expiry">Expiry Date</label>
-                                        <input
-                                            type="text"
-                                            id="expiry"
-                                            placeholder="MM/YY"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="cvv">CVV</label>
-                                        <input
-                                            type="text"
-                                            id="cvv"
-                                            placeholder="Enter CVV"
-                                            required
-                                        />
-                                    </div>
-                                </form>
-                            </div>
-                        )}
-                    </div>
+
 
                     <div className="accordion-section">
                         <button
@@ -245,8 +250,8 @@ const Checkout = () => {
 
                             {/* Product List (Cart Items) placed under Order Summary */}
                             <div className="cart-products">
-                                {cartItems.map((item) => (
-                                    <div key={item.productId} className="cart-product">
+                                {cartItems.map((item, index) => (
+                                    <div key={`${item.productId}-${index}`} className="cart-product">
                                         <div className="cart-product-image">
                                             <img src={item.imageUrl} alt={item.name} />
                                         </div>
@@ -258,10 +263,10 @@ const Checkout = () => {
                                                 </h4>
                                             </div>
                                             <p>Qty: <span>{item.quantity}</span></p>
-                                            <p>Size: {item.selectedSize}</p>
-                                            <p>Color: {item.selectedSeamSize}</p>
-                                            <p>colour: <span>{item.colorName}</span></p>
 
+                                            {item.selectedSize && <p>Size (Top): {item.selectedSize}</p>}
+                                            {item.selectedSeamSize && <p>Seam Size (Bottom): {item.selectedSeamSize}</p>}
+                                            <p>Colour: {item.selectedColorName}</p>
 
                                         </div>
                                     </div>
@@ -272,25 +277,22 @@ const Checkout = () => {
                                 <span>Subtotal:</span>
                                 <span>${subtotal.toFixed(2)}</span>
                             </div>
-                            {/* <div className="summary-item">
-                                <span>Shipping:</span>
-                                <span>${orderSummary.shipping.toFixed(2)}</span>
-                            </div> */}
+
                             <div className="summary-item">
                                 <span>Tax:</span>
                                 <span>${tax.toFixed(2)}</span>
                             </div>
-                            {/* {couponApplied && (
-                                <div className="summary-item discount">
-                                    <span>Discount:</span>
-                                    <span>-</span>
+
+                            {discountedTotal && (
+                                <div className="total">
+                                    <span style={{ color: "green", fontSize: "1rem" }}>Discount (10% off): </span>
+                                    <span style={{ color: "red" }}>-${(totalAmountBeforeDiscount - discountedTotal).toFixed(2)}</span>
                                 </div>
-                            )} */}
-                            {couponApplied && <p>Discount (10% off): -${(subtotal * 0.1).toFixed(2)}</p>}
+                            )}
 
                             <div className="total">
                                 <span>Total:</span>
-                                <span>${total.toFixed(2)}</span>
+                                <span>${(discountedTotal || totalAmountBeforeDiscount).toFixed(2)}</span>
                             </div>
                         </div>
                         <div className="coupon-section">
@@ -299,18 +301,40 @@ const Checkout = () => {
                                 <input
                                     type="text"
                                     placeholder="Enter coupon code"
-                                    value={coupon}
-                                    onChange={(e) => setCoupon(e.target.value)}
+                                    value={couponCode}
+                                    onChange={(e) => setCouponCode(e.target.value)}
+                                    disabled={loading}
                                 />
-                                <button type="button" onClick={handleApplyCoupon}>
-                                    Apply
+                                <button type="button" onClick={handleApplyCoupon} disabled={loading}>
+                                    {loading ? "Applying..." : "Apply"}
                                 </button>
                             </div>
                         </div>
 
                         {/* Place Order Button */}
                         <div className="checkout-btn-container">
-                            <button className="checkout-btn">Place Order</button>
+                            <PayPalButtons
+                                style={{ layout: "vertical" }}
+                                createOrder={(data, actions) => {
+                                    return actions.order.create({
+                                        purchase_units: [
+                                            {
+                                                amount: {
+                                                    value: (discountedTotal || totalAmountBeforeDiscount).toFixed(2),
+                                                },
+                                            },
+                                        ],
+                                    });
+                                }}
+                                onApprove={(data, actions) => {
+                                    return actions.order.capture().then((details) => {
+                                        handleOrderCreation(details);
+                                    });
+                                }}
+                                onError={(err) => {
+                                    toast.error("PayPal transaction failed!");
+                                }}
+                            />
                         </div>
                     </div>
                 </div>

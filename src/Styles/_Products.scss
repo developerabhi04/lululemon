@@ -4,9 +4,10 @@ $bg-color: #f8f8f8;
 $white: #fff;
 $transition-speed: 0.3s;
 
+
 .products-section {
     background-color: $bg-color;
-    padding: 2rem 0;
+    padding: 10rem 0;
 
     .container {
         display: flex;
@@ -67,6 +68,7 @@ $transition-speed: 0.3s;
                     }
 
                     .price-range {
+
                         input[type="range"] {
                             width: 100%;
                         }
@@ -76,7 +78,13 @@ $transition-speed: 0.3s;
                             justify-content: space-between;
                             margin-top: 0.5rem;
                         }
+
+
                     }
+                }
+
+                .price-range {
+                    padding-top: 1rem;
                 }
             }
         }
@@ -309,4 +317,24 @@ $transition-speed: 0.3s;
             }
         }
     }
+}
+
+
+
+/* Slider customization */
+.MuiSlider-root {
+    color: #1976d2;
+}
+
+.MuiSlider-valueLabel {
+    background-color: #1976d2;
+    color: white;
+}
+
+.MuiSelect-select {
+    padding: 10px 14px !important;
+}
+
+.MuiFormControlLabel-label {
+    font-size: 0.9rem;
 }

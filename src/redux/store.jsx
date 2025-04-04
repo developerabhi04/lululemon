@@ -9,6 +9,11 @@ import thirdBannerReducer from "./slices/thirdBannerSlices.js";
 import companyReducer from "./slices/companyDetailsSlices.js";
 import couponReducer from "./slices/couponSlices.js";
 import shopCartReducer from "./slices/cartSlices.js";
+import wishlistReducer from "./slices/wishlistSlices.js";
+import paymentReducer from "./slices/paymentSlices.js";
+import reviewReducer from "./slices/paymentSlices.js";
+import dashboardReducer from "./slices/AdminChartSlices.js";
+
 
 const store = configureStore({
     reducer: {
@@ -23,6 +28,10 @@ const store = configureStore({
         coupons: couponReducer,
 
         shopCart: shopCartReducer,
+        wishlist: wishlistReducer,
+        payment: paymentReducer,
+        review: reviewReducer,
+        dashboard: dashboardReducer,
     },
 });
 

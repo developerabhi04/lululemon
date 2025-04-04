@@ -3,19 +3,24 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-
 import { FaShippingFast, FaTags, FaShieldAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchBanners } from "../../../redux/slices/bannerSlices";
+import { useNavigate } from "react-router-dom";
 
 const Banner = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { banners } = useSelector((state) => state.banners);
 
     useEffect(() => {
         dispatch(fetchBanners());
     }, [dispatch]);
+
+    const HandleUrl = () => {
+        navigate("/products")
+    }
 
     return (
         <section className="banner-section">
@@ -31,7 +36,7 @@ const Banner = () => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                href="/collection"
+                                onClick={HandleUrl}
                                 className="banner-btn"
                             >
                                 Shop Now

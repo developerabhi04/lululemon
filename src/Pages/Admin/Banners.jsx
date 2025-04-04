@@ -8,7 +8,7 @@ const Banners = () => {
     <div className="admin-container">
       <AdminSidebar />
 
-      <main className="banner-sections" style={{ background: "#fff" }}>
+      <main className="banner-sections">
         <Box display="flex">
           <Box flex={1} p={4}>
             <Typography variant="h3" fontWeight="bold" color="primary" gutterBottom>

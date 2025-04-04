@@ -2,10 +2,33 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { server } from "../../server"; // Your API base URL
 
+
+
+// ✅ Validate Coupon
+export const validateCoupon = createAsyncThunk("coupons/validateCoupon",async ({ code, totalAmount }, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`${server}/coupon/validate`, { code, totalAmount }, {
+                headers: { "Content-Type": "application/json" },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to validate coupon");
+        }
+    }
+);
+
+
+
 // ✅ Fetch All Coupons
 export const fetchCoupons = createAsyncThunk("coupons/fetchCoupons", async (_, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${server}/coupon/public/all`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${server}/coupon/public/all` , {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
         return response.data.coupons;
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || "Failed to fetch coupons");
@@ -14,7 +37,7 @@ export const fetchCoupons = createAsyncThunk("coupons/fetchCoupons", async (_, {
 
 // ✅ Add New Coupon
 export const addCoupon = createAsyncThunk("coupons/addCoupon", async (couponData, { rejectWithValue }) => {
-    console.log("Sending Coupon Data:", couponData);
+   
     
     try {
         const token = localStorage.getItem("token");
@@ -32,7 +55,7 @@ export const addCoupon = createAsyncThunk("coupons/addCoupon", async (couponData
 
 // ✅ Update Coupon
 export const updateCoupon = createAsyncThunk("coupons/updateCoupon", async ({ id, data }, { rejectWithValue }) => {
-    console.log("Updating Coupon Data:", data);
+    // console.log("Updating Coupon Data:", data);
     try {
         const token = localStorage.getItem("token");
         const response = await axios.put(`${server}/coupon/admin/update/${id}`, data, {
@@ -64,7 +87,13 @@ export const deleteCoupon = createAsyncThunk("coupons/deleteCoupon", async (id, 
 // ✅ Fetch Single Banner
 export const fetchSingleCoupon = createAsyncThunk("coupon/fetchSingleCoupon", async (id, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${server}/coupon/public/get-coupon/${id}`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${server}/coupon/public/get-coupon/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
         return response.data.coupon;
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || "Failed to fetch banner");
@@ -84,6 +113,19 @@ const couponSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+
+            .addCase(validateCoupon.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(validateCoupon.fulfilled, (state, action) => {
+                state.loading = false;
+                state.coupon = action.payload; // Store validated coupon details
+            })
+            .addCase(validateCoupon.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
             // Fetch All Coupons
             .addCase(fetchCoupons.pending, (state) => {
                 state.loading = true;
@@ -115,13 +157,6 @@ const couponSlice = createSlice({
             .addCase(updateCoupon.pending, (state) => {
                 state.loading = true;
             })
-            // .addCase(updateCoupon.fulfilled, (state, action) => {
-            //     state.loading = false;
-            //     const index = state.coupons.findIndex((c) => c._id === action.payload._id);
-            //     if (index !== -1) {
-            //         state.coupons[index] = action.payload;
-            //     }
-            // })
             .addCase(updateCoupon.fulfilled, (state, action) => {
                 state.loading = false;
                 const index = state.coupons.findIndex((c) => c._id === action.payload._id);
@@ -163,7 +198,7 @@ const couponSlice = createSlice({
         .addCase(deleteCoupon.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
-        });
+        })
 },
 });
 

@@ -11,29 +11,35 @@ const TransactionManagement = () => {
 
   const [selectedImage, setSelectedImage] = useState(null); // State for modal image
 
+
   useEffect(() => {
     dispatch(fetchOrderDetails(id)); // ✅ Fetch order details when the component loads
   }, [dispatch, id]);
+
+
 
   const updateHandler = async () => {
     await dispatch(updateOrderStatus(id)); // ✅ Dispatch update action
     dispatch(fetchOrderDetails(id)); // ✅ Immediately fetch updated order details to avoid image disappearance
   };
 
+
   if (loading) return <p>Loading order details...</p>;
   if (error) return <p className="error">{error}</p>;
   if (!orderDetails) return <p>No order details found.</p>;
 
+
   const {
     user,
-    shippingInfo,
+    cartItems,
+    shippingDetails,
     subtotal,
-    shippingCharges,
     tax,
-    discount,
     total,
+    // discount,
+    discountAmount,
+    paymentMethod,
     status,
-    orderItems,
   } = orderDetails;
 
   return (
@@ -44,21 +50,31 @@ const TransactionManagement = () => {
         {/* Order Items Section */}
         <section className="order-items">
           <h2>Order Items</h2>
-          {orderItems.map((item) => (
+
+          {cartItems.map((item) => (
             <div key={item.productId?._id || item._id} className="order-item-card">
               <img
-                src={item.productId?.photos?.[0]?.url || "https://via.placeholder.com/100"}
+                src={item.imageUrl || "https://via.placeholder.com/100"}
                 alt={item.name}
                 className="product-image"
                 onClick={() => setSelectedImage(item.productId?.photos?.[0]?.url)}
               />
+
               <div className="order-item-details">
                 <p className="item-name">{item.name}</p>
                 <span className="item-price">
                   ${item.price} x {item.quantity} = ${item.price * item.quantity}
                 </span>
               </div>
+
+              <div>
+                <p>Quantity: {item.quantity}</p>
+                <p>Size: {item.selectedSize || ""}</p>
+                <p>SeamSize: {item.selectedSeamSize || "N/A"}</p>
+                <p>Color: {item.selectedColorName}</p>
+              </div>
             </div>
+            
           ))}
         </section>
 
@@ -71,20 +87,24 @@ const TransactionManagement = () => {
             <h5>User Info</h5>
             <p>Name: {user?.name || "Guest User"}</p>
             <p>Email: {user?.email || "Guest User"}</p>
-            <p>Phone: {user?.phone || "Guest User"}</p>
-            <p>
-              Address: {`${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.country}, ${shippingInfo.pinCode}`}
-            </p>
+            <p>Phone: {user?.phoneNumber || "Guest User"}</p>
+            <p>Address:{shippingDetails?.address || "Guest User"}</p>
+            <p>City:{shippingDetails?.city || "Guest User"}</p>
+            <p>ZipCode:{shippingDetails?.zipCode || "Guest User"}</p>
+            <p>state:{shippingDetails?.state || "Guest User"}</p>
+
+
           </div>
 
           {/* Order Amount */}
           <div className="info-section">
             <h5>Amount Info</h5>
+            <p>Payment-Info: {paymentMethod}</p>
             <p>Subtotal: ${subtotal}</p>
-            <p>Shipping Charges: ${shippingCharges}</p>
             <p>Tax: ${tax}</p>
-            <p>Discount: ${discount}</p>
-            <p className="total-amount">Total: ${total}</p>
+            <p>Discount: ${discountAmount}</p>
+           
+            <p className="total-amount">Total: ${total.toFixed(2)}</p>
           </div>
 
           {/* Order Status */}
