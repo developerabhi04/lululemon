@@ -15,6 +15,7 @@ const Wishlist = () => {
       dispatch(fetchWishlistItems(user._id));
     }
   }, [dispatch, user]);
+  
 
   const handleRemoveFromWishlist = async (productId, sizes, seamSizes, colorName) => {
     try {
@@ -27,30 +28,22 @@ const Wishlist = () => {
   };
 
 
-  const handleMoveToCart = async (product) => {
+
+  const handleMoveToCart = async (item) => {
     if (!user) {
       toast.error("Please log in to move items to your cart.");
       return;
     }
 
-    console.log("🛒 Moving to cart with:", {
+    const payload = {
       userId: user._id,
-      productId: product.productId,
-      sizes: product.selectedSize || null,
-      seamSizes: product.selectedSeamSize || null,
-      colorName: product.selectedColorName, // ✅ FIXED: Using correct field name
-    });
-
+      productId: item.productId,
+      sizes: item.selectedSize || null,
+      seamSizes: item.selectedSeamSize || null,
+      colorName: item.selectedColorName,
+    };
     try {
-      await dispatch(
-        moveToCart({
-          userId: user._id,
-          productId: product.productId,
-          sizes: product.selectedSize || null,
-          seamSizes: product.selectedSeamSize || null,
-          colorName: product.selectedColorName, // ✅ FIXED
-        })
-      ).unwrap();
+      await dispatch(moveToCart(payload)).unwrap();
 
       toast.success("Item moved to cart successfully!");
     } catch (error) {
@@ -79,7 +72,7 @@ const Wishlist = () => {
         {wishlistItems.length === 0 ? (
           <div className="empty-wishlist">
             <p>Your wishlist is empty. Start adding your favorite products!</p>
-            <button className="shop-now">Shop Now</button>
+            <button className="shop-now" onClick={() => navigate("/products")}>Shop Now</button>
           </div>
         ) : (
           <div className="wishlist-grid">
@@ -91,8 +84,9 @@ const Wishlist = () => {
                 <div className="wishlist-details">
                   <h3>{item.name}</h3>
 
-                  {item.selectedSize && (<p>Size: {item.selectedSize}</p>)}
-                  {item.selectedSeamSize && (<p>Seam Size: {item.selectedSeamSize}</p>)}
+             
+                  {item.selectedSize && <p className="item-variant">Size (Top): {item.selectedSize}</p>}
+                  {item.selectedSeamSize && <p className="item-variant">Seam Size (Bottom): {item.selectedSeamSize}</p>}
                   <p className="price">${item.price}.00</p>
 
                   <div className="wishlist-actions">

@@ -26,7 +26,10 @@ export const fetchOrders = createAsyncThunk("order/fetchOrders", async (_, { rej
         const token = localStorage.getItem("token");
 
         const response = await axios.get(`${server}/order/all-orders`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
         });
 
         console.log("API Response Orders:", response.data.orders); // Debugging

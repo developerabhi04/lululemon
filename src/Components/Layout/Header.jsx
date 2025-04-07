@@ -68,11 +68,6 @@ const Header = () => {
       featured: [
         "New Arrivals",
         "Best Sellers",
-        "Matching Sets",
-        "DreamKnit™ Collection",
-        "Vuori BlissBlend™ Collection",
-        "Livvy Dunne's Favorites",
-        "New to Vuori?",
         "Sale",
         "Shop All",
       ],
@@ -84,7 +79,6 @@ const Header = () => {
         "Hoodies & Sweatshirts",
         "Shirt Jackets",
         "Outerwear",
-        "Shop All Tops",
       ],
       bottoms: [
         "Leggings",
@@ -94,8 +88,19 @@ const Header = () => {
         "Dresses & Jumpsuits",
         "Shop All Bottoms",
       ],
-      shopByActivity: ["Training", "Running", "Swim", "Yoga", "Travel", "Tennis & Golf"],
+      // shopByActivity: ["Training", "Running", "Swim", "Yoga", "Travel", "Tennis & Golf"],
       image: womenImage,
+    },
+    shoes: {
+      items: [
+        "Cross Training Shoes",
+        "Running Shoes",
+        "Slides",
+        "Sneakers",
+        "Trail Running Shoes",
+        "Workout Shoes",
+      ],
+      image: shoesImage,
     },
     accessories: {
       product: [
@@ -110,17 +115,7 @@ const Header = () => {
       ],
       image: accessoriesImage,
     },
-    shoes: {
-      items: [
-        "Cross Training Shoes",
-        "Running Shoes",
-        "Slides",
-        "Sneakers",
-        "Trail Running Shoes",
-        "Workout Shoes",
-      ],
-      image: shoesImage,
-    },
+
   };
 
   // Hide top nav on scroll

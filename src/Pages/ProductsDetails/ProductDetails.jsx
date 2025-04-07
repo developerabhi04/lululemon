@@ -1,20 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Rating } from "@mui/material";
 import { Add, FavoriteBorder, Remove } from "@mui/icons-material";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSimilarProducts, fetchSingleProduct } from "../../redux/slices/productSlices";
 import { addToCart } from "../../redux/slices/cartSlices";
-import { toast } from "react-toastify";
 import { addToWishlist } from "../../redux/slices/wishlistSlices";
+import { toast } from "react-toastify";
 import SimilarProduct from "./SimilarProduct";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
+
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { user } = useSelector((state) => state.user);
+  const { cartItems } = useSelector((state) => state.shopCart);
   const { product, loading, error } = useSelector((state) => state.products);
 
   const [selectedColor, setSelectedColor] = useState(null);
@@ -27,7 +29,6 @@ const ProductDetails = () => {
     dispatch(fetchSingleProduct(id));
   }, [dispatch, id]);
 
-  // Set default selection and fetch similar products once product loads
   useEffect(() => {
     if (product && product.colors && product.colors.length > 0) {
       setSelectedColor(product.colors[0].colorName);
@@ -37,7 +38,6 @@ const ProductDetails = () => {
     }
   }, [product, dispatch]);
 
-  // Read query parameter "selectedImage" to update selection if provided
   useEffect(() => {
     if (product && product.colors && product.colors.length > 0) {
       const params = new URLSearchParams(location.search);
@@ -91,6 +91,19 @@ const ProductDetails = () => {
     : "Select Size";
   const buttonDisabled = !selectedSize || currentStock === 0;
 
+  const isDuplicateInCart = cartItems.some((item) =>
+    item.productId === product._id &&
+    String(item.selectedColorName) === String(selectedColor) &&
+    String(item.selectedSize) === String(selectedSize) &&
+    String(item.selectedSeamSize) === String(showSeamSizes ? selectedSize : null)
+  );
+  const isDuplicateInWishlist = wishlistItems.some((item) =>
+    item.productId === product._id &&
+    String(item.selectedColorName) === String(selectedColor) &&
+    String(item.selectedSize) === String(selectedSize) &&
+    String(item.selectedSeamSize) === String(showSeamSizes ? selectedSize : null)
+  );
+
   const handleAddToCart = () => {
     if (!user) {
       toast.error("Please log in to add items to your cart.");
@@ -102,6 +115,10 @@ const ProductDetails = () => {
     }
     if (!selectedSize) {
       toast.error("Please select a size!");
+      return;
+    }
+    if (isDuplicateInCart) {
+      toast.info("Product is already in the cart.");
       return;
     }
     const payload = {
@@ -127,31 +144,32 @@ const ProductDetails = () => {
       toast.error("Please log in to add items to your wishlist.");
       return;
     }
+    if (isDuplicateInWishlist) {
+      toast.info("Product is already in wishlist.");
+      return;
+    }
+    if (isDuplicateInCart) {
+      toast.info("Product is already in cart.");
+      return;
+    }
     const payload = {
       userId: user._id,
       productId: product._id,
-      size: showSizes ? selectedSize : null,
-      seamSize: showSeamSizes ? selectedSize : null,
+      sizes: showSizes ? selectedSize : null,
+      seamSizes: showSeamSizes ? selectedSize : null,
       colorName: selectedColor,
     };
-    const isAlreadyInWishlist = wishlistItems.some(
-      (item) =>
-        item.productId === payload.productId &&
-        item.colorName === payload.colorName &&
-        item.size === payload.size &&
-        item.seamSize === payload.seamSize
-    );
-    if (isAlreadyInWishlist) {
-      toast.info("This item is already in your wishlist! ❤️");
-      return;
-    }
     dispatch(addToWishlist(payload))
       .unwrap()
       .then(() => {
-        toast.info("Item added to wishlist!");
+        toast.success("Item added to wishlist!");
       })
       .catch((error) => {
-        toast.error(error?.message || "Failed to add item to wishlist.");
+        if (error?.message?.toLowerCase().includes("already")) {
+          toast.info("Product is already in wishlist.");
+        } else {
+          toast.error(error?.message || "Failed to add item to wishlist.");
+        }
       });
   };
 
@@ -161,7 +179,6 @@ const ProductDetails = () => {
     return <p>No product found or no images available.</p>;
   }
 
-  // Breadcrumb: Navigate using products page filters for category/subcategory
   const categoryName = product.category?.name || "Category";
   const subCategoryName = product.subcategory?.name || "Subcategory";
 
@@ -206,7 +223,7 @@ const ProductDetails = () => {
           </div>
           <p className="product-details__price">${product.price?.toFixed(2)}</p>
 
-          {/* Color Options */}
+          {/* Choose Color Section using dedicated color image if available */}
           <div className="product-details__colors">
             <p>Choose Color:</p>
             <div className="product-details__color-options">
@@ -222,9 +239,9 @@ const ProductDetails = () => {
                 >
                   <img
                     src={
-                      color.photos && color.photos.length > 0
-                        ? color.photos[0].url
-                        : "https://via.placeholder.com/30"
+                      color.colorImage
+                        ? color.colorImage.url
+                        : (color.photos && color.photos[0]?.url) || "https://via.placeholder.com/30"
                     }
                     alt={color.colorName || `Color ${index + 1}`}
                     className={`color-image ${selectedColor === color.colorName ? "selected" : ""}`}
@@ -235,7 +252,7 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* Size or Seam Size Options */}
+          {/* Size / Seam Size Options */}
           {selectedVariant && (
             <div className="product-details__sizes">
               {showSizes ? (
@@ -291,11 +308,7 @@ const ProductDetails = () => {
             <button onClick={() => setQuantity(quantity + 1)}>+</button>
           </div>
 
-          <button
-            className="product-details__add-to-cart"
-            disabled={buttonDisabled}
-            onClick={handleAddToCart}
-          >
+          <button className="product-details__add-to-cart" disabled={buttonDisabled} onClick={handleAddToCart}>
             {buttonLabel}
           </button>
 
@@ -304,17 +317,18 @@ const ProductDetails = () => {
               Description
               <span className="toggle-arrow">{descriptionOpen ? <Remove /> : <Add />}</span>
             </h3>
-            {descriptionOpen && <p>{product.description}</p>}
+            {descriptionOpen && (
+              <div
+                className="description-content"
+                dangerouslySetInnerHTML={{ __html: product.description }}
+              />
+            )}
           </div>
         </div>
       </div>
 
-      {/* Similar Products Section */}
-     
-        <SimilarProduct />
-     
+      <SimilarProduct />
 
-      {/* Reviews Section */}
       <div className="product-details__reviews-section">
         <h2>Customer Reviews</h2>
         {(!product.reviews || product.reviews.length === 0) ? (

@@ -65,39 +65,35 @@ export const addToWishlist = createAsyncThunk("wishlist/addToWishlist",
 );
 
 // Remove from Wishlist
-export const removeFromWishlist = createAsyncThunk(
-    "wishlist/removeFromWishlist",
+export const removeFromWishlist = createAsyncThunk("wishlist/removeFromWishlist",
     async ({ userId, productId, sizes, seamSizes, colorName }, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem("token");
-
-            // Build the URL with query parameters
-            let url = `${server}/wishlist/delete/${userId}/${productId}?`;
-            if (sizes) url += `sizes=${sizes}&`;
-            if (seamSizes) url += `seamSizes=${seamSizes}&`;
-            url += `colorName=${colorName}`;
-
-
+            // Build query parameters using URLSearchParams for consistency
+            const params = new URLSearchParams();
+            if (sizes !== null && sizes !== undefined) params.append("sizes", sizes);
+            if (seamSizes !== null && seamSizes !== undefined) params.append("seamSizes", seamSizes);
+            params.append("colorName", colorName);
+            const url = `${server}/wishlist/delete/${userId}/${productId}?${params.toString()}`;
             const response = await axios.delete(url, {
-                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
             });
-
             if (response.status === 200) {
                 return { productId, sizes, seamSizes, colorName };
             } else {
                 return rejectWithValue(`Failed to delete item. Status: ${response.status}`);
             }
         } catch (error) {
-            console.error("removeFromWishlist Error:", error);  // log error
+            console.error("removeFromWishlist Error:", error);
             return rejectWithValue(error.response?.data?.message || "Failed to remove item from wishlist");
         }
     }
 );
 
 
+
 // Get Wishlist Items
-export const fetchWishlistItems = createAsyncThunk(
-    "wishlist/fetchWishlistItems",
+export const fetchWishlistItems = createAsyncThunk("wishlist/fetchWishlistItems",
     async (userId, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem("token");
@@ -140,16 +136,16 @@ const wishlistSlice = createSlice({
             .addCase(removeFromWishlist.fulfilled, (state, action) => {
                 state.isLoading = false;
                 const { productId, sizes, seamSizes, colorName } = action.payload;
-
-                state.wishlistItems = state.wishlistItems.filter(
-                    (item) =>
-                        !(
-                            item.productId === productId &&
-                            (sizes ? String(item.selectedSize) === String(sizes) : !item.selectedSize) &&
-                            (seamSizes ? String(item.selectedSeamSize) === String(seamSizes) : !item.selectedSeamSize) &&
-                            item.selectedColorName === colorName
-                        )
-                );
+                state.wishlistItems = state.wishlistItems.filter((item) => {
+                    const sizeMatch = sizes ? String(item.selectedSize) === String(sizes) : !item.selectedSize;
+                    const seamSizeMatch = seamSizes ? String(item.selectedSeamSize) === String(seamSizes) : !item.selectedSeamSize;
+                    return !(
+                        item.productId === productId &&
+                        sizeMatch &&
+                        seamSizeMatch &&
+                        item.selectedColorName === colorName
+                    );
+                });
             })
             .addCase(removeFromWishlist.rejected, (state, action) => {
                 state.isLoading = false;
@@ -172,9 +168,17 @@ const wishlistSlice = createSlice({
             })
             .addCase(moveToCart.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.wishlistItems = state.wishlistItems.filter(
-                    (item) => item.productId !== action.meta.arg.productId
-                )
+                const { productId, sizes, seamSizes, colorName } = action.meta.arg;
+                state.wishlistItems = state.wishlistItems.filter((item) => {
+                    const sizeMatch = sizes ? String(item.selectedSize) === String(sizes) : !item.selectedSize;
+                    const seamSizeMatch = seamSizes ? String(item.selectedSeamSize) === String(seamSizes) : !item.selectedSeamSize;
+                    return !(
+                        item.productId === productId &&
+                        sizeMatch &&
+                        seamSizeMatch &&
+                        item.selectedColorName === colorName
+                    );
+                });
             })
             .addCase(moveToCart.rejected, (state, action) => {
                 state.isLoading = false;

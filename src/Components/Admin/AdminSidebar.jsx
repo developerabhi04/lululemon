@@ -35,8 +35,7 @@ const AdminSidebar = () => {
             )}
 
             <aside
-                style={
-                    phoneActive
+                style={ phoneActive
                         ? {
                             width: "20rem",
                             height: "100vh",
@@ -127,24 +126,7 @@ const DivTwo = ({ location }) => (
     </div>
 );
 
-////////////////////////////////////////////////////
-// const DivThree = ({ location }) => (
-//     <div>
-//         <h5>Apps</h5>
-//         <ul>
-//             <Li
-//                 url={"/admin/app/stopwatch"}
-//                 text={"Stopwatch"}
-//                 Icon={FaStopwatch}
-//                 location={location}
-//             />
-//             <Li url={"/admin/app/coupon"} text={"Coupon"} Icon={RiCoupon3Fill} location={location} />
-//             <Li url={"/admin/app/toss"} text={"Toss"} Icon={FaGamepad} location={location} />
-//         </ul>
-//     </div>
-// );
 
-////////////////////////////////////////////////////
 const Li = ({ url, text, location, Icon }) => (
     <li
         style={{

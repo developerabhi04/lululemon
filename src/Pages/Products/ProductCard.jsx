@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 
-// Custom Arrow Components for the color slider
+// Custom Arrow Components for the slider
 const CustomNextArrow = ({ onClick }) => (
     <button className="custom-arrow next" onClick={onClick}>
         <ArrowForwardIos />
@@ -18,12 +18,13 @@ const CustomPrevArrow = ({ onClick }) => (
 
 const ProductCard = ({ product }) => {
     const navigate = useNavigate();
-    // Use the first image from the first color variant as the default image.
+
+    // Use the first image from the first color variant as the default product image.
     const defaultImage =
         product.colors?.[0]?.photos?.[0]?.url || "https://via.placeholder.com/50";
+
     const [hoveredImage, setHoveredImage] = useState(defaultImage);
 
-    // Settings for the inner color slider
     const colorSettings = {
         dots: false,
         infinite: false,
@@ -34,10 +35,15 @@ const ProductCard = ({ product }) => {
         prevArrow: <CustomPrevArrow />,
     };
 
-    // Navigate to the product details page
+    // Navigate to product details page when main image is clicked
     const navigateToProduct = () => {
         window.scrollTo(0, 0);
         navigate(`/product-details/${product._id}`);
+    };
+
+    // Helper function: Return the full product image for a variant (from its photos array)
+    const getVariantImage = (color) => {
+        return color.photos?.[0]?.url || defaultImage;
     };
 
     return (
@@ -46,15 +52,10 @@ const ProductCard = ({ product }) => {
                 <FavoriteBorder />
             </div>
 
-            {/* Main product image with hover effect */}
+            {/* Main product image */}
             <div
                 className="product-image"
                 onClick={navigateToProduct}
-                onMouseEnter={() => {
-                    // Use the second image from the first color variant if available, else default.
-                    const secondImage = product.colors?.[0]?.photos?.[1]?.url;
-                    setHoveredImage(secondImage || defaultImage);
-                }}
                 onMouseLeave={() => setHoveredImage(defaultImage)}
             >
                 <img src={hoveredImage} alt={product.name} />
@@ -68,20 +69,15 @@ const ProductCard = ({ product }) => {
                             <div key={index} className="color-slide">
                                 <img
                                     src={
-                                        color.photos && color.photos.length > 0
-                                            ? color.photos[0].url
-                                            : "https://via.placeholder.com/30"
+                                        // Display the dedicated color image if available;
+                                        // otherwise, use the first image from the photos array or a placeholder.
+                                        color.colorImage?.url ||
+                                        (color.photos && color.photos[0]?.url) ||
+                                        "https://via.placeholder.com/30"
                                     }
                                     alt={color.colorName || `Color ${index + 1}`}
                                     className="color"
-                                    onMouseEnter={() =>
-                                        setHoveredImage(
-                                            color.photos && color.photos.length > 0
-                                                ? color.photos[0].url
-                                                : defaultImage
-                                        )
-                                    }
-                                    onMouseLeave={() => setHoveredImage(defaultImage)}
+                                    onMouseEnter={() => setHoveredImage(getVariantImage(color))}
                                 />
                             </div>
                         ))}

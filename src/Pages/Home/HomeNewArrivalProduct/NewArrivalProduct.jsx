@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchNewArrivalProducts } from "../../../redux/slices/productSlices";
 import { useNavigate } from "react-router-dom";
 
+// Custom Arrows for the main slider
 const NextArrow = ({ onClick }) => (
   <button className="arrow next" onClick={onClick}>
     <ArrowRight />
@@ -17,6 +18,7 @@ const PrevArrow = ({ onClick }) => (
   </button>
 );
 
+// Custom Arrows for the inner color slider
 const CustomNextArrow = ({ onClick }) => (
   <button className="custom-arrow next" onClick={onClick}>
     <ArrowForwardIos />
@@ -30,7 +32,8 @@ const CustomPrevArrow = ({ onClick }) => (
 );
 
 const NewArrivalProduct = () => {
-  const [hoveredImage, setHoveredImage] = useState({});
+  // Maintain a state object to store the selected variant per product (keyed by product ID)
+  const [selectedVariants, setSelectedVariants] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { products, loading, error, selectedColor } = useSelector((state) => state.products);
@@ -42,8 +45,8 @@ const NewArrivalProduct = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  // Main slider settings for products
-  const settings = {
+  // Settings for the main product slider
+  const mainSliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
@@ -59,7 +62,7 @@ const NewArrivalProduct = () => {
   };
 
   // Settings for the inner color slider
-  const colorSettings = {
+  const colorSliderSettings = {
     dots: false,
     infinite: false,
     speed: 300,
@@ -69,73 +72,73 @@ const NewArrivalProduct = () => {
     prevArrow: <CustomPrevArrow />,
   };
 
-  // Modified navigateLink now accepts an image parameter and passes it as a query parameter.
-  const navigateLink = (id, image) => {
+  // Navigate to ProductDetails, passing the selected variant image as a query parameter.
+  const navigateLink = (productId, image) => {
     window.scrollTo(0, 0);
-    navigate(`/product-details/${id}?selectedImage=${encodeURIComponent(image)}`);
+    navigate(`/product-details/${productId}?selectedImage=${encodeURIComponent(image)}`);
   };
 
-  // When a color is hovered, store both the image and (optionally) its color name.
-  const handleColorHover = (productId, imageUrl) => {
-    setHoveredImage((prev) => ({
+  // Helper: Return the default image (first image from first color variant)
+  const getDefaultImage = (product) => {
+    return product.colors &&
+      product.colors.length > 0 &&
+      product.colors[0].photos &&
+      product.colors[0].photos.length > 0
+      ? product.colors[0].photos[0].url
+      : "https://via.placeholder.com/50";
+  };
+
+  // Helper: Return the image for a variant (first image from its photos array)
+  const getVariantImage = (color) => {
+    return color.photos && color.photos[0]?.url ? color.photos[0].url : "https://via.placeholder.com/50";
+  };
+
+  // When a color swatch is hovered, update the selected variant for that product.
+  const handleColorHover = (productId, colorVariant) => {
+    setSelectedVariants((prev) => ({
       ...prev,
-      [productId]: imageUrl,
+      [productId]: colorVariant,
     }));
   };
-
-
-  const HandleUrl = () => {
-    navigate("/products")
-  }
 
   return (
     <section className="arrival-section">
       <h1>What’s new this week.</h1>
       <div className="bar"></div>
       <div className="slider-container">
-        <Slider {...settings}>
+        <Slider {...mainSliderSettings}>
           {products.map((product) => {
-            // Use the first image from the first color variant as default.
-            const firstColorImage =
-              product.colors && product.colors.length > 0 &&
-                product.colors[0].photos && product.colors[0].photos.length > 0
-                ? product.colors[0].photos[0].url
-                : "https://via.placeholder.com/50";
+            const defaultImg = getDefaultImage(product);
+            // Use the selected variant if one exists, otherwise the default image.
+            const variant = selectedVariants[product._id] || { photos: [{ url: defaultImg }] };
+            const mainImage = variant.photos[0].url;
             return (
               <div key={product._id} className="product-card">
-                {/* Product Image */}
+                {/* Main Product Image */}
                 <div
                   className="image-container"
-                  onClick={() =>
-                    navigateLink(
-                      product._id,
-                      hoveredImage[product._id] || firstColorImage
-                    )
-                  }
+                  onClick={() => navigateLink(product._id, mainImage)}
                 >
-                  <img
-                    src={hoveredImage[product._id] || firstColorImage}
-                    alt={product.name}
-                  />
+                  <img src={mainImage} alt={product.name} />
                 </div>
-                {/* Color Slider */}
-                {product.colors?.length > 0 && (
+                {/* Inner Color Slider */}
+                {product.colors && product.colors.length > 0 && (
                   <div className="colors">
-                    <Slider {...colorSettings}>
-                      {product.colors
-                        .filter((color) => color.photos && color.photos.length > 0)
-                        .map((color, index) => (
+                    <Slider {...colorSliderSettings}>
+                      {product.colors.map((color, index) => {
+                        const variantImg = getVariantImage(color);
+                        return (
                           <div key={index} className="color-slide">
                             <img
-                              src={color.photos[0].url}
-                              alt={`Color option ${index}`}
+                              src={color.colorImage?.url || variantImg}
+                              alt={color.colorName || `Color ${index + 1}`}
                               className="color"
-                              onMouseEnter={() =>
-                                handleColorHover(product._id, color.photos[0].url)
-                              }
+                              onMouseEnter={() => handleColorHover(product._id, color)}
+                              onClick={() => navigateLink(product._id, variantImg)}
                             />
                           </div>
-                        ))}
+                        );
+                      })}
                     </Slider>
                   </div>
                 )}
@@ -152,7 +155,9 @@ const NewArrivalProduct = () => {
         </Slider>
       </div>
       <div className="button-div">
-        <button className="button" onClick={HandleUrl}>SHOP {"WHAT'S"} NEW</button>
+        <button className="button" onClick={() => navigate("/products")}>
+          SHOP {"WHAT'S"} NEW
+        </button>
       </div>
     </section>
   );

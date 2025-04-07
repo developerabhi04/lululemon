@@ -10,7 +10,7 @@ const Cart = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.user);
-    const { cartItems = [], isLoading, error } = useSelector((state) => state.shopCart);
+    const { cartItems = [] } = useSelector((state) => state.shopCart);
 
     useEffect(() => {
         if (user) {

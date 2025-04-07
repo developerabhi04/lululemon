@@ -85,6 +85,26 @@ $transition-speed: 0.3s;
 
                 .price-range {
                     padding-top: 1rem;
+
+                    .price-values {
+                        display: flex;
+                        justify-content: space-between;
+
+                        >input {
+                            width: 90%;
+                        }
+
+                        span:nth-child(1) {
+                            color: #b01315;
+                        }
+
+                        span:nth-child(2) {
+                            color: #b01315;
+
+                        }
+
+
+                    }
                 }
             }
         }
@@ -162,12 +182,20 @@ $transition-speed: 0.3s;
                     .product-image {
                         height: 400px;
                         cursor: pointer;
+                        overflow: hidden;
 
                         img {
                             width: 100%;
                             height: 100%;
                             object-fit: cover;
+                            transition: transform 0.3s ease;
+
+                            &:hover img {
+                                transform: scale(0.9);
+                            }
                         }
+
+
                     }
 
                     .colors {

@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import { FaCloudUploadAlt, FaTimes } from "react-icons/fa";
 import { fetchCategories } from "../../../redux/slices/categorySlices";
 import { addProduct } from "../../../redux/slices/productSlices";
-
-
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // import Quill styles
 
 const NewProduct = () => {
     const dispatch = useDispatch();
@@ -18,11 +18,12 @@ const NewProduct = () => {
     // Global product fields
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
+    // Use ReactQuill for rich text description
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
     const [subcategory, setSubcategory] = useState("");
 
-    // Color variants state with one default variant
+    // Color variants state with one default variant including dedicated colour image fields
     const [colorVariants, setColorVariants] = useState([]);
     useEffect(() => {
         setColorVariants([
@@ -32,8 +33,10 @@ const NewProduct = () => {
                 colorStocks: "",
                 colorSeamSizes: "",
                 colorSeamStocks: "",
-                files: [],
+                files: [], // Additional variant images
                 previews: [],
+                colorImageFile: null, // Dedicated colour image file
+                colorImagePreview: "", // Preview URL for dedicated colour image
             },
         ]);
     }, []);
@@ -42,17 +45,40 @@ const NewProduct = () => {
         dispatch(fetchCategories());
     }, [dispatch]);
 
-    // File upload handler – replaces previous selection to avoid duplicates
+    // Handler for dedicated colour image upload
+    const handleColorImageUpload = (index, e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const preview = URL.createObjectURL(file);
+            setColorVariants((prev) => {
+                const newVariants = [...prev];
+                newVariants[index].colorImageFile = file;
+                newVariants[index].colorImagePreview = preview;
+                return newVariants;
+            });
+        }
+        e.target.value = null;
+    };
+
+    const removeColorImage = (index) => {
+        setColorVariants((prev) => {
+            const newVariants = [...prev];
+            newVariants[index].colorImageFile = null;
+            newVariants[index].colorImagePreview = "";
+            return newVariants;
+        });
+    };
+
+    // Handler for additional variant images upload
     const handleColorVariantFileUpload = (index, e) => {
         const files = Array.from(e.target.files);
         const previews = files.map((file) => URL.createObjectURL(file));
         setColorVariants((prev) => {
             const newVariants = [...prev];
-            newVariants[index].files = files; // Replace the files instead of appending
+            newVariants[index].files = files;
             newVariants[index].previews = previews;
             return newVariants;
         });
-        // Reset file input so that the same file can be reselected if needed
         e.target.value = null;
     };
 
@@ -88,6 +114,8 @@ const NewProduct = () => {
                 colorSeamStocks: "",
                 files: [],
                 previews: [],
+                colorImageFile: null,
+                colorImagePreview: "",
             },
         ]);
     };
@@ -112,14 +140,15 @@ const NewProduct = () => {
         // Append the number of color variants and their respective data
         formData.append("numColorVariants", colorVariants.length);
         colorVariants.forEach((variant, index) => {
-            formData.append(
-                `colorName${index}`,
-                variant.colorName || `Color ${index + 1}`
-            );
+            formData.append(`colorName${index}`, variant.colorName || `Color ${index + 1}`);
             formData.append(`colorSizes${index}`, variant.colorSizes || "");
             formData.append(`colorStocks${index}`, variant.colorStocks || "");
             formData.append(`colorSeamSizes${index}`, variant.colorSeamSizes || "");
             formData.append(`colorSeamStocks${index}`, variant.colorSeamStocks || "");
+            // Append dedicated colour image if provided
+            if (variant.colorImageFile) {
+                formData.append(`colorImage${index}`, variant.colorImageFile);
+            }
             variant.files.forEach((file) =>
                 formData.append(`colorImages${index}`, file)
             );
@@ -134,6 +163,29 @@ const NewProduct = () => {
             }
         });
     };
+
+    // React Quill modules and formats (you can customize these as needed)
+    const quillModules = {
+        toolbar: [
+            [{ header: [1, 2, 3, false] }],
+            ["bold", "italic", "underline", "strike"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            ["link", "image"],
+            ["clean"],
+        ],
+    };
+
+    const quillFormats = [
+        "header",
+        "bold",
+        "italic",
+        "underline",
+        "strike",
+        "list",
+        "bullet",
+        "link",
+        "image",
+    ];
 
     return (
         <div className="admin-container">
@@ -164,11 +216,14 @@ const NewProduct = () => {
                         </div>
                         <div className="input-group">
                             <label>Description</label>
-                            <textarea
-                                required
-                                placeholder="Product Description"
+                            {/* Use ReactQuill for rich text description */}
+                            <ReactQuill
+                                theme="snow"
                                 value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                onChange={setDescription}
+                                modules={quillModules}
+                                formats={quillFormats}
+                                placeholder="Enter product description here..."
                             />
                         </div>
                         <div className="input-group">
@@ -226,9 +281,34 @@ const NewProduct = () => {
                                             placeholder={`Enter color name for variant ${index + 1}`}
                                             value={variant.colorName || ""}
                                             onChange={(e) =>
-                                                handleColorVariantChange(index, "colorName", e.target.value)
+                                                handleColorVariantChange(
+                                                    index,
+                                                    "colorName",
+                                                    e.target.value
+                                                )
                                             }
                                         />
+                                    </div>
+                                    {/* Dedicated Colour Image Section */}
+                                    <div className="input-group">
+                                        <label>Dedicated Colour Image</label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => handleColorImageUpload(index, e)}
+                                        />
+                                        {variant.colorImagePreview && (
+                                            <div className="preview-container">
+                                                <img
+                                                    src={variant.colorImagePreview}
+                                                    alt={`Dedicated preview for variant ${index + 1}`}
+                                                />
+                                                <FaTimes
+                                                    className="remove-icon"
+                                                    onClick={() => removeColorImage(index)}
+                                                />
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="input-group">
                                         <label>Sizes (comma-separated, e.g., S, M, L)</label>
@@ -237,7 +317,11 @@ const NewProduct = () => {
                                             placeholder="E.g. S, M, L, XL"
                                             value={variant.colorSizes || ""}
                                             onChange={(e) =>
-                                                handleColorVariantChange(index, "colorSizes", e.target.value)
+                                                handleColorVariantChange(
+                                                    index,
+                                                    "colorSizes",
+                                                    e.target.value
+                                                )
                                             }
                                         />
                                     </div>
@@ -248,7 +332,11 @@ const NewProduct = () => {
                                             placeholder="E.g. 10, 5, 0, 2"
                                             value={variant.colorStocks || ""}
                                             onChange={(e) =>
-                                                handleColorVariantChange(index, "colorStocks", e.target.value)
+                                                handleColorVariantChange(
+                                                    index,
+                                                    "colorStocks",
+                                                    e.target.value
+                                                )
                                             }
                                         />
                                     </div>
@@ -259,7 +347,11 @@ const NewProduct = () => {
                                             placeholder="E.g. 28, 30, 32"
                                             value={variant.colorSeamSizes || ""}
                                             onChange={(e) =>
-                                                handleColorVariantChange(index, "colorSeamSizes", e.target.value)
+                                                handleColorVariantChange(
+                                                    index,
+                                                    "colorSeamSizes",
+                                                    e.target.value
+                                                )
                                             }
                                         />
                                     </div>
@@ -270,14 +362,18 @@ const NewProduct = () => {
                                             placeholder="E.g. 10, 5, 0"
                                             value={variant.colorSeamStocks || ""}
                                             onChange={(e) =>
-                                                handleColorVariantChange(index, "colorSeamStocks", e.target.value)
+                                                handleColorVariantChange(
+                                                    index,
+                                                    "colorSeamStocks",
+                                                    e.target.value
+                                                )
                                             }
                                         />
                                     </div>
                                     <div className="upload-section">
                                         <label className="file-upload">
                                             <FaCloudUploadAlt className="upload-icon" />
-                                            <span>Upload images for this variant</span>
+                                            <span>Upload additional images for this variant</span>
                                             <input
                                                 type="file"
                                                 multiple
@@ -290,10 +386,7 @@ const NewProduct = () => {
                                             {variant.previews &&
                                                 variant.previews.map((src, fileIndex) => (
                                                     <div key={fileIndex} className="preview-container">
-                                                        <img
-                                                            src={src}
-                                                            alt={`Variant ${index + 1} preview`}
-                                                        />
+                                                        <img src={src} alt={`Variant ${index + 1} preview`} />
                                                         <FaTimes
                                                             className="remove-icon"
                                                             onClick={() =>
