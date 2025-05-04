@@ -9,6 +9,9 @@ import { addToWishlist } from "../../redux/slices/wishlistSlices";
 import { toast } from "react-toastify";
 import SimilarProduct from "./SimilarProduct";
 
+// Helper component for individual review with "Read more" functionality
+
+
 const ProductDetails = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -223,7 +226,7 @@ const ProductDetails = () => {
           </div>
           <p className="product-details__price">${product.price?.toFixed(2)}</p>
 
-          {/* Choose Color Section using dedicated color image if available */}
+          {/* Choose Color */}
           <div className="product-details__colors">
             <p>Choose Color:</p>
             <div className="product-details__color-options">
@@ -252,7 +255,7 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* Size / Seam Size Options */}
+          {/* Size Options */}
           {selectedVariant && (
             <div className="product-details__sizes">
               {showSizes ? (
@@ -329,17 +332,14 @@ const ProductDetails = () => {
 
       <SimilarProduct />
 
+      {/* Reviews Section */}
       <div className="product-details__reviews-section">
         <h2>Customer Reviews</h2>
         {(!product.reviews || product.reviews.length === 0) ? (
           <p>No reviews available.</p>
         ) : (
-          product.reviews.map((review, index) => (
-            <div key={index} className="review">
-              <p className="review__username">{review.username}</p>
-              <p className="review__rating">⭐ {review.rating} / 5</p>
-              <p className="review__comment">{review.comment}</p>
-            </div>
+          product.reviews.map((review) => (
+            <ReviewItem key={review._id} review={review} />
           ))
         )}
       </div>
@@ -348,3 +348,90 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
+// Helper Component to render individual review with read more functionality
+const ReviewItem = ({ review }) => {
+  const [expanded, setExpanded] = useState(false);
+  const threshold = 150; // Number of characters before truncation
+
+  const commentText =
+    review.comment.length > threshold && !expanded
+      ? review.comment.substring(0, threshold) + "..."
+      : review.comment;
+
+  return (
+    <div className="review" style={{ marginBottom: "1rem" }}>
+      <div className="review-card" style={{ backgroundColor: "#f9f9f9", borderRadius: "8px", padding: "1.5rem", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.08)" }}>
+        <div className="review-header" style={{ display: "flex", alignItems: "center", marginBottom: "0.75rem" }}>
+          <img
+            src={
+              review.user &&
+                review.user.avatar &&
+                review.user.avatar.length > 0
+                ? review.user.avatar[0].url
+                : "/default-user.png"
+            }
+            alt={review.user && review.user.name ? review.user.name : "User"}
+            className="review-user-photo"
+            style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              objectFit: "cover",
+              border: "2px solid #c8102e",
+              marginRight: "1rem",
+            }}
+          />
+          <div className="review-info" style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <span className="review-username" style={{ fontSize: "1rem", fontWeight: "600", color: "#333" }}>
+              {review.user && review.user.name ? review.user.name : "Anonymous"}
+            </span>
+            <Rating value={review.rating} readOnly precision={0.5} size="small" style={{ marginTop: "0.25rem" }} />
+          </div>
+        </div>
+        <p className="review-comment" style={{ fontSize: "0.95rem", color: "#555", lineHeight: "1.45", display:"" }}>
+          {commentText}
+        </p>
+        {review.comment.length > threshold && !expanded && (
+          <button
+            onClick={() => setExpanded(true)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#c8102e",
+              cursor: "pointer",
+              padding: 0,
+              fontSize: "0.9rem",
+              marginBottom: "0.5rem",
+            }}
+          >
+            Read more...
+          </button>
+        )}
+        {expanded && review.comment.length > threshold && (
+          <button
+            onClick={() => setExpanded(false)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#c8102e",
+              cursor: "pointer",
+              padding: 0,
+              fontSize: "0.9rem",
+              marginBottom: "0.5rem",
+            }}
+          >
+            Show less
+          </button>
+        )}
+        <span className="review-date" style={{ fontSize: "0.85rem", color: "#aaa", textAlign: "right" }}>
+          {new Date(review.createdAt).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })}
+        </span>
+      </div>
+    </div>
+  );
+};

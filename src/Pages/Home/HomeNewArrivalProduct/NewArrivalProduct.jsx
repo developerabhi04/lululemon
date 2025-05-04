@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
 import Slider from "react-slick";
-import { ArrowBackIos, ArrowForwardIos, ArrowLeft, ArrowRight } from "@mui/icons-material";
+import {
+  ArrowBackIos,
+  ArrowForwardIos,
+  ArrowLeft,
+  ArrowRight,
+} from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNewArrivalProducts } from "../../../redux/slices/productSlices";
 import { useNavigate } from "react-router-dom";
+import { Skeleton } from "@mui/material";
 
 // Custom Arrows for the main slider
 const NextArrow = ({ onClick }) => (
@@ -36,13 +42,26 @@ const NewArrivalProduct = () => {
   const [selectedVariants, setSelectedVariants] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { products, loading, error, selectedColor } = useSelector((state) => state.products);
+  const { products, loading, error, selectedColor } = useSelector(
+    (state) => state.products
+  );
 
   useEffect(() => {
     dispatch(fetchNewArrivalProducts(selectedColor));
   }, [dispatch, selectedColor]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <>
+        {[...Array(5)].map((_, index) => (
+          <Skeleton
+            key={index}
+            variant="rectangular"
+            
+          />
+        ))}
+      </>
+    );
   if (error) return <p>Error: {error}</p>;
 
   // Settings for the main product slider
@@ -75,7 +94,9 @@ const NewArrivalProduct = () => {
   // Navigate to ProductDetails, passing the selected variant image as a query parameter.
   const navigateLink = (productId, image) => {
     window.scrollTo(0, 0);
-    navigate(`/product-details/${productId}?selectedImage=${encodeURIComponent(image)}`);
+    navigate(
+      `/product-details/${productId}?selectedImage=${encodeURIComponent(image)}`
+    );
   };
 
   // Helper: Return the default image (first image from first color variant)
@@ -90,7 +111,9 @@ const NewArrivalProduct = () => {
 
   // Helper: Return the image for a variant (first image from its photos array)
   const getVariantImage = (color) => {
-    return color.photos && color.photos[0]?.url ? color.photos[0].url : "https://via.placeholder.com/50";
+    return color.photos && color.photos[0]?.url
+      ? color.photos[0].url
+      : "https://via.placeholder.com/50";
   };
 
   // When a color swatch is hovered, update the selected variant for that product.
@@ -110,7 +133,9 @@ const NewArrivalProduct = () => {
           {products.map((product) => {
             const defaultImg = getDefaultImage(product);
             // Use the selected variant if one exists, otherwise the default image.
-            const variant = selectedVariants[product._id] || { photos: [{ url: defaultImg }] };
+            const variant = selectedVariants[product._id] || {
+              photos: [{ url: defaultImg }],
+            };
             const mainImage = variant.photos[0].url;
             return (
               <div key={product._id} className="product-card">
@@ -133,8 +158,12 @@ const NewArrivalProduct = () => {
                               src={color.colorImage?.url || variantImg}
                               alt={color.colorName || `Color ${index + 1}`}
                               className="color"
-                              onMouseEnter={() => handleColorHover(product._id, color)}
-                              onClick={() => navigateLink(product._id, variantImg)}
+                              onMouseEnter={() =>
+                                handleColorHover(product._id, color)
+                              }
+                              onClick={() =>
+                                navigateLink(product._id, variantImg)
+                              }
                             />
                           </div>
                         );

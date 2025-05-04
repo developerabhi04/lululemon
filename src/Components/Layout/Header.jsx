@@ -4,30 +4,23 @@ import {
   AddShoppingCart,
   Clear,
   Face,
-  Facebook,
   Favorite,
-  Instagram,
   Login,
   Logout,
-  Mail,
   Person,
   PersonAdd,
-  Phone,
   Search,
   ShoppingBag,
-  X,
-  YouTube,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCompanyInfo } from "../../redux/slices/companyDetailsSlices";
-;
 import logo from "../../assets/Fem-Cartel-Wording-1400x352.png";
 import womenImage from "../../assets/0106_SP25_MarketingMoment_Dreamknit_Womens.webp";
 import accessoriesImage from "../../assets/0106_SP25_MarketingMoment_Accessories.webp";
 import shoesImage from "../../assets/0106_SP25_MarketingMoment_ACTVCLUB.webp";
 import { fetchLiveSearchProducts } from "../../redux/slices/productSlices";
 import { logout } from "../../redux/slices/userSlices";
-
+import TopNav from "./TopNav";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -36,7 +29,9 @@ const Header = () => {
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { cartItems = [] } = useSelector((state) => state.shopCart);
   const { companys } = useSelector((state) => state.company);
-  const { liveSearchResults, searchLoading } = useSelector((state) => state.products);
+  const { liveSearchResults, searchLoading } = useSelector(
+    (state) => state.products
+  );
 
   // Local state for search and suggestions
   const [showSearch, setShowSearch] = useState(false);
@@ -65,12 +60,7 @@ const Header = () => {
   // Dropdown data for nav items
   const dropdownItems = {
     women: {
-      featured: [
-        "New Arrivals",
-        "Best Sellers",
-        "Sale",
-        "Shop All",
-      ],
+      featured: ["New Arrivals", "Best Sellers", "Sale", "Shop All"],
       tops: [
         "Tanks",
         "Sports Bras",
@@ -115,7 +105,6 @@ const Header = () => {
       ],
       image: accessoriesImage,
     },
-
   };
 
   // Hide top nav on scroll
@@ -147,7 +136,10 @@ const Header = () => {
   // Close profile dropdown if clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target)
+      ) {
         setProfileDropdownVisible(false);
       }
     };
@@ -174,7 +166,8 @@ const Header = () => {
       }
     };
     document.addEventListener("mousedown", handleClickOutsideSearch);
-    return () => document.removeEventListener("mousedown", handleClickOutsideSearch);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutsideSearch);
   }, []);
 
   // Handle search submission (navigates to full search results page)
@@ -197,55 +190,14 @@ const Header = () => {
   const removeSuggestion = (id, e) => {
     // Prevent suggestion click event propagation
     e.stopPropagation();
-    setDisplayedSuggestions((prev) => prev.filter((product) => product._id !== id));
+    setDisplayedSuggestions((prev) =>
+      prev.filter((product) => product._id !== id)
+    );
   };
 
   return (
     <header>
-      {showTopNav && (
-        <nav className="wapper-header">
-          {companys.map((com, index) => (
-            <div className="nav" key={index}>
-              <div className="nav-div">
-                <ul className="nav-ul">
-                  <li className="nav-li">
-                    <Phone />
-                    <span className="nav-span">{com?.phone || ""}</span>
-                  </li>
-                  <li className="nav-li">
-                    <Mail />
-                    <span className="nav-span">{com?.email}</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="social-div">
-                <ul className="social-media">
-                  <li className="link">
-                    <a href={com.facebook} target="_blank" rel="noopener noreferrer">
-                      <Facebook />
-                    </a>
-                  </li>
-                  <li className="link">
-                    <a href={com.instagram} target="_blank" rel="noopener noreferrer">
-                      <Instagram />
-                    </a>
-                  </li>
-                  <li className="link">
-                    <a href={com.twitter} target="_blank" rel="noopener noreferrer">
-                      <X />
-                    </a>
-                  </li>
-                  <li className="link">
-                    <a href={com.linkedin} target="_blank" rel="noopener noreferrer">
-                      <YouTube />
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          ))}
-        </nav>
-      )}
+      <TopNav showTopNav={showTopNav} companys={companys} />
 
       <div className="Header">
         <div className="Header-container">
@@ -282,6 +234,7 @@ const Header = () => {
               <li className="nav-item">
                 <Link to="/products">We Made Too Much</Link>
               </li>
+
               <li className="nav-item active">
                 <Link to="/products" className="active">
                   Valentine's Day
@@ -306,12 +259,18 @@ const Header = () => {
                 <button onClick={handleSearchSubmit}>
                   <Search />
                 </button>
-                <button className="close-btn" onClick={() => setShowSearch(false)}>
+                <button
+                  className="close-btn"
+                  onClick={() => setShowSearch(false)}
+                >
                   <Clear />
                 </button>
-                {((displayedSuggestions && displayedSuggestions.length > 0) || searchLoading) && (
+                {((displayedSuggestions && displayedSuggestions.length > 0) ||
+                  searchLoading) && (
                   <div className="search-suggestions">
-                    {searchLoading && <div className="search-loading">Searching...</div>}
+                    {searchLoading && (
+                      <div className="search-loading">Searching...</div>
+                    )}
                     {!searchLoading &&
                       displayedSuggestions.map((product) => (
                         <div
@@ -320,7 +279,10 @@ const Header = () => {
                           onClick={() => handleSuggestionClick(product)}
                         >
                           {product.image && (
-                            <img src={product.image.url || product.image} alt={product.name} />
+                            <img
+                              src={product.image.url || product.image}
+                              alt={product.name}
+                            />
                           )}
                           <span>{product.name}</span>
                           <button
@@ -341,7 +303,10 @@ const Header = () => {
             )}
 
             {/* Profile Dropdown */}
-            <div className="profile-dropdown-container" ref={profileDropdownRef}>
+            <div
+              className="profile-dropdown-container"
+              ref={profileDropdownRef}
+            >
               <div className="icon-link" onClick={toggleProfileDropdown}>
                 <Person />
               </div>
@@ -413,7 +378,11 @@ const Header = () => {
 
 const Dropdown = ({ items, category, onMouseEnter, onMouseLeave }) => {
   return (
-    <div className="full-width-dropdown open" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+    <div
+      className="full-width-dropdown open"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <div className="dropdown-content">
         <div className="dropdown-sections">
           {Object.entries(items).map(([section, values]) =>
@@ -423,7 +392,13 @@ const Dropdown = ({ items, category, onMouseEnter, onMouseLeave }) => {
                 <ul>
                   {values.map((item, index) => (
                     <li key={index}>
-                      <Link to={`/${category}/${item.toLowerCase().replace(/\s+/g, "-")}`}>{item}</Link>
+                      <Link
+                        to={`/${category}/${item
+                          .toLowerCase()
+                          .replace(/\s+/g, "-")}`}
+                      >
+                        {item}
+                      </Link>
                     </li>
                   ))}
                 </ul>

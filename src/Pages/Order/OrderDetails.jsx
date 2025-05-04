@@ -29,6 +29,8 @@ const OrderDetails = () => {
         dispatch(fetchOrderDetails(id));
     }, [dispatch, id]);
 
+
+
     const handleCancelOrder = async () => {
         if (window.confirm("Are you sure you want to cancel this order?")) {
             await dispatch(deleteOrder(id));
@@ -36,7 +38,7 @@ const OrderDetails = () => {
         }
     };
 
-    if (loading) return <p>Product..</p>;
+    if (loading) return <p>Loading order details.....</p>;
     if (error) return <p className="error">Error: {error}</p>;
     if (!orderDetails) return <p>Order not found</p>;
 
@@ -148,7 +150,7 @@ const OrderDetails = () => {
 
                                     {/* Review Form - Only if Delivered */}
                                     {orderDetails.status === "Delivered" && (
-                                        <ReviewSection productId={orderDetails.productId} />
+                                        <ReviewSection productId={item.productId} reviewed={item.reviewed} />
                                     )}
 
 
@@ -195,7 +197,7 @@ const OrderDetails = () => {
                 {/* Action Buttons */}
                 {orderDetails.status !== "Delivered" && (
                     <div className="action-buttons">
-                        
+
                         <button
                             className="cancel-order"
                             onClick={handleCancelOrder}

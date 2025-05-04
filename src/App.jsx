@@ -11,6 +11,7 @@ import ScrollTop from "./Components/Loader/ScrollTop";
 import ChatSupport from "./Pages/Order/Contact";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import AdminRoute from "./auth/AdminRoute";
+import FirstBanners from "./Pages/Admin/Management/Banner/FirstBanners";
 
 // Lazy load pages
 const Home = lazy(() => import("./Pages/Home/Home"));
@@ -106,6 +107,7 @@ const App = () => {
           <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="/admin/banner" element={<AdminRoute><Banners /></AdminRoute>} />
           <Route path="/admin/banner/first-banner" element={<AdminRoute><FirstBanner /></AdminRoute>} />
+          <Route path="/admin/banner/first-banner-seconds" element={<AdminRoute><FirstBanners /></AdminRoute>} />
           <Route path="/admin/banner/second-banner" element={<AdminRoute><SecondBanner /></AdminRoute>} />
           <Route path="/admin/banner/third-banner" element={<AdminRoute><ThirdBanner /></AdminRoute>} />
           <Route path="/admin/banner/company-info" element={<AdminRoute><CompanyInfo /> </AdminRoute>} />

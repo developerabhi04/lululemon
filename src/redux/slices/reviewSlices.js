@@ -9,13 +9,13 @@ export const submitReview = createAsyncThunk("review/submitReview", async ({ pro
         const token = localStorage.getItem("token");
 
         console.log("Sending review to API:", { productId, rating, comment });
-        const response = await axios.post(`${server}/reviews/${productId}`, { rating, comment },
+        const response = await axios.post(`${server}/reviews/post-review`, { productId, rating, comment },
             {
                 headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, withCredentials: true,
             });
 
         console.log("Received response:", response);
-        return { productId };
+        return response.data.review;
     } catch (error) {
         console.error("Review submission failed:", error.response.data);
         return rejectWithValue(error.response.data.message || "Failed to submit review");
@@ -26,13 +26,20 @@ export const submitReview = createAsyncThunk("review/submitReview", async ({ pro
 // ✅ Fetch Reviews for a Product
 export const fetchReviews = createAsyncThunk("review/fetchReviews", async (productId, { rejectWithValue }) => {
     try {
-        const { data } = await axios.get(`${server}/reviews/get/${productId}`, { withCredentials: true });
-        return data.reviews;
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${server}/reviews/get-review`, {
+            params: { productId },
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+        });
+        return response.data.reviews;
     } catch (error) {
-        return rejectWithValue(error.response.data.message || "Failed to load reviews");
+        return rejectWithValue(
+            error.response?.data?.message || "Failed to fetch reviews"
+        );
     }
 }
 );
+
 
 // ✅ Delete Review (Admin Only)
 export const deleteReview = createAsyncThunk(

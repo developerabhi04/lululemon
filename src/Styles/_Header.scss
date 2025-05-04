@@ -51,6 +51,11 @@ header {
                     display: flex;
                     align-items: center;
                     gap: 0.3rem;
+
+                    .nav-span {
+                        color: #9d9d9d;
+                        font-family: cursive;
+                    }
                 }
             }
 

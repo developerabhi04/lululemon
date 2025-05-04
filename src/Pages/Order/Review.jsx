@@ -1,20 +1,27 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Rating } from "@mui/material";
 import { toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
-import { submitReview, fetchReviews } from "../../redux/slices/reviewSlices";
+import { useDispatch } from "react-redux";
+import { fetchReviews, submitReview } from "../../redux/slices/reviewSlices.js";
 
 
-const ReviewSection = ({ productId }) => {
+const ReviewSection = ({ productId, reviewed }) => {
     const dispatch = useDispatch();
-    // Default reviews to an empty array if undefined
-    const { reviews = [], loading, error } = useSelector((state) => state.review);
+
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
 
+    // On mount or when productId changes, fetch reviews and log the result for debugging
     useEffect(() => {
         if (productId) {
-            dispatch(fetchReviews(productId));
+            dispatch(fetchReviews(productId))
+                .unwrap()
+                .then((data) => {
+                    console.log("Fetched reviews data:", data);
+                })
+                .catch((err) => {
+                    console.error("Error in fetchReviews:", err);
+                });
         }
     }, [dispatch, productId]);
 
@@ -25,12 +32,15 @@ const ReviewSection = ({ productId }) => {
             return;
         }
         try {
+            console.log("Submitting review:", { productId, rating, comment });
             await dispatch(submitReview({ productId, rating, comment })).unwrap();
             toast.success("Review submitted successfully!");
             setRating(0);
             setComment("");
+            // Re-fetch reviews after submission to ensure the list is updated
             dispatch(fetchReviews(productId));
         } catch (err) {
+            console.error("Submit review error:", err);
             toast.error(err);
         }
     };
@@ -38,45 +48,28 @@ const ReviewSection = ({ productId }) => {
     return (
         <div className="review-section">
             <h2>Leave Your Review</h2>
-            <form className="review-form" onSubmit={handleSubmit}>
-                <div className="rating-input">
-                    <Rating value={rating} onChange={(e, newValue) => setRating(newValue)} />
-                </div>
-                <textarea
-                    placeholder="Write your review here..."
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                />
-                <button type="submit">Submit Review</button>
-            </form>
-            <div className="reviews-list">
-                <h3>Customer Reviews</h3>
-                {loading ? (
-                    <p>Loading reviews...</p>
-                ) : error ? (
-                    <p className="error">{error}</p>
-                ) : reviews.length === 0 ? (
-                    <p>No reviews yet.</p>
-                ) : (
-                    reviews.map((review) => (
-                        <div key={review._id} className="review-item">
-                            <div className="review-header">
-                                <span className="review-user">{review.user.name}</span>
-                                <Rating
-                                    value={review.rating}
-                                    readOnly
-                                    precision={0.5}
-                                    size="small"
-                                />
-                            </div>
-                            <p className="review-comment">{review.comment}</p>
-                            <span className="review-date">
-                                {new Date(review.createdAt).toLocaleDateString()}
-                            </span>
-                        </div>
-                    ))
-                )}
-            </div>
+            {reviewed ? (
+                <p>You have already submitted a review for this product.</p>
+            ) : (
+                <form className="review-form" onSubmit={handleSubmit}>
+                    <div className="rating-input">
+                        <Rating
+                            value={rating}
+                            onChange={(e, newValue) => {
+                                console.log("Rating changed:", newValue);
+                                setRating(newValue);
+                            }}
+                        />
+                    </div>
+                    <textarea
+                        placeholder="Write your review here..."
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                    />
+                    <button type="submit">Submit Review</button>
+                </form>
+            )}
+           
         </div>
     );
 };

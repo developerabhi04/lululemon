@@ -4,6 +4,7 @@ import productsReducer from "./slices/productSlices.js";
 import orderReducer from "./slices/orderSlices.js";
 import categoryReducer from "./slices/categorySlices.js";
 import bannerReducer from "./slices/bannerSlices.js";
+import bannersReducer from "./slices/bannersSlices.js";
 import secondBannerReducer from "./slices/secondBannerSlices.js";
 import thirdBannerReducer from "./slices/thirdBannerSlices.js";
 import companyReducer from "./slices/companyDetailsSlices.js";
@@ -22,6 +23,7 @@ const store = configureStore({
         order: orderReducer,
         categories: categoryReducer,
         banners: bannerReducer,
+        bannerss: bannersReducer,
         secondBanner: secondBannerReducer,
         thirdbanners: thirdBannerReducer,
         company: companyReducer,

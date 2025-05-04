@@ -5,13 +5,19 @@ import "swiper/css/pagination";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchBanners } from "../../../redux/slices/bannerSlices";
+import { fetchBannerss } from "../../../redux/slices/bannersSlices";
 
 const Banner = () => {
     const dispatch = useDispatch();
     const { banners } = useSelector((state) => state.banners);
+    const { banners: bannerss } = useSelector((state) => state.bannerss);
 
     useEffect(() => {
         dispatch(fetchBanners());
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(fetchBannerss());
     }, [dispatch]);
 
 
@@ -20,6 +26,7 @@ const Banner = () => {
         <section className="banner-section">
             <div className="banner-container">
                 {/* 🚀 Left Content Section */}
+
                 {/* <div className="banner-content">
                     <Swiper
                         modules={[Pagination, Autoplay]}
@@ -61,8 +68,8 @@ const Banner = () => {
                         }}
                         speed={800}
                     >
-                        {banners.flatMap((banner) =>
-                            banner.photos.map((photo, index) => (
+                        {bannerss?.flatMap((bannerss) =>
+                            bannerss.photos.map((photo, index) => (
                                 <SwiperSlide key={photo._id}>
                                     <img
                                         src={photo.url}

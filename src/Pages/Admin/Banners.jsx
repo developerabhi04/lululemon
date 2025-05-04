@@ -17,7 +17,7 @@ const Banners = () => {
 
             {/* Banners Section */}
             <Box display="flex" gap={3} flexWrap="wrap" justifyContent="center" mt={3}>
-              {["first-banner", "second-banner", "third-banner"].map((banner, index) => (
+              {["first-banner", "first-banner-seconds" , "second-banner", "third-banner"].map((banner, index) => (
                 <Card key={index} sx={{ width: 300, boxShadow: 5, borderRadius: 3 }}>
                   <CardContent>
                     <Typography variant="h5" textAlign="center" gutterBottom>
@@ -39,6 +39,7 @@ const Banners = () => {
                 </Card>
               ))}
             </Box>
+            
 
             {/* Divider */}
             <Divider sx={{ my: 4 }} />
